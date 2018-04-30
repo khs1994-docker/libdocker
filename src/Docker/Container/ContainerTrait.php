@@ -7,17 +7,17 @@ trait ContainerTrait
     /**
      * @var string
      */
-    private $hostname;
+    private $hostname = null;
 
     /**
      * @var string
      */
-    private $domainname;
+    private $domainname = null;
 
     /**
      * @var string
      */
-    private $user;
+    private $user = null;
 
     /**
      * @var bool
@@ -74,12 +74,12 @@ trait ContainerTrait
     /**
      * @var string
      */
-    private $workingDir;
+    private $workingDir = null;
 
     /**
      * @var array|string
      */
-    private $entrypoint;
+    private $entrypoint = null;
 
     /**
      * @var bool
@@ -89,12 +89,12 @@ trait ContainerTrait
     /**
      * @var string
      */
-    private $macAddress;
+    private $macAddress = null;
 
     /**
      * @var string|array
      */
-    private $onBuild;
+    private $onBuild = null;
 
     /**
      * @var array
@@ -111,46 +111,60 @@ trait ContainerTrait
      */
     private $stopTimeout = 10;
 
+    private $hostConfig = [];
+
     /**
      * @var array|string
      */
-    private $shell;
+    private $shell = null;
 
-    public function setHostConfig($binds, $portBindings, $restartPolicy, $mounts, $dns, $extraHosts)
+    public function setHostConfig(array $binds = null,
+                                  array $portBindings = null,
+                                  array $restartPolicy = null,
+                                  array $mounts = null,
+                                  array $dns = null,
+                                  array $extraHosts = null)
     {
-
+        $this->hostConfig = array_filter([
+            'Binds' => $binds,
+            'PortBindings' => $portBindings,
+            'RestartPolicy' => $restartPolicy,
+            'Mounts' => $mounts,
+            'Dns' => $dns,
+            'ExtraHosts' => $extraHosts,
+        ]);
     }
 
+    private $networkingConfig;
 
     public function setNetworkingConfig()
     {
 
     }
 
-    public function setContainer($data)
+    public function setContainer(array $data)
     {
         $array = get_class_vars(__CLASS__);
 
         $config = [];
 
+        $remove = ['filters_array', 'header', 'curl'];
+
         foreach ($array as $k => $v) {
-            if ($k === 'header') {
+            if (in_array($k, $remove)) {
                 unset($array[$k]);
             }
         }
 
         foreach ($array as $k => $v) {
+
             if ($v == null) {
-                $k = ucfirst($k);
-                $config[$k] = $v;
+                $property = ucfirst($k);
+                $config[$property] = $this->$k;
             }
         }
 
-        $data = array_merge($data, $config);
-
-        var_dump($data);
-
-        exit();
+        $data = array_filter(array_merge($data, $config));
 
         return $data;
     }
