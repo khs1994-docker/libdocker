@@ -66,6 +66,33 @@ class Docker extends ServiceContainer
     }
 
     /**
+     * @param string      $docker_host
+     * @param bool        $docker_tls_verify
+     * @param string|null $docker_cert_path
+     * @param string|null $docker_username
+     * @param string|null $docker_password
+     * @param string|null $docker_registry
+     *
+     * @return array
+     */
+    public static function createOptionArray(string $docker_host,
+                                             bool $docker_tls_verify = false,
+                                             string $docker_cert_path = null,
+                                             string $docker_username = null,
+                                             string $docker_password = null,
+                                             string $docker_registry = null)
+    {
+        return [
+            'DOCKER_HOST' => $docker_host,
+            'DOCKER_TLS_VERIFY' => (int)$docker_tls_verify,
+            'DOCKER_CERT_PATH' => $docker_cert_path,
+            'DOCKER_USERNAME' => $docker_username,
+            'DOCKER_PASSWORD' => $docker_password,
+            'DOCKER_REGISTRY' => $docker_registry,
+        ];
+    }
+
+    /**
      * 单例模式
      *
      * @param $option
@@ -99,88 +126,66 @@ class Docker extends ServiceContainer
         throw new Exception("Command $name not found", 404);
     }
 
-    // 接收参数
-
-    public static function build(array $config)
+    public function config()
     {
-        return new Build();
+        return $this['config'];
     }
 
-    public static function client(array $config)
-    {
-        return new Client();
-    }
-
-    public static function config(array $config)
-    {
-        return new Config();
-    }
-
+    /**
+     * @return Container\Container
+     */
     public function container()
     {
-        var_dump($this['container']);
+        return $this['container'];
     }
 
-    public static function daemon(array $config)
+    public function image()
     {
-        return new Daemon();
+        return $this['image'];
     }
 
-    public static function image(array $config)
+    public function network()
     {
-        return new Image();
+        return $this['network'];
     }
 
-    public static function network(array $config)
+    public function node()
     {
-        return new Network();
+        return $this['node'];
     }
 
-    public static function node(array $config)
+    public function plugin()
     {
-        return new Node();
+        return $this['plugin'];
     }
 
-    public static function plugin(array $config)
+    public function secret()
     {
-        return new Plugin();
+        return $this['secret'];
     }
 
-    public static function secret(array $config)
+    public function service()
     {
-        return new Secret();
+        return $this['service'];
     }
 
-    public static function service(array $config)
+    public function swarm()
     {
-        return new Service();
+        return $this['swarm'];
     }
 
-    public static function swarm(array $config)
+    public function system()
     {
-        return new Swarm();
+        return $this['system'];
     }
 
-    public static function system(array $config)
+    public function task()
     {
-        return new System();
+        return $this['task'];
     }
 
-    public static function task(array $config)
+    public function volume()
     {
-        return new Task();
-    }
-
-    public static function volume(array $config)
-    {
-        return new Volume();
-    }
-
-    // 得到任何镜像的信息
-
-    public static function getImageInfo($name)
-    {
-        $url = '/distribution/'.$name.'/json';
-        return self::request($url);
+        return $this['volume'];
     }
 }

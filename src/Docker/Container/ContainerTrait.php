@@ -4,43 +4,128 @@ namespace Docker\Module;
 
 trait ContainerTrait
 {
-    public $hostname;
+    /**
+     * @var string
+     */
+    private $hostname;
 
-    public $domainname;
+    /**
+     * @var string
+     */
+    private $domainname;
 
-    public $user;
+    /**
+     * @var string
+     */
+    private $user;
 
-    public $ExposedPorts;
+    /**
+     * @var bool
+     */
+    private $attachStdin = false;
 
-    public $env;
+    /**
+     * @var bool
+     */
+    private $attachStdout = true;
 
-    public $healthcheck;
+    /**
+     * @var bool
+     */
+    private $attachStderr = true;
 
-    public $volumes;
+    /**
+     * @var array
+     */
+    public $ExposedPorts = [];
 
-    public $workingDir;
+    /**
+     * @var bool
+     */
+    private $tty = false;
 
-    public $entrypoint;
+    /**
+     * @var bool
+     */
+    private $openStdin = false;
 
-    public $macAddress;
+    /**
+     * @var bool
+     */
+    private $stdinOnce = false;
 
-    public $onBuild;
+    /**
+     * @var array
+     */
+    private $env = [];
 
-    public $labels;
+    private $healthcheck;
 
-    public $stopSignal;
+    /**
+     * @var bool Windows Only
+     */
+    private $argsEscaped = false;
 
-    public $stopTimeout;
+    /**
+     * @var array
+     */
+    private $volumes = [];
 
-    public $shell;
+    /**
+     * @var string
+     */
+    private $workingDir;
 
-    public $hostConfig;
+    /**
+     * @var array|string
+     */
+    private $entrypoint;
 
-    public $networkingConfig;
+    /**
+     * @var bool
+     */
+    private $networkDisabled = false;
 
-    public $hostBindingPort;
+    /**
+     * @var string
+     */
+    private $macAddress;
 
-    public $otherConfig;
+    /**
+     * @var string|array
+     */
+    private $onBuild;
+
+    /**
+     * @var array
+     */
+    private $labels = [];
+
+    /**
+     * @var string
+     */
+    private $stopSignal = 'SIGTERM';
+
+    /**
+     * @var int
+     */
+    private $stopTimeout = 10;
+
+    /**
+     * @var array|string
+     */
+    private $shell;
+
+    public function setHostConfig($binds, $portBindings, $restartPolicy, $mounts, $dns, $extraHosts)
+    {
+
+    }
+
+
+    public function setNetworkingConfig()
+    {
+
+    }
 
     public function setContainer($data)
     {
@@ -71,81 +156,177 @@ trait ContainerTrait
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getHostname()
+    public function getHostname(): string
     {
         return $this->hostname;
     }
 
     /**
-     * @param mixed $hostname
+     * @param string $hostname
      */
-    public function setHostname($hostname): void
+    public function setHostname(string $hostname): void
     {
         $this->hostname = $hostname;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDomainname()
+    public function getDomainname(): string
     {
         return $this->domainname;
     }
 
     /**
-     * @param mixed $domainname
+     * @param string $domainname
      */
-    public function setDomainname($domainname): void
+    public function setDomainname(string $domainname): void
     {
         $this->domainname = $domainname;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getUser()
+    public function getUser(): string
     {
         return $this->user;
     }
 
     /**
-     * @param mixed $user
+     * @param string $user
      */
-    public function setUser($user): void
+    public function setUser(string $user): void
     {
         $this->user = $user;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getExposedPorts()
+    public function isAttachStdin(): bool
+    {
+        return $this->attachStdin;
+    }
+
+    /**
+     * @param bool $attachStdin
+     */
+    public function setAttachStdin(bool $attachStdin): void
+    {
+        $this->attachStdin = $attachStdin;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttachStdout(): bool
+    {
+        return $this->attachStdout;
+    }
+
+    /**
+     * @param bool $attachStdout
+     */
+    public function setAttachStdout(bool $attachStdout): void
+    {
+        $this->attachStdout = $attachStdout;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttachStderr(): bool
+    {
+        return $this->attachStderr;
+    }
+
+    /**
+     * @param bool $attachStderr
+     */
+    public function setAttachStderr(bool $attachStderr): void
+    {
+        $this->attachStderr = $attachStderr;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExposedPorts(): array
     {
         return $this->ExposedPorts;
     }
 
     /**
-     * @param mixed $ExposedPorts
+     * @param array $ExposedPorts
      */
-    public function setExposedPorts($ExposedPorts): void
+    public function setExposedPorts(array $ExposedPorts): void
     {
         $this->ExposedPorts = $ExposedPorts;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getEnv()
+    public function isTty(): bool
+    {
+        return $this->tty;
+    }
+
+    /**
+     * @param bool $tty
+     */
+    public function setTty(bool $tty): void
+    {
+        $this->tty = $tty;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOpenStdin(): bool
+    {
+        return $this->openStdin;
+    }
+
+    /**
+     * @param bool $openStdin
+     */
+    public function setOpenStdin(bool $openStdin): void
+    {
+        $this->openStdin = $openStdin;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStdinOnce(): bool
+    {
+        return $this->stdinOnce;
+    }
+
+    /**
+     * @param bool $stdinOnce
+     */
+    public function setStdinOnce(bool $stdinOnce): void
+    {
+        $this->stdinOnce = $stdinOnce;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEnv(): array
     {
         return $this->env;
     }
 
     /**
-     * @param mixed $env
+     * @param array $env
      */
-    public function setEnv($env): void
+    public function setEnv(array $env): void
     {
         $this->env = $env;
     }
@@ -167,39 +348,55 @@ trait ContainerTrait
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getVolumes()
+    public function isArgsEscaped(): bool
+    {
+        return $this->argsEscaped;
+    }
+
+    /**
+     * @param bool $argsEscaped
+     */
+    public function setArgsEscaped(bool $argsEscaped): void
+    {
+        $this->argsEscaped = $argsEscaped;
+    }
+
+    /**
+     * @return array
+     */
+    public function getVolumes(): array
     {
         return $this->volumes;
     }
 
     /**
-     * @param mixed $volumes
+     * @param array $volumes
      */
-    public function setVolumes($volumes): void
+    public function setVolumes(array $volumes): void
     {
         $this->volumes = $volumes;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getWorkingDir()
+    public function getWorkingDir(): string
     {
         return $this->workingDir;
     }
 
     /**
-     * @param mixed $workingDir
+     * @param string $workingDir
      */
-    public function setWorkingDir($workingDir): void
+    public function setWorkingDir(string $workingDir): void
     {
         $this->workingDir = $workingDir;
     }
 
     /**
-     * @return mixed
+     * @return array|string
      */
     public function getEntrypoint()
     {
@@ -207,7 +404,7 @@ trait ContainerTrait
     }
 
     /**
-     * @param mixed $entrypoint
+     * @param array|string $entrypoint
      */
     public function setEntrypoint($entrypoint): void
     {
@@ -215,23 +412,39 @@ trait ContainerTrait
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getMacAddress()
+    public function isNetworkDisabled(): bool
+    {
+        return $this->networkDisabled;
+    }
+
+    /**
+     * @param bool $networkDisabled
+     */
+    public function setNetworkDisabled(bool $networkDisabled): void
+    {
+        $this->networkDisabled = $networkDisabled;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMacAddress(): string
     {
         return $this->macAddress;
     }
 
     /**
-     * @param mixed $macAddress
+     * @param string $macAddress
      */
-    public function setMacAddress($macAddress): void
+    public function setMacAddress(string $macAddress): void
     {
         $this->macAddress = $macAddress;
     }
 
     /**
-     * @return mixed
+     * @return array|string
      */
     public function getOnBuild()
     {
@@ -239,7 +452,7 @@ trait ContainerTrait
     }
 
     /**
-     * @param mixed $onBuild
+     * @param array|string $onBuild
      */
     public function setOnBuild($onBuild): void
     {
@@ -247,55 +460,55 @@ trait ContainerTrait
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getLabels()
+    public function getLabels(): array
     {
         return $this->labels;
     }
 
     /**
-     * @param mixed $labels
+     * @param array $labels
      */
-    public function setLabels($labels): void
+    public function setLabels(array $labels): void
     {
         $this->labels = $labels;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getStopSignal()
+    public function getStopSignal(): string
     {
         return $this->stopSignal;
     }
 
     /**
-     * @param mixed $stopSignal
+     * @param string $stopSignal
      */
-    public function setStopSignal($stopSignal): void
+    public function setStopSignal(string $stopSignal): void
     {
         $this->stopSignal = $stopSignal;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getStopTimeout()
+    public function getStopTimeout(): int
     {
         return $this->stopTimeout;
     }
 
     /**
-     * @param mixed $stopTimeout
+     * @param int $stopTimeout
      */
-    public function setStopTimeout($stopTimeout): void
+    public function setStopTimeout(int $stopTimeout): void
     {
         $this->stopTimeout = $stopTimeout;
     }
 
     /**
-     * @return mixed
+     * @return array|string
      */
     public function getShell()
     {
@@ -303,75 +516,11 @@ trait ContainerTrait
     }
 
     /**
-     * @param mixed $shell
+     * @param array|string $shell
      */
     public function setShell($shell): void
     {
         $this->shell = $shell;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getHostConfig()
-    {
-        return $this->hostConfig;
-    }
-
-    /**
-     * @param mixed $hostConfig
-     */
-    public function setHostConfig($hostConfig): void
-    {
-        $this->hostConfig = $hostConfig;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getNetworkingConfig()
-    {
-        return $this->networkingConfig;
-    }
-
-    /**
-     * @param mixed $networkingConfig
-     */
-    public function setNetworkingConfig($networkingConfig): void
-    {
-        $this->networkingConfig = $networkingConfig;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getHostBindingPort()
-    {
-        return $this->hostBindingPort;
-    }
-
-    /**
-     * @param mixed $hostBindingPort
-     */
-    public function setHostBindingPort($hostBindingPort): void
-    {
-        $this->hostBindingPort = $hostBindingPort;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getOtherConfig()
-    {
-        return $this->otherConfig;
-    }
-
-    /**
-     * @param mixed $otherConfig
-     */
-    public function setOtherConfig($otherConfig): void
-    {
-        $this->otherConfig = $otherConfig;
     }
 
 

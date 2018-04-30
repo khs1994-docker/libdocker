@@ -3,10 +3,14 @@
 namespace Docker\Container;
 
 use Curl\Curl;
+use Docker\Module\ContainerTrait;
 use Exception;
 
 class Container
 {
+
+    use ContainerTrait;
+
     const TYPE = 'containers';
 
     /**
@@ -101,9 +105,7 @@ class Container
         $data = array_merge($data, $filters_array);
 
         $url = self::$base_url.'/json?'.http_build_query($data);
-        var_dump($url);
 
-        exit;
         return self::$curl->get($url);
     }
 
@@ -122,17 +124,28 @@ class Container
 
         $request = json_encode($data);
 
-        var_dump($request);
-
         return self::$curl->post($url, $request, self::$header);
     }
 
+    /**
+     * @param string      $id ID      or name of the container
+     * @param string|null $detachKeys
+     *
+     * @return mixed
+     */
     public function start(string $id, string $detachKeys = null)
     {
         $url = self::$base_url.'/'.$id.'/start?'.http_build_query(['detachKeys' => $detachKeys]);
+
         return self::$curl->post($url);
     }
 
+    /**
+     * @param string $id
+     * @param bool   $stream
+     *
+     * @return mixed
+     */
     public function stats(string $id, bool $stream = false)
     {
         $url = self::$base_url.'/'.$id.'/stats?'.http_build_query(['stream' => $stream]);
@@ -140,6 +153,12 @@ class Container
         return self::$curl->get($url);
     }
 
+    /**
+     * @param string $id
+     * @param bool   $size
+     *
+     * @return mixed
+     */
     public function inspect(string $id, bool $size = false)
     {
         $url = self::$base_url.'/'.$id.'/json?'.http_build_query(['size' => $size]);
@@ -147,6 +166,12 @@ class Container
         return self::$curl->get($url);
     }
 
+    /**
+     * @param string $id
+     * @param string $ps_args
+     *
+     * @return mixed
+     */
     public function top(string $id, string $ps_args = '-ef')
     {
         $url = self::$base_url.'/'.$id.'/'.__FUNCTION__.'?'.http_build_query(['ps_args' => $ps_args]);
@@ -154,6 +179,18 @@ class Container
         return self::$curl->get($url);
     }
 
+    /**
+     * @param string $id
+     * @param bool   $follow
+     * @param bool   $stdout
+     * @param bool   $stderr
+     * @param int    $since
+     * @param int    $until
+     * @param bool   $timestamps
+     * @param string $tail
+     *
+     * @return mixed
+     */
     public function logs(string $id,
                          bool $follow = false,
                          bool $stdout = true,
@@ -178,6 +215,11 @@ class Container
         return self::$curl->get($url);
     }
 
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     */
     public function changes(string $id)
     {
         $url = self::$base_url.'/'.$id.'/'.__FUNCTION__;
@@ -185,6 +227,11 @@ class Container
         return self::$curl->get($url);
     }
 
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     */
     public function export(string $id)
     {
         $url = self::$base_url.'/'.$id.'/'.__FUNCTION__;
@@ -192,8 +239,16 @@ class Container
         return self::$curl->get($url);
     }
 
-    // TODO
-
+    /**
+     *
+     * TODO
+     *
+     * @param string $id
+     * @param int    $height
+     * @param int    $width
+     *
+     * @return mixed
+     */
     public function resize(string $id, int $height, int $width)
     {
         $data = [
@@ -205,26 +260,50 @@ class Container
         return self::$curl->post($url);
     }
 
+    /**
+     * @param string $id
+     * @param int    $waitTime
+     *
+     * @return mixed
+     */
     public function stop(string $id, int $waitTime = 0)
     {
         $url = self::$base_url.'/'.$id.'/stop?'.http_build_query(['t' => $waitTime]);
         return self::$curl->post($url);
     }
 
+    /**
+     * @param string $id
+     * @param int    $waitTime
+     *
+     * @return mixed
+     */
     public function restart(string $id, int $waitTime = 0)
     {
         $url = self::$base_url.'/'.$id.'/restart?'.http_persistent_handles_clean(['t' => $waitTime]);
         return self::$curl->post($url);
     }
 
+    /**
+     * @param string $id
+     * @param string $signal
+     *
+     * @return mixed
+     */
     public function kill(string $id, string $signal = 'SIGKILL')
     {
         $url = self::$base_url.'/'.$id.'/kill?'.http_build_query(['signal' => $signal]);
         return self::$curl->post($url);
     }
 
-    // TODO
-
+    /**
+     * TODO
+     *
+     * @param string $id
+     * @param array  $request_body
+     *
+     * @return mixed
+     */
     public function update(string $id, array $request_body = [])
     {
         $url = self::$base_url.'/'.$id.'/update';
@@ -233,28 +312,55 @@ class Container
         return self::$curl->post($url, $request, self::$header);
     }
 
+    /**
+     * @param string $id
+     * @param string $name
+     *
+     * @return mixed
+     */
     public function rename(string $id, string $name)
     {
         $url = self::$base_url.'/'.$id.'/rename?'.http_build_query(['name' => $name]);
         return self::$curl->post($url);
     }
 
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     */
     public function pause(string $id)
     {
         $url = self::$base_url.'/'.$id.'/pause';
         return self::$curl->post($url);
     }
 
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     */
     public function unpause(string $id)
     {
         $url = self::$base_url.'/'.$id.'/unpause';
         return self::$curl->post($url);
     }
 
-    // https://docs.docker.com/engine/api/v1.35/#operation/ContainerAttach
-
-    // TODO
-
+    /**
+     * TODO
+     *
+     * @param string      $id
+     * @param string|null $detachKeys
+     * @param bool        $logs
+     * @param bool        $stream
+     * @param bool        $stdin
+     * @param bool        $stdout
+     * @param bool        $stderr
+     *
+     * @return mixed
+     *
+     * @see https://docs.docker.com/engine/api/v1.35/#operation/ContainerAttach
+     */
     public function attach(string $id,
                            string $detachKeys = null,
                            bool $logs = false,
@@ -279,12 +385,26 @@ class Container
         return $this->restart($url, 'post');
     }
 
+    /**
+     * @param string $id
+     * @param string $condition
+     *
+     * @return mixed
+     */
     public function wait(string $id, string $condition = 'not-running')
     {
         $url = self::$base_url.'/'.$id.'/wait?'.http_build_query(['condition' => $condition]);
         return self::$curl->post($url);
     }
 
+    /**
+     * @param string $id
+     * @param bool   $v
+     * @param bool   $force
+     * @param bool   $link
+     *
+     * @return mixed
+     */
     public function remove(string $id, bool $v = false, bool $force = false, bool $link = false)
     {
         $data = [
@@ -297,28 +417,82 @@ class Container
         return self::$curl->delete($url);
     }
 
-    // TODO
-
+    /**
+     * TODO
+     *
+     * @param string $id
+     * @param string $path
+     *
+     * @return mixed
+     */
     public function archive(string $id, string $path)
     {
         $url = self::$base_url.'/'.$id.'/archive?'.http_build_query(['path' => $path]);
         return self::$curl->get($url);
     }
 
-    // TODO
-
+    /**
+     * TODO
+     *
+     * @param string $id
+     * @param string $path
+     * @param bool   $noOverwriteDirNonDir
+     * @param string $request
+     */
     public function archiveFiles(string $id, string $path, bool $noOverwriteDirNonDir, string $request)
     {
 
     }
 
-    // prune
-
-
-    private function delete()
+    /**
+     * @param array $filters
+     *
+     * @return mixed
+     */
+    public function prune(array $filters)
     {
+        $filters = [
+            'filters' => '',
+        ];
+
+        $url = self::$base_url.'/prune?'.http_build_query($filters);
+
+        return self::$curl->post($url);
     }
 
+    /**
+     * @param string $id
+     * @param bool   $v
+     * @param bool   $force
+     * @param bool   $link
+     *
+     * @return mixed
+     */
+    public function delete(string $id, bool $v = false, bool $force = false, bool $link = false)
+    {
+        $url = self::$base_url.'/'.$id;
+
+        $data = [
+            'v' => $v,
+            'force' => $force,
+            'link' => $link,
+        ];
+
+        $url = $url.'?'.http_build_query($data);
+
+        return self::$curl->delete($url);
+    }
+
+    /**
+     * @param string     $id
+     * @param array|null $cmd
+     * @param array|null $env
+     * @param string     $user
+     * @param string     $workingDir
+     * @param array      $other
+     *
+     * @return mixed
+     */
     public function createExec(string $id,
                                array $cmd = null,
                                array $env = null,
@@ -340,6 +514,13 @@ class Container
         return self::$curl->post($url, $request, self::$header);
     }
 
+    /**
+     * @param string $id
+     * @param bool   $detach
+     * @param bool   $tty
+     *
+     * @return mixed
+     */
     public function startExec(string $id, bool $detach = false, bool $tty = false)
     {
         $url = self::$base_url.'/exec'.$id.'/start';
@@ -354,8 +535,15 @@ class Container
         return self::$curl->post($url, $request, self::$header);
     }
 
-    // TODO
-
+    /**
+     * TODO
+     *
+     * @param string $id
+     * @param int    $height
+     * @param int    $width
+     *
+     * @return mixed
+     */
     public function resizeExec(string $id, int $height, int $width)
     {
         $data = [
@@ -368,6 +556,11 @@ class Container
         return self::$curl->post($url);
     }
 
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     */
     public function inspectExec(string $id)
     {
         $url = self::$base_url.'/exec'.$id.'/json';
