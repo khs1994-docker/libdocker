@@ -10,6 +10,7 @@ use Curl\Curl;
 /**
  * @property Container\Container $container
  * @property Config\Config       $config
+ * @property Image\Image         $image
  */
 class Docker extends ServiceContainer
 {
@@ -38,7 +39,9 @@ class Docker extends ServiceContainer
     private static $docker;
 
     protected $providers = [
-        Container\ServiceProvider::class
+        Container\ServiceProvider::class,
+        Image\ServiceProvider::class,
+
     ];
 
     public function __construct(array $option, Curl $curl)

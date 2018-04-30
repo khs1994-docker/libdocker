@@ -1,14 +1,12 @@
 <?php
 
-namespace Docker;
+namespace Docker\Plugin;
 
 class Plugin
 {
     const TYPE = 'plugins';
 
     const BASE_URL = '/'.self::TYPE;
-
-    use Request;
 
     // list
 

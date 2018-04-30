@@ -1,12 +1,10 @@
 <?php
 
-namespace Docker;
+namespace Docker\Swarm;
 
 class Swarm
 {
     const BASE_URL = '/swarm';
-
-    use Request;
 
     public function inspect()
     {

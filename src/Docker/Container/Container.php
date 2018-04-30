@@ -41,22 +41,23 @@ class Container
     ];
 
     /**
-     * @param $filters
+     * @param array $filters
      *
      * @return array
      * @throws Exception
      */
-    public static function checkFilter($filters)
+    public static function checkFilter(array $filters)
     {
         $filters_array = [];
 
         foreach ($filters as $filter => $v) {
             if (!in_array($filter, static::$filters_array)) {
-                throw new Exception($filter, 404);
+                throw new Exception($filter, 500);
             }
 
             if (is_array($v)) {
                 $filters_array[$filter] = $v;
+                continue;
             }
 
             $filters_array[$filter] = [$v];

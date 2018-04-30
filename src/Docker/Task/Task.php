@@ -1,12 +1,10 @@
 <?php
 
-namespace Docker;
+namespace Docker\Task;
 
 class Task
 {
     const TYPE = 'tasks';
-
-    use Request;
 
     // list
 

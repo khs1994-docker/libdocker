@@ -1,14 +1,12 @@
 <?php
 
-namespace Docker;
+namespace Docker\Secret;
 
 class Secret
 {
     const TYPE = 'secrets';
 
     const BASE_URL = '/'.self::TYPE;
-
-    use Request;
 
     // list
 

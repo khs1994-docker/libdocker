@@ -1,11 +1,9 @@
 <?php
 
-namespace Docker;
+namespace Docker\System;
 
 class System
 {
-    use Request;
-
     public function checkAuthConfig($username, $password, $email, $serverAddress)
     {
         $url = '/auth';

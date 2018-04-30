@@ -1,12 +1,10 @@
 <?php
 
-namespace Docker;
+namespace Docker\Volume;
 
 class Volume
 {
     const BASE_URL = '/volumes';
-
-    use Request;
 
     // list
 

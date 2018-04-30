@@ -118,6 +118,8 @@ trait ContainerTrait
      */
     private $shell = null;
 
+    public $inspect;
+
     public function setHostConfig(array $binds = null,
                                   array $portBindings = null,
                                   array $restartPolicy = null,
@@ -165,6 +167,8 @@ trait ContainerTrait
         }
 
         $data = array_filter(array_merge($data, $config));
+
+        $this->inspect = $data;
 
         return $data;
     }
@@ -342,7 +346,13 @@ trait ContainerTrait
      */
     public function setEnv(array $env): void
     {
-        $this->env = $env;
+        $envArray = [];
+
+        foreach ($env as $k => $v) {
+            $envArray[] = "$k=$v";
+        }
+
+        $this->env = $envArray;
     }
 
     /**

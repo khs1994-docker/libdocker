@@ -1,16 +1,12 @@
 <?php
 
-namespace Docker;
+namespace Docker\Network;
 
 class Network
 {
     const TYPE = 'networks';
 
     const BASE_URL = '/'.self::TYPE;
-
-    use Request;
-
-    // list
 
     public function inspect(string $id, bool $verbose = false, $scope = null)
     {
