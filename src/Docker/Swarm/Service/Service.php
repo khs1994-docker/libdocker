@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Docker;
 
 class Service
@@ -21,7 +23,7 @@ class Service
                            array $endpointSpec)
     {
         if ($auth) {
-            $header  ['X-Registry-Auth'] = $auth;
+            $header['X-Registry-Auth'] = $auth;
         }
         $data = [
             'Name' => $name,
@@ -31,7 +33,7 @@ class Service
             'UpdateConfig' => $updateConfig,
             'RollbackConfig' => $rollbackConfig,
             'Networks' => $networks,
-            'EndpointSpec' => $endpointSpec
+            'EndpointSpec' => $endpointSpec,
         ];
         $url = self::BASE_URL.'/create';
 
@@ -41,14 +43,14 @@ class Service
     public function inspect(string $id, bool $insertDefaults = false)
     {
         $url = self::BASE_URL.'/'.$id.'/?'.http_build_query(['insertDefaults' => $insertDefaults]);
+
         return $this->request($url);
     }
 
     // delete
 
-    private function remove()
+    private function remove(): void
     {
-
     }
 
     public function update(string $id,
@@ -61,13 +63,13 @@ class Service
         $data = [
             'version' => $version,
             'registryAuthFrom' => $registryAuthFrom,
-            'rollback' => $rollback
+            'rollback' => $rollback,
         ];
 
         $header = [];
 
         if ($auth) {
-            $header [' X-Registry-Auth'] = $auth;
+            $header[' X-Registry-Auth'] = $auth;
         }
 
         $url = self::BASE_URL.'/'.$id.'/update?'.http_build_query($data);
@@ -93,7 +95,7 @@ class Service
             'stderr' => $stderr,
             'since' => $since,
             'timestamps' => $timestamps,
-            'tail' => $tail
+            'tail' => $tail,
         ];
 
         $url = self::BASE_URL.'/'.$id.'/logs?'.http_build_query($data);

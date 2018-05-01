@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Docker\System;
 
 class System
@@ -12,13 +14,12 @@ class System
             'username' => $username,
             'password' => $password,
             'email' => $email,
-            'serveraddress' => $serverAddress
+            'serveraddress' => $serverAddress,
         ];
 
         $request = json_encode($data);
 
         return $this->request($url, 'post', $request, $this->header);
-
     }
 
     public function getInfo()

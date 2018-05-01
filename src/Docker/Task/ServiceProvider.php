@@ -1,9 +1,9 @@
 <?php
 
-namespace Docker\Task;
+declare(strict_types=1);
 
+namespace Docker\Task;
 
 class ServiceProvider
 {
-
 }

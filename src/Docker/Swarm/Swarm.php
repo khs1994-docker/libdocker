@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Docker\Swarm;
 
 class Swarm
@@ -9,6 +11,7 @@ class Swarm
     public function inspect()
     {
         $url = self::BASE_URL;
+
         return $this->request($url);
     }
 
@@ -23,7 +26,7 @@ class Swarm
             'AdvertiseAddr' => $advertiseAddr,
             'DataPathAddr' => $dataPathAddr,
             'ForceNewCluster' => $forceNewCluster,
-            'Spec' => $spec
+            'Spec' => $spec,
         ];
 
         $request = json_encode($data);
@@ -44,7 +47,7 @@ class Swarm
             'AdvertiseAddr' => $advertiseAddress,
             'DataPathAddr' => $dataPathAddress,
             'RemoteAddrs' => $dataPathAddress,
-            'JoinToken' => $joinToken
+            'JoinToken' => $joinToken,
         ];
 
         $url = self::BASE_URL.'/join';
@@ -57,19 +60,20 @@ class Swarm
     public function leave(bool $force = false)
     {
         $url = self::BASE_URL.'/leave';
-        Return $this->request($url, 'post');
+
+        return $this->request($url, 'post');
     }
 
     // TODO
 
-    public function update()
+    public function update(): void
     {
-
     }
 
     public function getUnlockKey()
     {
         $url = self::BASE_URL.'/unlockkey';
+
         return $this->request($url);
     }
 
@@ -81,25 +85,23 @@ class Swarm
         return $this->request($url, 'post', $request, $this->header);
     }
 
-    private function list()
-    {
-
-    }
-
-    private function create()
+    private function list(): void
     {
     }
 
-    private function prune()
-    {
-
-    }
-
-    private function remove()
+    private function create(): void
     {
     }
 
-    private function delete()
+    private function prune(): void
+    {
+    }
+
+    private function remove(): void
+    {
+    }
+
+    private function delete(): void
     {
     }
 }

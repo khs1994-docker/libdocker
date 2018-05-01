@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Docker\Container;
 
 use Curl\Curl;
@@ -8,7 +10,6 @@ use Exception;
 
 class Container
 {
-
     use ContainerTrait;
 
     const TYPE = 'containers';
@@ -44,6 +45,7 @@ class Container
      * @param array $filters
      *
      * @return array
+     *
      * @throws Exception
      */
     public static function checkFilter(array $filters)
@@ -87,6 +89,7 @@ class Container
      * @param array|null $filters
      *
      * @return mixed
+     *
      * @throws Exception
      */
     public function list(bool $all = false, int $limit = null, bool $size = false, array $filters = null)
@@ -118,7 +121,7 @@ class Container
 
         $data = [
             'Image' => $image,
-            'Cmd' => $cmd
+            'Cmd' => $cmd,
         ];
 
         $data = $this->setContainer($data);
@@ -131,7 +134,7 @@ class Container
     }
 
     /**
-     * @param string      $id ID      or name of the container
+     * @param string      $id         ID      or name of the container
      * @param string|null $detachKeys
      *
      * @return mixed
@@ -210,7 +213,7 @@ class Container
             'since' => $since,
             'until' => $until,
             'timestamps' => $timestamps,
-            'tail' => $tail
+            'tail' => $tail,
         ];
 
         $url = self::$base_url.'/'.$id.'/'.__FUNCTION__.'?'.http_build_query($data);
@@ -243,8 +246,7 @@ class Container
     }
 
     /**
-     *
-     * TODO
+     * TODO.
      *
      * @param string $id
      * @param int    $height
@@ -256,7 +258,7 @@ class Container
     {
         $data = [
             'height' => $height,
-            'width' => $width
+            'width' => $width,
         ];
         $url = self::$base_url.'/'.$id.'/resize?'.http_build_query($data);
 
@@ -272,6 +274,7 @@ class Container
     public function stop(string $id, int $waitTime = 0)
     {
         $url = self::$base_url.'/'.$id.'/stop?'.http_build_query(['t' => $waitTime]);
+
         return self::$curl->post($url);
     }
 
@@ -284,6 +287,7 @@ class Container
     public function restart(string $id, int $waitTime = 0)
     {
         $url = self::$base_url.'/'.$id.'/restart?'.http_persistent_handles_clean(['t' => $waitTime]);
+
         return self::$curl->post($url);
     }
 
@@ -296,11 +300,12 @@ class Container
     public function kill(string $id, string $signal = 'SIGKILL')
     {
         $url = self::$base_url.'/'.$id.'/kill?'.http_build_query(['signal' => $signal]);
+
         return self::$curl->post($url);
     }
 
     /**
-     * TODO
+     * TODO.
      *
      * @param string $id
      * @param array  $request_body
@@ -324,6 +329,7 @@ class Container
     public function rename(string $id, string $name)
     {
         $url = self::$base_url.'/'.$id.'/rename?'.http_build_query(['name' => $name]);
+
         return self::$curl->post($url);
     }
 
@@ -335,6 +341,7 @@ class Container
     public function pause(string $id)
     {
         $url = self::$base_url.'/'.$id.'/pause';
+
         return self::$curl->post($url);
     }
 
@@ -346,11 +353,12 @@ class Container
     public function unpause(string $id)
     {
         $url = self::$base_url.'/'.$id.'/unpause';
+
         return self::$curl->post($url);
     }
 
     /**
-     * TODO
+     * TODO.
      *
      * @param string      $id
      * @param string|null $detachKeys
@@ -372,7 +380,7 @@ class Container
                            bool $stdout = false,
                            bool $stderr = false)
     {
-        ($logs === false && $stream === false) or die('Either the stream or logs parameter must be true');
+        (false === $logs && false === $stream) or die('Either the stream or logs parameter must be true');
 
         $data = [
             'detachKeys' => $detachKeys,
@@ -397,6 +405,7 @@ class Container
     public function wait(string $id, string $condition = 'not-running')
     {
         $url = self::$base_url.'/'.$id.'/wait?'.http_build_query(['condition' => $condition]);
+
         return self::$curl->post($url);
     }
 
@@ -413,7 +422,7 @@ class Container
         $data = [
             'v' => $v,
             'force' => $force,
-            'link' => $link
+            'link' => $link,
         ];
         $url = self::$base_url.'/'.$id.'?'.http_build_query($data);
 
@@ -421,7 +430,7 @@ class Container
     }
 
     /**
-     * TODO
+     * TODO.
      *
      * @param string $id
      * @param string $path
@@ -431,20 +440,20 @@ class Container
     public function archive(string $id, string $path)
     {
         $url = self::$base_url.'/'.$id.'/archive?'.http_build_query(['path' => $path]);
+
         return self::$curl->get($url);
     }
 
     /**
-     * TODO
+     * TODO.
      *
      * @param string $id
      * @param string $path
      * @param bool   $noOverwriteDirNonDir
      * @param string $request
      */
-    public function archiveFiles(string $id, string $path, bool $noOverwriteDirNonDir, string $request)
+    public function archiveFiles(string $id, string $path, bool $noOverwriteDirNonDir, string $request): void
     {
-
     }
 
     /**
@@ -530,7 +539,7 @@ class Container
 
         $data = [
             'Detach' => $detach,
-            'Tty' => $tty
+            'Tty' => $tty,
         ];
 
         $request = json_encode($data);
@@ -539,7 +548,7 @@ class Container
     }
 
     /**
-     * TODO
+     * TODO.
      *
      * @param string $id
      * @param int    $height
@@ -551,7 +560,7 @@ class Container
     {
         $data = [
             'h' => $height,
-            'w' => $width
+            'w' => $width,
         ];
 
         $url = self::$base_url.'/exec'.$id.'/resize'.http_build_query($data);

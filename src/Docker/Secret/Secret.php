@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Docker\Secret;
 
 class Secret
@@ -16,7 +18,7 @@ class Secret
             'Name' => $name,
             'Labels' => $labels,
             'Data' => $data,
-            'Drive' => $drive
+            'Drive' => $drive,
         ];
 
         $url = self::BASE_URL.'/create';
@@ -41,7 +43,7 @@ class Secret
             'Name' => $name,
             'Labels' => $labels,
             'Data' => $data,
-            'Drive' => $drive
+            'Drive' => $drive,
         ];
 
         $url = self::BASE_URL.'/'.$id.'/update?'.http_build_query(['version' => $version]);
@@ -49,21 +51,13 @@ class Secret
         $request = json_encode($data);
 
         return $this->request($url, 'post', $request, $this->header);
-
-
     }
 
-
-    private function prune()
+    private function prune(): void
     {
-
     }
 
-
-    private function remove()
+    private function remove(): void
     {
-
     }
-
-
 }

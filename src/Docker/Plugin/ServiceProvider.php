@@ -1,9 +1,9 @@
 <?php
 
-namespace Docker\Plugin;
+declare(strict_types=1);
 
+namespace Docker\Plugin;
 
 class ServiceProvider
 {
-
 }

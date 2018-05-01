@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Docker\Config;
 
 use Pimple\Container as ServiceContainer;
 
 class Config extends ServiceContainer
 {
-
     protected $providers = [
-
     ];
     const TYPE = 'configs';
 
@@ -23,7 +23,7 @@ class Config extends ServiceContainer
         $data = [
             'Name' => $name,
             'Labels' => $labels,
-            'Data' => $data
+            'Data' => $data,
         ];
 
         $url = self::BASE_URL.'/create';
@@ -46,7 +46,7 @@ class Config extends ServiceContainer
         $data = [
             'Name' => $name,
             'Labels' => $labels,
-            'Data' => $data
+            'Data' => $data,
         ];
 
         $url = self::BASE_URL.'/'.$id.'/update'.http_build_query(['version' => $version]);
@@ -56,16 +56,11 @@ class Config extends ServiceContainer
         return $this->request($url, 'post', $request);
     }
 
-    private function prune()
+    private function prune(): void
     {
-
     }
 
-
-    private function remove()
+    private function remove(): void
     {
-
     }
-
-
 }

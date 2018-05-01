@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Docker\Plugin;
 
 class Plugin
@@ -15,54 +17,48 @@ class Plugin
     public function getPrivileges(string $remote)
     {
         $url = self::BASE_URL.'/privileges?'.http_build_query(['remote' => $remote]);
+
         return $this->request($url);
     }
 
-    public function install()
+    public function install(): void
     {
-
     }
 
     public function inspect(string $name)
     {
         $url = self::BASE_URL.'/'.$name.'/json';
+
         return $this->request($url);
     }
 
     // remove
 
-    private function delete()
+    private function delete(): void
     {
-
     }
 
-    public function enable(string $name, int $timeout = 0)
+    public function enable(string $name, int $timeout = 0): void
     {
-
     }
 
-    public function disable(string $name)
+    public function disable(string $name): void
     {
-
     }
 
-    public function upgrade(string $name, string $remote, string $auth, array $requestBody)
+    public function upgrade(string $name, string $remote, string $auth, array $requestBody): void
     {
-
     }
 
-    public function create(string $name, string $requestBody)
+    public function create(string $name, string $requestBody): void
     {
-
     }
 
-    public function push(string $name)
+    public function push(string $name): void
     {
-
     }
 
-    public function config($name, $requestBody)
+    public function config($name, $requestBody): void
     {
-
     }
 }

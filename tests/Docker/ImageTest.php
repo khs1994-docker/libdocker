@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
 //require __DIR__.'/../../vendor/autoload.php';
 
 use PHPUnit\Framework\TestCase;
-
 use Docker\Docker;
 
 class ImageTest extends TestCase
@@ -16,7 +16,7 @@ class ImageTest extends TestCase
 
     public $image;
 
-    public function setup()
+    public function setup(): void
     {
         $docker = Docker::docker();
         $this->image = $docker->image();
@@ -24,15 +24,13 @@ class ImageTest extends TestCase
 
     // 拉取镜像
 
-    public function testPull()
+    public function testPull(): void
     {
         var_dump($this->image->pull('nginx', '1.13.8-alpine'));
     }
 
-    public function testList()
+    public function testList(): void
     {
         $this->image->list();
-
     }
 }
-

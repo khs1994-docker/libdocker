@@ -1,4 +1,7 @@
-<?php /** @noinspection PhpUnusedPrivateFieldInspection */
+<?php
+
+declare(strict_types=1);
+/** @noinspection PhpUnusedPrivateFieldInspection */
 
 namespace Docker\Image;
 
@@ -20,6 +23,7 @@ class Image
 
     /**
      * @var array
+     *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/ImageList
      */
     private static $filters_array_list = [
@@ -32,6 +36,7 @@ class Image
 
     /**
      * @var array
+     *
      * @see          https://docs.docker.com/engine/api/v1.37/#operation/ImageSearch
      */
     private static $filters_array_search = [
@@ -42,6 +47,7 @@ class Image
 
     /**
      * @var array
+     *
      * @see          https://docs.docker.com/engine/api/v1.37/#operation/ImagePrune
      */
     private static $filters_array_prune = [
@@ -61,6 +67,7 @@ class Image
      * @param array  $filters
      *
      * @return string
+     *
      * @throws Exception
      */
     private function resolveFilters(string $type, array $filters)
@@ -97,6 +104,7 @@ class Image
      * @param bool       $digests
      *
      * @return mixed
+     *
      * @throws Exception
      */
     public function list(bool $all = false, array $filters = null, bool $digests = false)
@@ -105,13 +113,13 @@ class Image
 
         if ($filters) {
             $filters_array = [
-                'filters' => $this->resolveFilters(__FUNCTION__, $filters)
+                'filters' => $this->resolveFilters(__FUNCTION__, $filters),
             ];
         }
 
         $data = [
             'all' => $all,
-            'digests' => $digests
+            'digests' => $digests,
         ];
 
         $data = array_merge($data, $filters_array);
@@ -148,7 +156,7 @@ class Image
 
         $header = [];
 
-        $header['Content-type'] = "application/x-tar";
+        $header['Content-type'] = 'application/x-tar';
 
         if ($auth) {
             $header['X-Registry-Config'] = $auth;
@@ -179,9 +187,10 @@ class Image
         $url = self::$base_url.'/create?'.http_build_query($queryParameters);
         $header = [];
         if ($auth) {
-            $header ['X-Registry-Auth'] = $auth;
+            $header['X-Registry-Auth'] = $auth;
         }
         var_dump($url);
+
         return self::$curl->post($url, $request, $header);
     }
 
@@ -196,20 +205,21 @@ class Image
      * @param string|null $platform
      *
      * @return mixed
+     *
      * @throws Exception
      */
     public function pull(string $image, string $tag = 'latest', bool $force = false, string $auth = null, string $platform = null)
     {
-        $json = $this->list(1, ["reference" => "$image:$tag"]);
+        $json = $this->list(1, ['reference' => "$image:$tag"]);
 
         if (false === $force and $json) {
-            return "Already Exists";
+            return 'Already Exists';
         }
 
         $data = [
             'fromImage' => $image,
             'tag' => $tag,
-            'platform' => $platform
+            'platform' => $platform,
         ];
 
         return $this->create($data, null, $auth);
@@ -233,11 +243,11 @@ class Image
         $data = [
             'fromSrc' => $fromSrc,
             'repo' => $repo,
-            'platform' => $platform
+            'platform' => $platform,
         ];
 
-        if ($fromSrc === '-') {
-            $request === null or die("$request error");
+        if ('-' === $fromSrc) {
+            null === $request or die("$request error");
         }
 
         return $this->create($data, $request, $auth);
@@ -281,7 +291,7 @@ class Image
         $header = [];
 
         if ($auth) {
-            $header ['X-Registry-Auth'] = [$auth];
+            $header['X-Registry-Auth'] = [$auth];
         }
 
         return self::$curl->post($url, null, $header);
@@ -298,7 +308,7 @@ class Image
     {
         $data = [
             'repo' => $repo,
-            'tag' => $tag
+            'tag' => $tag,
         ];
 
         $url = self::$base_url.'/'.$name.'/tag?'.http_build_query($data);
@@ -317,7 +327,7 @@ class Image
     {
         $data = [
             'force' => $force,
-            'noprune' => $noprune
+            'noprune' => $noprune,
         ];
 
         $url = self::$base_url.'/'.$name.'?'.http_build_query($data);
@@ -331,6 +341,7 @@ class Image
      * @param array    $filters
      *
      * @return mixed
+     *
      * @throws Exception
      */
     public function search(string $term, int $limit = null, array $filters = [])
@@ -339,14 +350,14 @@ class Image
 
         if ($filters) {
             $filters_array = [
-                'filters' => $this->resolveFilters(__FUNCTION__, $filters)
+                'filters' => $this->resolveFilters(__FUNCTION__, $filters),
             ];
         }
 
         $data = [
             'term' => $term,
             'limit' => $limit,
-            'filters' => $filters
+            'filters' => $filters,
         ];
 
         $data = array_merge($data, $filters_array);
@@ -384,7 +395,7 @@ class Image
             'comment' => $comment,
             'author' => $author,
             'pause' => $pause,
-            'changes' => $changes
+            'changes' => $changes,
         ];
 
         $url = self::$base_url.'/commit?'.http_build_query($data);
@@ -435,6 +446,7 @@ class Image
      * @param array $filters
      *
      * @return mixed
+     *
      * @throws Exception
      */
     public function prune(array $filters = [])
@@ -443,7 +455,7 @@ class Image
 
         if ($filters) {
             $filters_array = [
-                'filters' => $this->resolveFilters(__FUNCTION__, $filters)
+                'filters' => $this->resolveFilters(__FUNCTION__, $filters),
             ];
             $url = $url.'?'.http_build_query($filters_array);
         }

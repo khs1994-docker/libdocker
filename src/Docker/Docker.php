@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Docker;
 
 use Exception;
 use Pimple\Container as ServiceContainer;
-
 use Curl\Curl;
 
 /**
@@ -41,7 +42,6 @@ class Docker extends ServiceContainer
     protected $providers = [
         Container\ServiceProvider::class,
         Image\ServiceProvider::class,
-
     ];
 
     public function __construct(array $option, Curl $curl)
@@ -64,11 +64,11 @@ class Docker extends ServiceContainer
     /**
      * @param array $providers
      */
-    private function registerProviders(array $providers = [])
+    private function registerProviders(array $providers = []): void
     {
         $providerArray = array_merge($this->providers, $providers);
         foreach ($providerArray as $provider) {
-            $this->register(new $provider);
+            $this->register(new $provider());
         }
     }
 
@@ -91,7 +91,7 @@ class Docker extends ServiceContainer
     {
         return [
             'DOCKER_HOST' => $docker_host,
-            'DOCKER_TLS_VERIFY' => (int)$docker_tls_verify,
+            'DOCKER_TLS_VERIFY' => (int) $docker_tls_verify,
             'DOCKER_CERT_PATH' => $docker_cert_path,
             'DOCKER_USERNAME' => $docker_username,
             'DOCKER_PASSWORD' => $docker_password,
@@ -100,7 +100,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * 单例模式
+     * 单例模式.
      *
      * @param $option
      *
@@ -110,7 +110,7 @@ class Docker extends ServiceContainer
     {
         // 参数可以为空，默认连接到 127.0.0.1:2375
 
-        if (!(self::$docker instanceof Docker)) {
+        if (!(self::$docker instanceof self)) {
             self::$docker = new self($option, new Curl());
         }
 
@@ -121,12 +121,12 @@ class Docker extends ServiceContainer
      * @param $name
      *
      * @return mixed
+     *
      * @throws Exception
      */
     public function __get($name)
     {
         if (isset($this["$name"])) {
-
             return $this["$name"];
         }
 

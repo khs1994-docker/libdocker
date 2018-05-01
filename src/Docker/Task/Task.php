@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Docker\Task;
 
 class Task
@@ -10,22 +12,20 @@ class Task
 
     // inspect
 
-    private function create()
+    private function create(): void
     {
     }
 
-    private function prune()
+    private function prune(): void
     {
     }
 
-
-    private function remove()
+    private function remove(): void
     {
     }
 
-    private function delete()
+    private function delete(): void
     {
-
     }
 
     public function getLog(string $id,
@@ -44,12 +44,11 @@ class Task
             'stderr' => $stderr,
             'since' => $since,
             'timestamps' => $timestamps,
-            'tail' => $tail
+            'tail' => $tail,
         ];
 
         $url = '/'.self::TYPE.'/'.$id.'/logs?'.http_build_query($data);
 
         return $this->request($url);
     }
-
 }

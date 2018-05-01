@@ -1,9 +1,9 @@
 <?php
 
-namespace Docker\Label;
+declare(strict_types=1);
 
+namespace Docker\Label;
 
 class ServiceProvider
 {
-
 }

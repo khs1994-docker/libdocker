@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Docker\Network;
 
 class Network
@@ -15,7 +17,7 @@ class Network
         }
         $data = [
             'verbose' => $verbose,
-            'scope' => $scope
+            'scope' => $scope,
         ];
 
         $url = self::BASE_URL.'/'.$id.'/?'.http_build_query($data);
@@ -40,7 +42,7 @@ class Network
     {
         $data = [
             'force' => $force,
-            'container' => $container
+            'container' => $container,
         ];
 
         $url = self::BASE_URL.'/'.$id.'/disconnect';
@@ -52,9 +54,7 @@ class Network
 
     // prune
 
-    private function delete()
+    private function delete(): void
     {
-
     }
-
 }

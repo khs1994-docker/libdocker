@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Docker\Module;
 
 trait ContainerTrait
@@ -125,7 +127,7 @@ trait ContainerTrait
                                   array $restartPolicy = null,
                                   array $mounts = null,
                                   array $dns = null,
-                                  array $extraHosts = null)
+                                  array $extraHosts = null): void
     {
         $this->hostConfig = array_filter([
             'Binds' => $binds,
@@ -139,9 +141,8 @@ trait ContainerTrait
 
     private $networkingConfig;
 
-    public function setNetworkingConfig()
+    public function setNetworkingConfig(): void
     {
-
     }
 
     public function setContainer(array $data)
@@ -159,8 +160,7 @@ trait ContainerTrait
         }
 
         foreach ($array as $k => $v) {
-
-            if ($v == null) {
+            if (null == $v) {
                 $property = ucfirst($k);
                 $config[$property] = $this->$k;
             }
@@ -546,6 +546,4 @@ trait ContainerTrait
     {
         $this->shell = $shell;
     }
-
-
 }

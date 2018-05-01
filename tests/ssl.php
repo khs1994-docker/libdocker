@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 require __DIR__.'/../vendor/autoload.php';
 
 use Docker\Docker;
@@ -12,7 +13,7 @@ $container = $docker->container;
 
 $image = $docker->image;
 
-/**
+/*
  * docker run -it -d -v lnmp-data:/app php:7.2.5-alpine3.7 sh
  */
 

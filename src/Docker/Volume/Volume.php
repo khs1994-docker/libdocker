@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Docker\Volume;
 
 class Volume
@@ -16,8 +18,7 @@ class Volume
 
     // remove
 
-    private function delete()
+    private function delete(): void
     {
-
     }
 }

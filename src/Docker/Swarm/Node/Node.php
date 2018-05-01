@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Docker;
 
 class Node
@@ -25,25 +27,22 @@ class Node
             'Name' => $name,
             'Labels' => $labels,
             'Role' => $role,
-            'Availability' => $availability
+            'Availability' => $availability,
         ];
         $url = self::BASE_URL.'/'.$id.'/update?'.http_build_query(['version' => $version]);
 
         return $this->request($url, 'post', json_encode($data));
     }
 
-
-    private function create()
+    private function create(): void
     {
     }
 
-
-    private function remove()
+    private function remove(): void
     {
     }
 
-
-    private function prune()
+    private function prune(): void
     {
     }
 }
