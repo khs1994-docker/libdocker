@@ -1,8 +1,9 @@
-<?php
+<?php /** @noinspection PhpUnusedPrivateFieldInspection */
 
 namespace Docker\Image;
 
 use Curl\Curl;
+use Error;
 use Exception;
 
 class Image
@@ -17,7 +18,11 @@ class Image
 
     private static $curl;
 
-    private static $filters_array = [
+    /**
+     * @var array
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/ImageList
+     */
+    private static $filters_array_list = [
         'before',
         'dangling',
         'label',
@@ -25,24 +30,53 @@ class Image
         'since',
     ];
 
+    /**
+     * @var array
+     * @see          https://docs.docker.com/engine/api/v1.37/#operation/ImageSearch
+     */
+    private static $filters_array_search = [
+        'is-automated',
+        'is-official',
+        'stars',
+    ];
+
+    /**
+     * @var array
+     * @see          https://docs.docker.com/engine/api/v1.37/#operation/ImagePrune
+     */
+    private static $filters_array_prune = [
+        'dangling',
+        'until',
+        'label',
+    ];
+
     public function __construct(Curl $curl, $docker_host)
     {
-        self::$base_url = $docker_host.'/'.self::BASE_URL;
+        self::$base_url = $docker_host.self::BASE_URL;
         self::$curl = $curl;
     }
 
     /**
-     * @param array $filters
+     * @param string $type
+     * @param array  $filters
      *
      * @return string
      * @throws Exception
      */
-    private function resolveFilters(array $filters)
+    private function resolveFilters(string $type, array $filters)
     {
+        $filters_array_defined = 'filters_array_'.$type;
+
         $filters_array = [];
 
+        try {
+            $filters_array_defined = self::$$filters_array_defined;
+        } catch (Error | Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
+
         foreach ($filters as $k => $v) {
-            if (!in_array($k, self::$filters_array)) {
+            if (!in_array($k, $filters_array_defined)) {
                 throw new Exception($filters, 500);
             }
 
@@ -71,7 +105,7 @@ class Image
 
         if ($filters) {
             $filters_array = [
-                'filters' => $this->resolveFilters($filters)
+                'filters' => $this->resolveFilters(__FUNCTION__, $filters)
             ];
         }
 
@@ -134,35 +168,44 @@ class Image
     }
 
     /**
-     * @param $queryParameters
-     * @param $request
-     * @param $auth
+     * @param array  $queryParameters
+     * @param string $request
+     * @param string $auth
      *
      * @return mixed
      */
-    private function create($queryParameters, $request, $auth)
+    private function create(array $queryParameters, string $request = null, string $auth = null)
     {
         $url = self::$base_url.'/create?'.http_build_query($queryParameters);
         $header = [];
         if ($auth) {
             $header ['X-Registry-Auth'] = $auth;
         }
-
+        var_dump($url);
         return self::$curl->post($url, $request, $header);
     }
 
     /**
      * 如果 tag 为空，则拉取所有标签，所以必须指定名称
+     * 额外增加 $force 参数，拉取前首先判断是否已存在。
      *
      * @param string      $image
      * @param string      $tag
+     * @param bool        $force
      * @param string|null $auth
      * @param string|null $platform
      *
      * @return mixed
+     * @throws Exception
      */
-    public function pull(string $image, string $tag = 'latest', string $auth = null, string $platform = null)
+    public function pull(string $image, string $tag = 'latest', bool $force = false, string $auth = null, string $platform = null)
     {
+        $json = $this->list(1, ["reference" => "$image:$tag"]);
+
+        if (false === $force and $json) {
+            return "Already Exists";
+        }
+
         $data = [
             'fromImage' => $image,
             'tag' => $tag,
@@ -293,9 +336,13 @@ class Image
     public function search(string $term, int $limit = null, array $filters = [])
     {
         $filters_array = [];
+
         if ($filters) {
-            $filters_array = $this->resolveFilters($filters);
+            $filters_array = [
+                'filters' => $this->resolveFilters(__FUNCTION__, $filters)
+            ];
         }
+
         $data = [
             'term' => $term,
             'limit' => $limit,
@@ -385,11 +432,21 @@ class Image
     }
 
     /**
+     * @param array $filters
      *
+     * @return mixed
+     * @throws Exception
      */
-    public function prune()
+    public function prune(array $filters = [])
     {
         $url = self::$base_url.'/prune';
+
+        if ($filters) {
+            $filters_array = [
+                'filters' => $this->resolveFilters(__FUNCTION__, $filters)
+            ];
+            $url = $url.'?'.http_build_query($filters_array);
+        }
 
         return self::$curl->post($url);
     }

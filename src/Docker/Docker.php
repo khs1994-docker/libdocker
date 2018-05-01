@@ -52,6 +52,10 @@ class Docker extends ServiceContainer
             $curl->docker($option['DOCKER_CERT_PATH']);
         }
 
+        ini_set('max_execution_time', '100');
+
+        $curl->setTimeout(100);
+
         $this['curl'] = $curl;
 
         $this->registerProviders();
