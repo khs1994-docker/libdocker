@@ -91,7 +91,7 @@ class Docker extends ServiceContainer
     {
         return [
             'DOCKER_HOST' => $docker_host,
-            'DOCKER_TLS_VERIFY' => (int) $docker_tls_verify,
+            'DOCKER_TLS_VERIFY' => (int)$docker_tls_verify,
             'DOCKER_CERT_PATH' => $docker_cert_path,
             'DOCKER_USERNAME' => $docker_username,
             'DOCKER_PASSWORD' => $docker_password,
@@ -146,51 +146,81 @@ class Docker extends ServiceContainer
         return $this['container'];
     }
 
+    /**
+     * @return Image\Image
+     */
     public function image()
     {
         return $this['image'];
     }
 
+    /**
+     * @return Network\Network
+     */
     public function network()
     {
         return $this['network'];
     }
 
+    /**
+     * @return mixed
+     */
     public function node()
     {
         return $this['node'];
     }
 
+    /**
+     * @return Plugin\Plugin
+     */
     public function plugin()
     {
         return $this['plugin'];
     }
 
+    /**
+     * @return Secret\Secret
+     */
     public function secret()
     {
         return $this['secret'];
     }
 
+    /**
+     * @return mixed
+     */
     public function service()
     {
         return $this['service'];
     }
 
+    /**
+     * @return Swarm\Swarm
+     */
     public function swarm()
     {
         return $this['swarm'];
     }
 
+    /**
+     * @return System\System
+     */
     public function system()
     {
         return $this['system'];
     }
 
+    /**
+     * @return Task\Task;
+     */
     public function task()
     {
         return $this['task'];
     }
 
+    /**
+     * @return Volume\Volume
+     */
     public function volume()
     {
         return $this['volume'];

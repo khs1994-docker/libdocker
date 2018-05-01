@@ -1,7 +1,6 @@
-<?php
+<?php /** @noinspection PhpUnusedPrivateFieldInspection */
 
 declare(strict_types=1);
-/** @noinspection PhpUnusedPrivateFieldInspection */
 
 namespace Docker\Image;
 
@@ -210,9 +209,9 @@ class Image
      */
     public function pull(string $image, string $tag = 'latest', bool $force = false, string $auth = null, string $platform = null)
     {
-        $json = $this->list(1, ['reference' => "$image:$tag"]);
+        $json = $this->list(true, ['reference' => "$image:$tag"]);
 
-        if (false === $force and $json) {
+        if (false === $force and json_decode($json)) {
             return 'Already Exists';
         }
 

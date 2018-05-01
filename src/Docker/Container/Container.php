@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnusedPrivateFieldInspection */
 
 declare(strict_types=1);
 
@@ -6,6 +6,7 @@ namespace Docker\Container;
 
 use Curl\Curl;
 use Docker\Module\ContainerTrait;
+use Error;
 use Exception;
 
 class Container
@@ -23,7 +24,11 @@ class Container
 
     private static $header = ['content-type' => 'application/json;charset=utf-8'];
 
-    public static $filters_array = [
+    /**
+     * @var array
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/ContainerList
+     */
+    private static $filters_array_list = [
         'ancestor',
         'before',
         'expose',
@@ -42,18 +47,37 @@ class Container
     ];
 
     /**
-     * @param array $filters
+     * @var array
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/ContainerPrune
+     */
+    private static $filters_array_prune = [
+        'until',
+        'label',
+    ];
+
+    /**
+     * @param string $type
+     * @param array  $filters
      *
      * @return array
      *
      * @throws Exception
      */
-    public static function checkFilter(array $filters)
+    public static function checkFilter(string $type, array $filters)
     {
+
+        $filters_array_define = 'filters_array_'.$type;
+
+        try {
+            $filters_array_define = self::$$filters_array_define;
+        } catch (Error | Exception $e) {
+            throw new Exception($e->getMessage(), 500);
+        }
+
         $filters_array = [];
 
         foreach ($filters as $filter => $v) {
-            if (!in_array($filter, static::$filters_array)) {
+            if (!in_array($filter, $filters_array_define)) {
                 throw new Exception($filter, 500);
             }
 
@@ -97,7 +121,7 @@ class Container
         $filters_array = [];
 
         if ($filters) {
-            $filters_array = ['filters' => $this->checkFilter($filters)];
+            $filters_array = ['filters' => $this->checkFilter(__FUNCTION__, $filters)];
         }
 
         $data = [
@@ -113,8 +137,13 @@ class Container
         return self::$curl->get($url);
     }
 
-    // TODO
-
+    /**
+     * @param string      $image
+     * @param string|null $name
+     * @param array|null  $cmd
+     *
+     * @return mixed
+     */
     public function create(string $image, string $name = null, array $cmd = null)
     {
         $url = self::$base_url.'/'.__FUNCTION__.'?'.http_build_query(['name' => $name]);
@@ -134,7 +163,7 @@ class Container
     }
 
     /**
-     * @param string      $id         ID      or name of the container
+     * @param string      $id ID      or name of the container
      * @param string|null $detachKeys
      *
      * @return mixed
@@ -393,7 +422,7 @@ class Container
 
         $url = self::$base_url.'/'.$id.'/attach?'.http_build_query($data);
 
-        return $this->restart($url, 'post');
+        return self::$curl->post($url);
     }
 
     /**
@@ -460,11 +489,12 @@ class Container
      * @param array $filters
      *
      * @return mixed
+     * @throws Exception
      */
-    public function prune(array $filters)
+    public function prune(array $filters = [])
     {
         $filters = [
-            'filters' => '',
+            'filters' => self::checkFilter(__FUNCTION__, $filters),
         ];
 
         $url = self::$base_url.'/prune?'.http_build_query($filters);
