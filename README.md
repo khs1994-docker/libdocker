@@ -25,6 +25,38 @@ $ composer require khs1994/docker @dev
 
 require __DIR__.'/vendor/autoload.php';
 
+use Docker\Docker;
+
+$option = Docker::createOptionArray('127.0.0.1:2375');
+
+// Connect TLS Docker Daemon
+
+// $option = Docker::createOptionArray('123.123.123.133:2376',true,'/etc/docker/cert');
+
+$docker = Docker::docker($option);
+
+$docker_container = $docker->container;
+
+$docker_image = $docker->image;
+
+/*
+ * $ docker run -it -d -v lnmp-data:/app php:7.2.5-alpine3.7 /bin/sh
+ */
+
+$image = 'php:7.2.5-alpine3.7';
+
+$docker_image->pull($image);
+
+$docker_container->setHostConfig(['lnmp-data:/app']);
+
+$output = $docker_container->create($image, null, '/bin/sh');
+
+$output = json_decode($output);
+
+$docker_container->start($output->Id);
+
+var_dump($docker_container->logs($output->Id));
+
 ```
 
 ## PHP CaaS

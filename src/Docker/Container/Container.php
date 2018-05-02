@@ -155,8 +155,6 @@ class Container
 
         $data = $this->setContainer($data);
 
-        var_dump($data);
-
         $request = json_encode($data);
 
         return self::$curl->post($url, $request, self::$header);
