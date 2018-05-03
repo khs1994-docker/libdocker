@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Docker;
+namespace Docker\Swarm\Node;
 
 class Node
 {
     const BASE_URL = '/nodes';
-
-    use Request;
 
     // list
 

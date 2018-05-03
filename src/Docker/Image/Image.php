@@ -188,7 +188,6 @@ class Image
         if ($auth) {
             $header['X-Registry-Auth'] = $auth;
         }
-        var_dump($url);
 
         return self::$curl->post($url, $request, $header);
     }

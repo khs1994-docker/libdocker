@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpMissingParentConstructorInspection */
 
 declare(strict_types=1);
 
@@ -9,9 +9,19 @@ use Pimple\Container as ServiceContainer;
 use Curl\Curl;
 
 /**
- * @property Container\Container $container
- * @property Config\Config       $config
- * @property Image\Image         $image
+ * @property Config\Config         $config
+ * @property Container\Container   $container
+ * @property Image\Image           $image
+ * @property Label\Label           $label
+ * @property Network\Network       $network
+ * @property Plugin\Plugin         $plugin
+ * @property Secret\Secret         $secret
+ * @property Swarm\Swarm           $swarm
+ * @property Swarm\Node\Node       $node
+ * @property Swarm\Service\Service $service
+ * @property System\System         $system
+ * @property Task\Task             $task
+ * @property Volume\Volume         $volume
  */
 class Docker extends ServiceContainer
 {
@@ -52,9 +62,9 @@ class Docker extends ServiceContainer
             $curl->docker($option['DOCKER_CERT_PATH']);
         }
 
-        ini_set('max_execution_time', '100');
+        ini_set('max_execution_time', '0');
 
-        $curl->setTimeout(100);
+        $curl->setTimeout(0);
 
         $this['curl'] = $curl;
 

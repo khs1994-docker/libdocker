@@ -4,6 +4,10 @@
 
 A PHP library for the Docker Engine API 
 
+* [问题反馈](https://github.com/khs1994-docker/lnmp/issues/332)
+
+* [Docker API Docs](https://docs.docker.com/engine/api/v1.37/)
+
 ## Installation
 
 To Use Docker PHP Library, simply:
