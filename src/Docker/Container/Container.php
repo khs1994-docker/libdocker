@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Docker\Container;
 
 use Curl\Curl;
-use Docker\Module\ContainerTrait;
 use Error;
 use Exception;
 
@@ -15,8 +14,6 @@ use Exception;
  */
 class Container
 {
-    use ContainerTrait;
-
     const TYPE = 'containers';
 
     /**
@@ -58,6 +55,122 @@ class Container
         'until',
         'label',
     ];
+
+    /**
+     * @var string
+     */
+    private $hostname = null;
+
+    /**
+     * @var string
+     */
+    private $domainname = null;
+
+    /**
+     * @var string
+     */
+    private $user = null;
+
+    /**
+     * @var bool
+     */
+    private $attachStdin = false;
+
+    /**
+     * @var bool
+     */
+    private $attachStdout = true;
+
+    /**
+     * @var bool
+     */
+    private $attachStderr = true;
+
+    /**
+     * @var array
+     */
+    public $ExposedPorts = [];
+
+    /**
+     * @var bool
+     */
+    private $tty = false;
+
+    /**
+     * @var bool
+     */
+    private $openStdin = false;
+
+    /**
+     * @var bool
+     */
+    private $stdinOnce = false;
+
+    /**
+     * @var array
+     */
+    private $env = [];
+
+    private $healthcheck;
+
+    /**
+     * @var bool Windows Only
+     */
+    private $argsEscaped = false;
+
+    /**
+     * @var array
+     */
+    private $volumes = [];
+
+    /**
+     * @var string
+     */
+    private $workingDir = null;
+
+    /**
+     * @var array|string
+     */
+    private $entrypoint = null;
+
+    /**
+     * @var bool
+     */
+    private $networkDisabled = false;
+
+    /**
+     * @var string
+     */
+    private $macAddress = null;
+
+    /**
+     * @var string|array
+     */
+    private $onBuild = null;
+
+    /**
+     * @var array
+     */
+    private $labels = [];
+
+    /**
+     * @var string
+     */
+    private $stopSignal = 'SIGTERM';
+
+    /**
+     * @var int
+     */
+    private $stopTimeout = 10;
+
+    private $hostConfig = [];
+
+    /**
+     * @var array|string
+     */
+    private $shell = null;
+
+    public $inspect;
 
     /**
      * @param string $type
@@ -147,6 +260,7 @@ class Container
      * @param array|null  $cmd
      *
      * @return mixed
+     * @throws Exception
      */
     public function create(string $image, string $name = null, array $cmd = null)
     {
@@ -161,7 +275,15 @@ class Container
 
         $request = json_encode($data);
 
-        return self::$curl->post($url, $request, self::$header);
+        $json = self::$curl->post($url, $request, self::$header);
+
+        $id = json_decode($json)->Id ?? null;
+
+        if (null === $id) {
+            throw new Exception('Create Container Error', 500);
+        }
+
+        return $id;
     }
 
     /**
@@ -610,5 +732,540 @@ class Container
         $url = self::$base_url.'/exec'.$id.'/json';
 
         return self::$curl->get($url);
+    }
+
+    /**
+     * @param array|null  $binds
+     * @param string|null $networkMode
+     * @param array|null  $portBindings
+     * @param array|null  $restartPolicy
+     * @param bool        $autoRemove
+     * @param array|null  $mounts
+     * @param array|null  $dns
+     * @param array|null  $extraHosts
+     *
+     * @return $this
+     */
+    public function setHostConfig(array $binds = null,
+                                  string $networkMode = null,
+                                  array $portBindings = null,
+                                  array $restartPolicy = null,
+                                  bool $autoRemove = false,
+                                  array $mounts = null,
+                                  array $dns = null,
+                                  array $extraHosts = null)
+    {
+        $this->hostConfig = array_filter([
+            'Binds' => $binds,
+            'NetworkMode' => $networkMode,
+            'PortBindings' => $portBindings,
+            'RestartPolicy' => $restartPolicy,
+            'AutoRemove ' => $autoRemove,
+            'Mounts' => $mounts,
+            'Dns' => $dns,
+            'ExtraHosts' => $extraHosts,
+        ]);
+
+        return $this;
+    }
+
+    private $networkingConfig;
+
+    public function setNetworkingConfig(): void
+    {
+    }
+
+    private function setContainer(array $data)
+    {
+        $array = get_class_vars(__CLASS__);
+
+        $config = [];
+
+        $remove = ['filters_array', 'header', 'curl'];
+
+        foreach ($array as $k => $v) {
+            if (in_array($k, $remove)) {
+                unset($array[$k]);
+            }
+        }
+
+        foreach ($array as $k => $v) {
+            if (null == $v) {
+                $property = ucfirst($k);
+                $config[$property] = $this->$k;
+            }
+        }
+
+        $data = array_filter(array_merge($data, $config));
+
+        $this->inspect = $data;
+
+        return $data;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHostname(): string
+    {
+        return $this->hostname;
+    }
+
+    /**
+     * @param string $hostname
+     *
+     * @return Container
+     */
+    public function setHostname(string $hostname)
+    {
+        $this->hostname = $hostname;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDomainname(): string
+    {
+        return $this->domainname;
+    }
+
+    /**
+     * @param string $domainname
+     *
+     * @return Container
+     */
+    public function setDomainname(string $domainname)
+    {
+        $this->domainname = $domainname;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUser(): string
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param string $user
+     *
+     * @return Container
+     */
+    public function setUser(string $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttachStdin(): bool
+    {
+        return $this->attachStdin;
+    }
+
+    /**
+     * @param bool $attachStdin
+     *
+     * @return Container
+     */
+    public function setAttachStdin(bool $attachStdin)
+    {
+        $this->attachStdin = $attachStdin;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttachStdout(): bool
+    {
+        return $this->attachStdout;
+    }
+
+    /**
+     * @param bool $attachStdout
+     *
+     * @return Container
+     */
+    public function setAttachStdout(bool $attachStdout)
+    {
+        $this->attachStdout = $attachStdout;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttachStderr(): bool
+    {
+        return $this->attachStderr;
+    }
+
+    /**
+     * @param bool $attachStderr
+     *
+     * @return Container
+     */
+    public function setAttachStderr(bool $attachStderr)
+    {
+        $this->attachStderr = $attachStderr;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExposedPorts(): array
+    {
+        return $this->ExposedPorts;
+    }
+
+    /**
+     * @param array $ExposedPorts
+     *
+     * @return Container
+     */
+    public function setExposedPorts(array $ExposedPorts)
+    {
+        $this->ExposedPorts = $ExposedPorts;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTty(): bool
+    {
+        return $this->tty;
+    }
+
+    /**
+     * @param bool $tty
+     *
+     * @return Container
+     */
+    public function setTty(bool $tty)
+    {
+        $this->tty = $tty;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOpenStdin(): bool
+    {
+        return $this->openStdin;
+    }
+
+    /**
+     * @param bool $openStdin
+     *
+     * @return Container
+     */
+    public function setOpenStdin(bool $openStdin)
+    {
+        $this->openStdin = $openStdin;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStdinOnce(): bool
+    {
+        return $this->stdinOnce;
+    }
+
+    /**
+     * @param bool $stdinOnce
+     *
+     * @return Container
+     */
+    public function setStdinOnce(bool $stdinOnce)
+    {
+        $this->stdinOnce = $stdinOnce;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEnv(): array
+    {
+        return $this->env;
+    }
+
+    /**
+     * @param array $env
+     *
+     * @return Container
+     */
+    public function setEnv(array $env)
+    {
+        $envArray = [];
+
+        foreach ($env as $k => $v) {
+            $envArray[] = "$k=$v";
+        }
+
+        $this->env = $envArray;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHealthcheck()
+    {
+        return $this->healthcheck;
+    }
+
+    /**
+     * @param mixed $healthcheck
+     *
+     * @return Container
+     */
+    public function setHealthcheck($healthcheck)
+    {
+        $this->healthcheck = $healthcheck;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isArgsEscaped(): bool
+    {
+        return $this->argsEscaped;
+    }
+
+    /**
+     * @param bool $argsEscaped
+     *
+     * @return Container
+     */
+    public function setArgsEscaped(bool $argsEscaped)
+    {
+        $this->argsEscaped = $argsEscaped;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getVolumes(): array
+    {
+        return $this->volumes;
+    }
+
+    /**
+     * @param array $volumes
+     *
+     * @return Container
+     */
+    public function setVolumes(array $volumes)
+    {
+        $this->volumes = $volumes;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkingDir(): string
+    {
+        return $this->workingDir;
+    }
+
+    /**
+     * @param string $workingDir
+     *
+     * @return Container
+     */
+    public function setWorkingDir(string $workingDir)
+    {
+        $this->workingDir = $workingDir;
+
+        return $this;
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getEntrypoint()
+    {
+        return $this->entrypoint;
+    }
+
+    /**
+     * @param array|string $entrypoint
+     *
+     * @return Container
+     */
+    public function setEntrypoint($entrypoint)
+    {
+        $this->entrypoint = $entrypoint;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNetworkDisabled(): bool
+    {
+        return $this->networkDisabled;
+    }
+
+    /**
+     * @param bool $networkDisabled
+     *
+     * @return Container
+     */
+    public function setNetworkDisabled(bool $networkDisabled)
+    {
+        $this->networkDisabled = $networkDisabled;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMacAddress(): string
+    {
+        return $this->macAddress;
+    }
+
+    /**
+     * @param string $macAddress
+     *
+     * @return Container
+     */
+    public function setMacAddress(string $macAddress)
+    {
+        $this->macAddress = $macAddress;
+
+        return $this;
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getOnBuild()
+    {
+        return $this->onBuild;
+    }
+
+    /**
+     * @param array|string $onBuild
+     *
+     * @return Container
+     */
+    public function setOnBuild($onBuild)
+    {
+        $this->onBuild = $onBuild;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLabels(): array
+    {
+        return $this->labels;
+    }
+
+    /**
+     * @param array $labels
+     *
+     * @return Container
+     */
+    public function setLabels(array $labels)
+    {
+        $this->labels = $labels;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStopSignal(): string
+    {
+        return $this->stopSignal;
+    }
+
+    /**
+     * @param string $stopSignal
+     *
+     * @return Container
+     */
+    public function setStopSignal(string $stopSignal)
+    {
+        $this->stopSignal = $stopSignal;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStopTimeout(): int
+    {
+        return $this->stopTimeout;
+    }
+
+    /**
+     * @param int $stopTimeout
+     *
+     * @return Container
+     */
+    public function setStopTimeout(int $stopTimeout)
+    {
+        $this->stopTimeout = $stopTimeout;
+
+        return $this;
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getShell()
+    {
+        return $this->shell;
+    }
+
+    /**
+     * @param array|string $shell
+     *
+     * @return Container
+     */
+    public function setShell($shell)
+    {
+        $this->shell = $shell;
+
+        return $this;
     }
 }

@@ -51,16 +51,13 @@ $image = 'php:7.2.5-alpine3.7';
 
 $docker_image->pull($image);
 
-$docker_container->setHostConfig(['lnmp-data:/app']);
+$container_id = $docker_container
+  ->setHostConfig(['lnmp-data:/app'])
+  ->create($image, null, '/bin/sh');
 
-$output = $docker_container->create($image, null, '/bin/sh');
+$docker_container->start($container_id);
 
-$output = json_decode($output);
-
-$docker_container->start($output->Id);
-
-var_dump($docker_container->logs($output->Id));
-
+var_dump($docker_container->logs($container_id));
 ```
 
 ## PHP CaaS
