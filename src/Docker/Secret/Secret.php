@@ -4,13 +4,30 @@ declare(strict_types=1);
 
 namespace Docker\Secret;
 
+use Curl\Curl;
+
 class Secret
 {
+    const HEADER = ['Content-Type' => 'application/json;charset=utf-8'];
+
     const TYPE = 'secrets';
 
     const BASE_URL = '/'.self::TYPE;
 
-    // list
+    private static $curl;
+
+    private static $base_url;
+
+    public function __construct(Curl $curl, string $docker_host)
+    {
+        self::$base_url = $docker_host.self::BASE_URL;
+        self::$curl = $curl;
+    }
+
+    public function list()
+    {
+
+    }
 
     public function create(string $name, array $labels, string $data, array $drive)
     {
@@ -21,16 +38,20 @@ class Secret
             'Drive' => $drive,
         ];
 
-        $url = self::BASE_URL.'/create';
+        $url = self::$base_url.'/create';
 
-        $request = json_encode($data);
-
-        return $this->request($url, 'post', $request, $this->header);
+        return self::$curl->post($url, json_encode($data), self::HEADER);
     }
 
-    // inspect
+    public function inspect()
+    {
 
-    // delete
+    }
+
+    public function remove()
+    {
+
+    }
 
     public function update(string $id,
                            int $version,
@@ -46,18 +67,8 @@ class Secret
             'Drive' => $drive,
         ];
 
-        $url = self::BASE_URL.'/'.$id.'/update?'.http_build_query(['version' => $version]);
+        $url = self::$base_url.'/'.$id.'/update?'.http_build_query(['version' => $version]);
 
-        $request = json_encode($data);
-
-        return $this->request($url, 'post', $request, $this->header);
-    }
-
-    private function prune(): void
-    {
-    }
-
-    private function remove(): void
-    {
+        return self::$curl->post($url, json_encode($data), self::HEADER);
     }
 }

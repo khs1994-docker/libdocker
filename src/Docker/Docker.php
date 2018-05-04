@@ -52,6 +52,7 @@ class Docker extends ServiceContainer
     protected $providers = [
         Container\ServiceProvider::class,
         Image\ServiceProvider::class,
+        Network\ServiceProvider::class,
     ];
 
     public function __construct(array $option, Curl $curl)

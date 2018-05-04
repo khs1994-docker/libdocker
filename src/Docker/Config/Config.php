@@ -4,19 +4,32 @@ declare(strict_types=1);
 
 namespace Docker\Config;
 
-use Pimple\Container as ServiceContainer;
+use Curl\Curl;
 
-class Config extends ServiceContainer
+class Config
 {
-    protected $providers = [
+    const HEADER = [
+        'Content-Type' => 'application/json;charset=utf-8',
     ];
+
     const TYPE = 'configs';
 
     const BASE_URL = '/'.self::TYPE;
 
-    use Request;
+    private static $base_url;
 
-    // list
+    private static $curl;
+
+    public function __construct(Curl $curl, string $docker_host)
+    {
+        self::$base_url = $docker_host.self::BASE_URL;
+        self::$curl = $curl;
+    }
+
+    public function list()
+    {
+
+    }
 
     public function create(string $name, array $labels, string $data)
     {
@@ -26,16 +39,10 @@ class Config extends ServiceContainer
             'Data' => $data,
         ];
 
-        $url = self::BASE_URL.'/create';
+        $url = self::$base_url.'/create';
 
-        $request = json_encode($data);
-
-        return $this->request($url, 'post', $request, $this->header);
+        return self::$curl->post($url, json_encode($data), self::HEADER);
     }
-
-    // inspect
-
-    // delete
 
     public function update(string $id,
                            int $version,
@@ -51,16 +58,6 @@ class Config extends ServiceContainer
 
         $url = self::BASE_URL.'/'.$id.'/update'.http_build_query(['version' => $version]);
 
-        $request = json_encode($data);
-
-        return $this->request($url, 'post', $request);
-    }
-
-    private function prune(): void
-    {
-    }
-
-    private function remove(): void
-    {
+        return self::$curl->post($url, json_encode($data));
     }
 }

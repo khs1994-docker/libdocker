@@ -4,21 +4,42 @@ declare(strict_types=1);
 
 namespace Docker\Plugin;
 
+use Curl\Curl;
+
 class Plugin
 {
     const TYPE = 'plugins';
 
     const BASE_URL = '/'.self::TYPE;
 
-    // list
+    private static $base_url;
 
-    // TODO
+    private static $curl;
 
+    public function __construct(Curl $curl, string $docker_hsot)
+    {
+        self::$base_url = $docker_hsot.self::BASE_URL;
+        self::$curl = $curl;
+    }
+
+    public function list()
+    {
+
+    }
+
+
+    /**
+     * TODO
+     *
+     * @param string $remote
+     *
+     * @return mixed
+     */
     public function getPrivileges(string $remote)
     {
-        $url = self::BASE_URL.'/privileges?'.http_build_query(['remote' => $remote]);
+        $url = self::$base_url.'/privileges?'.http_build_query(['remote' => $remote]);
 
-        return $this->request($url);
+        return self::$curl->get($url);
     }
 
     public function install(): void
@@ -29,12 +50,10 @@ class Plugin
     {
         $url = self::BASE_URL.'/'.$name.'/json';
 
-        return $this->request($url);
+        return self::$curl->get($url);
     }
 
-    // remove
-
-    private function delete(): void
+    public function remove(): void
     {
     }
 

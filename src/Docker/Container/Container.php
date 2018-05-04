@@ -9,6 +9,10 @@ use Docker\Module\ContainerTrait;
 use Error;
 use Exception;
 
+/**
+ * Class Container
+ * @see https://docs.docker.com/engine/api/v1.37/#tag/Container
+ */
 class Container
 {
     use ContainerTrait;

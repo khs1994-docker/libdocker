@@ -4,11 +4,36 @@ declare(strict_types=1);
 
 namespace Docker\Network;
 
+use Curl\Curl;
+
+/**
+ * Class Network
+ *
+ * @see https://docs.docker.com/engine/api/v1.37/#tag/Network
+ */
 class Network
 {
+    const HEADER = [
+        'Content-Type' => 'application/json;charset=utf-8',
+    ];
     const TYPE = 'networks';
 
     const BASE_URL = '/'.self::TYPE;
+
+    private static $curl;
+
+    private static $base_url;
+
+    public function __construct(Curl $curl, string $docker_host)
+    {
+        self::$base_url = $docker_host.self::BASE_URL;
+        self::$curl = $curl;
+    }
+
+    public function list()
+    {
+
+    }
 
     public function inspect(string $id, bool $verbose = false, $scope = null)
     {
@@ -20,22 +45,34 @@ class Network
             'scope' => $scope,
         ];
 
-        $url = self::BASE_URL.'/'.$id.'/?'.http_build_query($data);
+        $url = self::$base_url.'/'.$id.'/?'.http_build_query($data);
 
-        return $this->request($url);
+        return self::$curl->get($url);
     }
 
-    // remove
+    public function remove()
+    {
 
-    // create
+    }
+
+    public function create(string $name)
+    {
+        $url = self::$base_url.'/create';
+
+        $request = [
+            'Name' => $name,
+        ];
+
+        return self::$curl->post($url, json_encode($request), self::HEADER);
+    }
 
     public function connect(string $id, string $container, array $endpointConfig)
     {
-        $url = self::BASE_URL.'/'.$id.'/connect';
+        $url = self::$base_url.'/'.$id.'/connect';
 
         $request = json_encode(array_merge(['Container' => $container], $endpointConfig));
 
-        return $this->request($url, 'post', $request);
+        return self::$curl->post($url, $request);
     }
 
     public function disConnect(string $id, string $container, bool $force = false)
@@ -45,16 +82,15 @@ class Network
             'container' => $container,
         ];
 
-        $url = self::BASE_URL.'/'.$id.'/disconnect';
+        $url = self::$base_url.'/'.$id.'/disconnect';
 
         $request = json_encode($data);
 
-        return $this->request($url, 'post', $request);
+        return self::$curl->post($url, $request);
     }
 
-    // prune
-
-    private function delete(): void
+    public function prune()
     {
+
     }
 }

@@ -8,6 +8,11 @@ use Curl\Curl;
 use Error;
 use Exception;
 
+/**
+ * Class Image
+ *
+ * @see https://docs.docker.com/engine/api/v1.37/#tag/Image
+ */
 class Image
 {
     const TYPE = 'images';
