@@ -290,13 +290,20 @@ class Container
      * @param string      $id ID      or name of the container
      * @param string|null $detachKeys
      *
-     * @return mixed
+     * @return string
+     * @throws Exception
      */
     public function start(string $id, string $detachKeys = null)
     {
         $url = self::$base_url.'/'.$id.'/start?'.http_build_query(['detachKeys' => $detachKeys]);
 
-        return self::$curl->post($url);
+        $output = self::$curl->post($url);
+
+        if ($output) {
+            throw new Exception(json_decode($output)->message, 404);
+        }
+
+        return $id;
     }
 
     /**
