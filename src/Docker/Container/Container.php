@@ -280,7 +280,8 @@ class Container
         $id = json_decode($json)->Id ?? null;
 
         if (null === $id) {
-            throw new Exception('Create Container Error', 500);
+
+            throw new Exception(json_decode($json)->message, 500);
         }
 
         return $id;
