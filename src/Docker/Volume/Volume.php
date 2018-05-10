@@ -16,7 +16,7 @@ class Volume
     private static $base_url;
 
     private static $header = [
-        'Content-Type' => 'application/json;charset=utf8'
+        'Content-Type' => 'application/json;charset=utf8',
     ];
 
     /**
@@ -36,7 +36,9 @@ class Volume
      * @param array $filters
      *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/VolumeList
+     *
      * @return mixed
+     *
      * @throws Exception
      */
     public function list(array $filters = null)
@@ -45,8 +47,7 @@ class Volume
             $filters_array = [];
 
             foreach ($filters as $k => $v) {
-
-                if (!in_array($k, ['dangling', 'driver', 'label', 'name'])) {
+                if (!in_array($k, ['dangling', 'driver', 'label', 'name'], true)) {
                     throw new Exception('Volume List Filters Not Found', 404);
                 }
 
@@ -56,7 +57,6 @@ class Volume
                     $filters_array[$k] = [$v];
                 }
             }
-
         } else {
             $filters_array = null;
         }
@@ -73,6 +73,7 @@ class Volume
      * @param array      $labels
      *
      * @return mixed
+     *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/VolumeCreate
      */
     public function create(string $name, string $drive = null, array $driveOpts = null, array $labels = null)
@@ -118,6 +119,7 @@ class Volume
      * @param array|null $filters
      *
      * @return mixed
+     *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/VolumePrune
      */
     public function prune(array $filters = null)
@@ -125,7 +127,6 @@ class Volume
         $filters_array = [];
 
         if ($filters) {
-
             foreach ($filters as $k => $v) {
                 if (is_array($v)) {
                     $filters_array[$k] = $v;
@@ -133,7 +134,6 @@ class Volume
                     $filters_array[$k] = [$v];
                 }
             }
-
         } else {
             $filters_array = null;
         }

@@ -3,8 +3,8 @@
 declare(strict_types=1);
 //require __DIR__.'/../../vendor/autoload.php';
 
-use PHPUnit\Framework\TestCase;
 use Docker\Docker;
+use PHPUnit\Framework\TestCase;
 
 class ImageTest extends TestCase
 {

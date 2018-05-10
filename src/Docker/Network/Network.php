@@ -54,7 +54,7 @@ class Network
 
         if ($filter) {
             foreach ($filter as $k => $v) {
-                if (!in_array($k, self::$filterArray)) {
+                if (!in_array($k, self::$filterArray, true)) {
                     throw new Exception('Network Filters Not Found');
                 }
 
@@ -220,7 +220,7 @@ class Network
         $filters_array = [];
         if ($filters) {
             foreach ($filters as $k => $v) {
-                if (!in_array($k, ['label', 'until'])) {
+                if (!in_array($k, ['label', 'until'], true)) {
                     throw new Exception('Network Prune Filters Not Found', 404);
                 }
             }

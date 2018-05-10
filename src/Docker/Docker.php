@@ -6,9 +6,9 @@ declare(strict_types=1);
 
 namespace Docker;
 
+use Curl\Curl;
 use Exception;
 use Pimple\Container as ServiceContainer;
-use Curl\Curl;
 
 /**
  * @property Swarm\Config\Config   $config

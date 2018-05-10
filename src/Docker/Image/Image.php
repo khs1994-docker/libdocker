@@ -89,12 +89,13 @@ class Image
         }
 
         foreach ($filters as $k => $v) {
-            if (!in_array($k, $filters_array_defined)) {
+            if (!in_array($k, $filters_array_defined, true)) {
                 throw new Exception($filters, 500);
             }
 
             if (is_array($v)) {
                 $filters_array["$k"] = $v;
+
                 continue;
             }
 

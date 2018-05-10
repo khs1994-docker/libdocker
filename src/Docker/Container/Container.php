@@ -198,12 +198,13 @@ class Container
         $filters_array = [];
 
         foreach ($filters as $filter => $v) {
-            if (!in_array($filter, $filters_array_define)) {
+            if (!in_array($filter, $filters_array_define, true)) {
                 throw new Exception($filter, 500);
             }
 
             if (is_array($v)) {
                 $filters_array[$filter] = $v;
+
                 continue;
             }
 
@@ -798,13 +799,13 @@ class Container
         $remove = ['filters_array', 'header', 'curl'];
 
         foreach ($array as $k => $v) {
-            if (in_array($k, $remove)) {
+            if (in_array($k, $remove, true)) {
                 unset($array[$k]);
             }
         }
 
         foreach ($array as $k => $v) {
-            if (null == $v) {
+            if (null === $v) {
                 $property = ucfirst($k);
                 $config[$property] = $this->$k;
             }
