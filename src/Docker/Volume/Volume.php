@@ -79,7 +79,12 @@ class Volume
     {
         $url = self::$base_url.'/create';
 
-        $data = [];
+        $data = [
+            'Name' => $name,
+            'Labels' => $labels,
+            'DriverOpts' => $driveOpts,
+            'Driver' => $drive,
+        ];
 
         return self::$curl->post($url, json_encode($data), self::$header);
     }
