@@ -2,7 +2,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/khs1994-docker/libdocker.svg?style=social&label=Stars)](https://github.com/khs1994-docker/libdocker) [![PHP from Packagist](https://img.shields.io/packagist/php-v/khs1994/docker.svg)](https://packagist.org/packages/khs1994/docker) [![GitHub (pre-)release](https://img.shields.io/github/release/khs1994-docker/libdocker/all.svg)](https://github.com/khs1994-docker/libdocker/releases) [![Build Status](https://travis-ci.org/khs1994-docker/libdocker.svg?branch=master)](https://travis-ci.org/khs1994-docker/libdocker) [![StyleCI](https://styleci.io/repos/119828346/shield?branch=master)](https://styleci.io/repos/119828346)
 
-A PHP library for the Docker Engine API 
+A PHP library for the Docker Engine API
 
 * [问题反馈](https://github.com/khs1994-docker/lnmp/issues/332)
 
@@ -59,6 +59,10 @@ $docker_container->start($container_id);
 
 var_dump($docker_container->logs($container_id));
 ```
+
+## Who use it?
+
+* [KhsCI](https://github.com/khs1994-php/khsci)
 
 ## PHP CaaS
 
