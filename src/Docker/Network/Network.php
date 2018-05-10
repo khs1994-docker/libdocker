@@ -234,6 +234,6 @@ class Network
             $filters_array = null;
         }
 
-        return $filters_array;
+        return json_encode($filters_array);
     }
 }
