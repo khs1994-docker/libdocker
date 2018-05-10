@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Docker\Secret;
+namespace Docker\Swarm\Secret;
 
 use Curl\Curl;
 
@@ -24,9 +24,8 @@ class Secret
         self::$curl = $curl;
     }
 
-    public function list()
+    public function list(): void
     {
-
     }
 
     public function create(string $name, array $labels, string $data, array $drive)
@@ -43,14 +42,12 @@ class Secret
         return self::$curl->post($url, json_encode($data), self::HEADER);
     }
 
-    public function inspect()
+    public function inspect(): void
     {
-
     }
 
-    public function remove()
+    public function remove(): void
     {
-
     }
 
     public function update(string $id,

@@ -8,7 +8,7 @@ use Curl\Curl;
 use Exception;
 
 /**
- * Class Network
+ * Class Network.
  *
  * @see https://docs.docker.com/engine/api/v1.37/#tag/Network
  */
@@ -32,7 +32,7 @@ class Network
         'label',
         'name',
         'scope',
-        'type'
+        'type',
     ];
 
     public function __construct(Curl $curl, string $docker_host)
@@ -45,6 +45,7 @@ class Network
      * @param array $filter
      *
      * @return array|null
+     *
      * @throws Exception
      */
     private static function parseListFilter(array $filter)
@@ -52,7 +53,6 @@ class Network
         $filter_array = [];
 
         if ($filter) {
-
             foreach ($filter as $k => $v) {
                 if (!in_array($k, self::$filterArray)) {
                     throw new Exception('Network Filters Not Found');
@@ -64,7 +64,6 @@ class Network
                     $filter_array[$k] = [$v];
                 }
             }
-
         } else {
             $filter_array = null;
         }
@@ -76,7 +75,9 @@ class Network
      * @param array $filter
      *
      * @return mixed
+     *
      * @throws Exception
+     *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkList
      */
     public function list(array $filter = null)
@@ -116,6 +117,7 @@ class Network
      * @param string $id
      *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkDelete
+     *
      * @return mixed
      */
     public function remove(string $id)
@@ -126,7 +128,7 @@ class Network
     }
 
     /**
-     * TODO
+     * TODO.
      *
      * @param string $name
      *
@@ -146,13 +148,14 @@ class Network
     }
 
     /**
-     * TODO
+     * TODO.
      *
      * @param string $id
      * @param string $container
      * @param array  $endpointConfig
      *
      * @return mixed
+     *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkConnect
      */
     public function connect(string $id, string $container, array $endpointConfig)
@@ -170,6 +173,7 @@ class Network
      * @param bool   $force
      *
      * @return mixed
+     *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkDisconnect
      */
     public function disConnect(string $id, string $container, bool $force = false)
@@ -190,7 +194,9 @@ class Network
      * @param array|null $filters
      *
      * @return mixed
+     *
      * @throws Exception
+     *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkPrune
      */
     public function prune(array $filters = null)
@@ -206,13 +212,13 @@ class Network
      * @param array $filters
      *
      * @return array|null
+     *
      * @throws Exception
      */
     private static function checkPruneFilter(array $filters)
     {
         $filters_array = [];
         if ($filters) {
-
             foreach ($filters as $k => $v) {
                 if (!in_array($k, ['label', 'until'])) {
                     throw new Exception('Network Prune Filters Not Found', 404);
@@ -224,7 +230,6 @@ class Network
             } else {
                 $filters_array[$k] = [$v];
             }
-
         } else {
             $filters_array = null;
         }

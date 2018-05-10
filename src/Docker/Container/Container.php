@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpUnusedPrivateFieldInspection */
+<?php
+
+/** @noinspection PhpUnusedPrivateFieldInspection */
 
 declare(strict_types=1);
 
@@ -9,7 +11,8 @@ use Error;
 use Exception;
 
 /**
- * Class Container
+ * Class Container.
+ *
  * @see https://docs.docker.com/engine/api/v1.37/#tag/Container
  */
 class Container
@@ -27,6 +30,7 @@ class Container
 
     /**
      * @var array
+     *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/ContainerList
      */
     private static $filters_array_list = [
@@ -49,6 +53,7 @@ class Container
 
     /**
      * @var array
+     *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/ContainerPrune
      */
     private static $filters_array_prune = [
@@ -182,7 +187,6 @@ class Container
      */
     public static function checkFilter(string $type, array $filters)
     {
-
         $filters_array_define = 'filters_array_'.$type;
 
         try {
@@ -260,6 +264,7 @@ class Container
      * @param array|null  $cmd
      *
      * @return mixed
+     *
      * @throws Exception
      */
     public function create(string $image, string $name = null, array $cmd = null)
@@ -280,7 +285,6 @@ class Container
         $id = json_decode($json)->Id ?? null;
 
         if (null === $id) {
-
             throw new Exception(json_decode($json)->message, 500);
         }
 
@@ -288,10 +292,11 @@ class Container
     }
 
     /**
-     * @param string      $id ID      or name of the container
+     * @param string      $id         ID      or name of the container
      * @param string|null $detachKeys
      *
      * @return string
+     *
      * @throws Exception
      */
     public function start(string $id, string $detachKeys = null)
@@ -621,6 +626,7 @@ class Container
      * @param array $filters
      *
      * @return mixed
+     *
      * @throws Exception
      */
     public function prune(array $filters = [])

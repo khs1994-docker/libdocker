@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Docker\Config;
+namespace Docker\Swarm\Config;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;

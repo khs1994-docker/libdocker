@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpUnusedPrivateFieldInspection */
+<?php
+
+/** @noinspection PhpUnusedPrivateFieldInspection */
 
 declare(strict_types=1);
 
@@ -9,7 +11,7 @@ use Error;
 use Exception;
 
 /**
- * Class Image
+ * Class Image.
  *
  * @see https://docs.docker.com/engine/api/v1.37/#tag/Image
  */

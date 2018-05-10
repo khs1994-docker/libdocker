@@ -22,14 +22,12 @@ class Plugin
         self::$curl = $curl;
     }
 
-    public function list()
+    public function list(): void
     {
-
     }
 
-
     /**
-     * TODO
+     * TODO.
      *
      * @param string $remote
      *

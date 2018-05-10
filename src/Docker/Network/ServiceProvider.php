@@ -9,7 +9,7 @@ use Pimple\ServiceProviderInterface;
 
 class ServiceProvider implements ServiceProviderInterface
 {
-    public function register(Container $pimple)
+    public function register(Container $pimple): void
     {
         $pimple['network'] = function ($app) {
             return new Network($app['curl'], $app['docker_host']);

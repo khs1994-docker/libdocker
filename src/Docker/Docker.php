@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpMissingParentConstructorInspection */
+<?php
+
+/** @noinspection PhpMissingParentConstructorInspection */
 
 declare(strict_types=1);
 
@@ -9,13 +11,12 @@ use Pimple\Container as ServiceContainer;
 use Curl\Curl;
 
 /**
- * @property Config\Config         $config
+ * @property Swarm\Config\Config   $config
  * @property Container\Container   $container
  * @property Image\Image           $image
- * @property Label\Label           $label
  * @property Network\Network       $network
  * @property Plugin\Plugin         $plugin
- * @property Secret\Secret         $secret
+ * @property Swarm\Secret\Secret   $secret
  * @property Swarm\Swarm           $swarm
  * @property Swarm\Node\Node       $node
  * @property Swarm\Service\Service $service
@@ -53,6 +54,7 @@ class Docker extends ServiceContainer
         Container\ServiceProvider::class,
         Image\ServiceProvider::class,
         Network\ServiceProvider::class,
+        Volume\ServiceProvider::class,
     ];
 
     public function __construct(array $option, Curl $curl)
@@ -102,7 +104,7 @@ class Docker extends ServiceContainer
     {
         return [
             'DOCKER_HOST' => $docker_host,
-            'DOCKER_TLS_VERIFY' => (int)$docker_tls_verify,
+            'DOCKER_TLS_VERIFY' => (int) $docker_tls_verify,
             'DOCKER_CERT_PATH' => $docker_cert_path,
             'DOCKER_USERNAME' => $docker_username,
             'DOCKER_PASSWORD' => $docker_password,
@@ -144,6 +146,9 @@ class Docker extends ServiceContainer
         throw new Exception("Command $name not found", 404);
     }
 
+    /**
+     * @return Swarm\Config\Config
+     */
     public function config()
     {
         return $this['config'];
@@ -190,7 +195,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return Secret\Secret
+     * @return Swarm\Secret\Secret
      */
     public function secret()
     {

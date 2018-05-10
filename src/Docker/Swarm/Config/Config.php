@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Docker\Config;
+namespace Docker\Swarm\Config;
 
 use Curl\Curl;
 
@@ -26,9 +26,8 @@ class Config
         self::$curl = $curl;
     }
 
-    public function list()
+    public function list(): void
     {
-
     }
 
     public function create(string $name, array $labels, string $data)
