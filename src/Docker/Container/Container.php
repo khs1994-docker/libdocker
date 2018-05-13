@@ -293,7 +293,7 @@ class Container
     }
 
     /**
-     * @param string      $id         ID      or name of the container
+     * @param string      $id ID      or name of the container
      * @param string|null $detachKeys
      *
      * @return string
@@ -750,7 +750,7 @@ class Container
     }
 
     /**
-     * @param array|null  $binds
+     * @param array|null  $binds ["$unique_id:$work_dir", 'tmp:/tmp']
      * @param string|null $networkMode
      * @param array|null  $portBindings
      * @param array|null  $restartPolicy
@@ -1031,15 +1031,9 @@ class Container
      *
      * @return Container
      */
-    public function setEnv(array $env)
+    public function setEnv(array $env = ['env=value', 'env2=value2'])
     {
-        $envArray = [];
-
-        foreach ($env as $k => $v) {
-            $envArray[] = "$k=$v";
-        }
-
-        $this->env = $envArray;
+        $this->env = $env;
 
         return $this;
     }
@@ -1133,11 +1127,11 @@ class Container
     }
 
     /**
-     * @param array|string $entrypoint
+     * @param array $entrypoint
      *
      * @return Container
      */
-    public function setEntrypoint($entrypoint)
+    public function setEntrypoint(?array $entrypoint = ['/bin/sh', '-c'])
     {
         $this->entrypoint = $entrypoint;
 
@@ -1217,7 +1211,7 @@ class Container
      *
      * @return Container
      */
-    public function setLabels(array $labels)
+    public function setLabels(array $labels = ['com.khs1994.docker' => 'value'])
     {
         $this->labels = $labels;
 
