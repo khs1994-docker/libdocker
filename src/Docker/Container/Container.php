@@ -268,7 +268,7 @@ class Container
      *
      * @throws Exception
      */
-    public function create(string $image, string $name = null, array $cmd = null)
+    public function create(string $image, ?string $name = null, ?array $cmd = null)
     {
         $url = self::$base_url.'/'.__FUNCTION__.'?'.http_build_query(['name' => $name]);
 
@@ -796,7 +796,7 @@ class Container
 
         $config = [];
 
-        $remove = ['filters_array', 'header', 'curl'];
+        $remove = ['filters_array_list', 'filters_array_prune', 'header', 'curl', 'base_url'];
 
         foreach ($array as $k => $v) {
             if (in_array($k, $remove, true)) {
@@ -805,10 +805,8 @@ class Container
         }
 
         foreach ($array as $k => $v) {
-            if (null === $v) {
-                $property = ucfirst($k);
-                $config[$property] = $this->$k;
-            }
+            $property = ucfirst($k);
+            $config[$property] = $this->$k;
         }
 
         $data = array_filter(array_merge($data, $config));
@@ -1027,11 +1025,11 @@ class Container
     }
 
     /**
-     * @param array $env
+     * @param array|null $env
      *
      * @return Container
      */
-    public function setEnv(array $env = ['env=value', 'env2=value2'])
+    public function setEnv(?array $env = ['env=value', 'env2=value2'])
     {
         $this->env = $env;
 
@@ -1207,11 +1205,11 @@ class Container
     }
 
     /**
-     * @param array $labels
+     * @param array|null $labels
      *
      * @return Container
      */
-    public function setLabels(array $labels = ['com.khs1994.docker' => 'value'])
+    public function setLabels(?array $labels = ['com.khs1994.docker' => 'value'])
     {
         $this->labels = $labels;
 
