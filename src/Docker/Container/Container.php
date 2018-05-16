@@ -809,6 +809,12 @@ class Container
             $config[$property] = $this->$k;
         }
 
+        foreach ($array as $k => $v) {
+            if (!in_array($k, $remove, true)) {
+                $this->$k = null;
+            }
+        }
+
         $data = array_filter(array_merge($data, $config));
 
         $this->inspect = $data;
