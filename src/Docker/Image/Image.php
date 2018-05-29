@@ -23,6 +23,8 @@ class Image
 
     private static $header = ['content-type' => 'application/json;charset=utf-8'];
 
+    private static $docker_host;
+
     private static $base_url;
 
     private static $curl;
@@ -64,6 +66,7 @@ class Image
 
     public function __construct(Curl $curl, $docker_host)
     {
+        self::$docker_host = $docker_host;
         self::$base_url = $docker_host.self::BASE_URL;
         self::$curl = $curl;
     }
@@ -138,35 +141,77 @@ class Image
 
     /**
      * @param string      $gitAddress
-     * @param string      $tag
-     * @param string      $dockerfile
-     * @param array       $other
      * @param string|null $auth
+     *                                 <pre>
+     *                                 {
+     *                                 "docker.example.com": {
+     *                                 "username": "janedoe",
+     *                                 "password": "hunter2"
+     *                                 },
+     *                                 "https://index.docker.io/v1/": {
+     *                                 "username": "mobydock",
+     *                                 "password": "conta1n3rize14"
+     *                                 }
+     *                                 }
+     *                                 </pre>
+     *
+     * @param string      $tag         name:tag
+     * @param string      $dockerfile
+     * @param string|null $extrahosts
+     * @param bool        $q
+     * @param bool        $nocache
+     * @param string|null $cachefrom
+     * @param string|null $pull
+     * @param bool        $rm
+     * @param bool        $forcerm
+     * @param array       $buildargs   ['a'=>'b']
+     * @param array       $labels      ['a'=>'b']
+     * @param string|null $networkmode bridge, host, none, and container:<name|id>
+     * @param string      $platform
      *
      * @return mixed
      */
-    public function build(string $gitAddress,
+    public function build(?string $gitAddress,
+                          ?string $auth,
                           string $tag,
                           string $dockerfile = 'Dockerfile',
-                          array $other = [],
-                          string $auth = null)
+                          string $extrahosts = null,
+                          bool $q = false,
+                          bool $nocache = false,
+                          string $cachefrom = null,
+                          string $pull = null,
+                          bool $rm = true,
+                          bool $forcerm = false,
+                          array $buildargs = null,
+                          array $labels = null,
+                          string $networkmode = null,
+                          string $platform = null)
     {
         $data = [
             'dockerfile' => $dockerfile,
             't' => $tag,
+            'extrahosts' => $extrahosts,
             'remote' => $gitAddress,
+            'q' => $q,
+            'nocache' => $nocache,
+            'cachefrom' => $cachefrom,
+            'pull' => $pull,
+            'rm' => $rm,
+            'forcerm' => $forcerm,
+            'buildargs' => json_encode($buildargs),
+            'labels' => json_encode($labels),
+            'networkmode' => $networkmode,
+            'platform' => $platform
         ];
 
-        $data = array_merge($data, $other);
-
-        $url = self::$base_url.'/build?'.http_build_query($data);
+        $url = self::$docker_host.'/build?'.http_build_query(array_filter($data));
 
         $header = [];
 
         $header['Content-type'] = 'application/x-tar';
 
         if ($auth) {
-            $header['X-Registry-Config'] = $auth;
+            $header['X-Registry-Config'] = base64_encode($auth);
         }
 
         return self::$curl->post($url, null, $header);

@@ -19,6 +19,8 @@ $ composer require khs1994/docker
 For latest commit version:
 
 ```bash
+$ composer config minimum-stability dev
+
 $ composer require khs1994/docker @dev
 ```
 

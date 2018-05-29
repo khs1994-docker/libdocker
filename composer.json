@@ -1,6 +1,6 @@
 {
   "name": "khs1994/docker",
-  "description": "A PHP library for the Docker Engine API ",
+  "description": "A PHP Library for the Docker Engine API",
   "keywords": [
     "sdk",
     "api"
@@ -21,12 +21,13 @@
   "require": {
     "php": ">=7.1",
     "ext-json": "*",
+    "lib-curl": "*",
+    "ext-curl": "*",
     "pimple/pimple": "~3.0",
     "khs1994/curl": "dev-master"
   },
   "require-dev": {
-    "ext-PDO": "*",
-    "phpunit/phpunit": "^7.0"
+    "phpunit/phpunit": "^7.1"
   },
   "config": {
     "platform": {
@@ -48,6 +49,8 @@
       "Docker\\Tests\\": "tests/Docker/"
     }
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "extra": {
     "branch-alias": {
       "dev-master": "18.06-dev"
