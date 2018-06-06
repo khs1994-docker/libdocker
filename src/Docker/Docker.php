@@ -63,6 +63,9 @@ class Docker extends ServiceContainer
 
         if (1 === $option['DOCKER_TLS_VERIFY']) {
             $curl->docker($option['DOCKER_CERT_PATH']);
+            if ('https://' !== substr($this['docker_host'], 0, 8)) {
+                $this['docker_host'] = 'https://'.$option['DOCKER_HOST'];
+            }
         }
 
         ini_set('max_execution_time', '0');
