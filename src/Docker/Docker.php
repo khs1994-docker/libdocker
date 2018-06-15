@@ -11,18 +11,20 @@ use Exception;
 use Pimple\Container as ServiceContainer;
 
 /**
- * @property Swarm\Config\Config   $config
- * @property Container\Container   $container
- * @property Image\Image           $image
- * @property Network\Network       $network
- * @property Plugin\Plugin         $plugin
- * @property Swarm\Secret\Secret   $secret
- * @property Swarm\Swarm           $swarm
- * @property Swarm\Node\Node       $node
- * @property Swarm\Service\Service $service
- * @property System\System         $system
- * @property Task\Task             $task
- * @property Volume\Volume         $volume
+ * @property Swarm\Config\Client  $config
+ * @property Container\Container  $container
+ * @property Image\Image          $image
+ * @property Network\Network      $network
+ * @property Plugin\Client        $plugin
+ * @property Swarm\Secret\Client  $secret
+ * @property Swarm\Client         $swarm
+ * @property Swarm\Node\Client    $node
+ * @property Swarm\Service\Client $service
+ * @property System\Client        $system
+ * @property Task\Client          $task
+ * @property Volume\Client        $volume
+ * @property Curl                 $curl
+ * @property string               $docker_host
  */
 class Docker extends ServiceContainer
 {
@@ -54,6 +56,14 @@ class Docker extends ServiceContainer
         Container\ServiceProvider::class,
         Image\ServiceProvider::class,
         Network\ServiceProvider::class,
+        Plugin\ServiceProvider::class,
+        Swarm\Config\ServiceProvider::class,
+        Swarm\Node\ServiceProvider::class,
+        Swarm\Secret\ServiceProvider::class,
+        Swarm\Service\ServiceProvider::class,
+        Swarm\ServiceProvider::class,
+        System\ServiceProvider::class,
+        Task\ServiceProvider::class,
         Volume\ServiceProvider::class,
     ];
 
@@ -150,7 +160,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return Swarm\Config\Config
+     * @return Swarm\Config\Client
      */
     public function config()
     {
@@ -190,7 +200,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return Plugin\Plugin
+     * @return Plugin\Client
      */
     public function plugin()
     {
@@ -198,7 +208,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return Swarm\Secret\Secret
+     * @return Swarm\Secret\Client
      */
     public function secret()
     {
@@ -214,7 +224,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return Swarm\Swarm
+     * @return Swarm\Client
      */
     public function swarm()
     {
@@ -222,7 +232,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return System\System
+     * @return System\Client
      */
     public function system()
     {
@@ -230,7 +240,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return Task\Task;
+     * @return Task\Client;
      */
     public function task()
     {
@@ -238,7 +248,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return Volume\Volume
+     * @return Volume\Client
      */
     public function volume()
     {

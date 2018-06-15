@@ -293,7 +293,7 @@ class Container
     }
 
     /**
-     * @param string      $id ID      or name of the container
+     * @param string      $id         ID      or name of the container
      * @param string|null $detachKeys
      *
      * @return string
@@ -318,6 +318,8 @@ class Container
      * @param bool   $stream
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function stats(string $id, bool $stream = false)
     {
@@ -331,6 +333,8 @@ class Container
      * @param bool   $size
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function inspect(string $id, bool $size = false)
     {
@@ -344,6 +348,8 @@ class Container
      * @param string $ps_args
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function top(string $id, string $ps_args = '-ef')
     {
@@ -363,6 +369,8 @@ class Container
      * @param string $tail
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function logs(string $id,
                          bool $follow = false,
@@ -392,6 +400,8 @@ class Container
      * @param string $id
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function changes(string $id)
     {
@@ -404,6 +414,8 @@ class Container
      * @param string $id
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function export(string $id)
     {
@@ -420,6 +432,8 @@ class Container
      * @param int    $width
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function resize(string $id, int $height, int $width)
     {
@@ -437,6 +451,8 @@ class Container
      * @param int    $waitTime
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function stop(string $id, int $waitTime = 0)
     {
@@ -450,6 +466,8 @@ class Container
      * @param int    $waitTime
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function restart(string $id, int $waitTime = 0)
     {
@@ -463,6 +481,8 @@ class Container
      * @param string $signal
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function kill(string $id, string $signal = 'SIGKILL')
     {
@@ -478,6 +498,8 @@ class Container
      * @param array  $request_body
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function update(string $id, array $request_body = [])
     {
@@ -492,6 +514,8 @@ class Container
      * @param string $name
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function rename(string $id, string $name)
     {
@@ -504,6 +528,8 @@ class Container
      * @param string $id
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function pause(string $id)
     {
@@ -516,6 +542,8 @@ class Container
      * @param string $id
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function unpause(string $id)
     {
@@ -536,6 +564,8 @@ class Container
      * @param bool        $stderr
      *
      * @return mixed
+     *
+     * @throws Exception
      *
      * @see https://docs.docker.com/engine/api/v1.35/#operation/ContainerAttach
      */
@@ -568,6 +598,8 @@ class Container
      * @param string $condition
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function wait(string $id, string $condition = 'not-running')
     {
@@ -583,6 +615,8 @@ class Container
      * @param bool   $link
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function remove(string $id, bool $v = false, bool $force = false, bool $link = false)
     {
@@ -603,6 +637,8 @@ class Container
      * @param string $path
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function archive(string $id, string $path)
     {
@@ -648,6 +684,8 @@ class Container
      * @param bool   $link
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function delete(string $id, bool $v = false, bool $force = false, bool $link = false)
     {
@@ -673,6 +711,8 @@ class Container
      * @param array      $other
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function createExec(string $id,
                                array $cmd = null,
@@ -701,6 +741,8 @@ class Container
      * @param bool   $tty
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function startExec(string $id, bool $detach = false, bool $tty = false)
     {
@@ -724,6 +766,8 @@ class Container
      * @param int    $width
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function resizeExec(string $id, int $height, int $width)
     {
@@ -741,6 +785,8 @@ class Container
      * @param string $id
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function inspectExec(string $id)
     {
@@ -750,7 +796,7 @@ class Container
     }
 
     /**
-     * @param array|null  $binds ["$unique_id:$work_dir", 'tmp:/tmp']
+     * @param array|null  $binds         ["$unique_id:$work_dir", 'tmp:/tmp']
      * @param string|null $networkMode
      * @param array|null  $portBindings
      * @param array|null  $restartPolicy

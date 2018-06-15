@@ -6,7 +6,7 @@ namespace Docker\Plugin;
 
 use Curl\Curl;
 
-class Plugin
+class Client
 {
     const TYPE = 'plugins';
 
@@ -32,6 +32,8 @@ class Plugin
      * @param string $remote
      *
      * @return mixed
+     *
+     * @throws \Exception
      */
     public function getPrivileges(string $remote)
     {
@@ -44,6 +46,13 @@ class Plugin
     {
     }
 
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
     public function inspect(string $name)
     {
         $url = self::BASE_URL.'/'.$name.'/json';

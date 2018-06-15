@@ -4,6 +4,12 @@ declare(strict_types=1);
 
 namespace Docker\Plugin;
 
-class ServiceProvider
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+
+class ServiceProvider implements ServiceProviderInterface
 {
+    public function register(Container $pimple): void
+    {
+    }
 }

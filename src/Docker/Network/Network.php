@@ -96,6 +96,8 @@ class Network
      *
      * @return mixed
      *
+     * @throws Exception
+     *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkInspect
      */
     public function inspect(string $id, bool $verbose = false, string $scope = null)
@@ -116,9 +118,11 @@ class Network
     /**
      * @param string $id
      *
-     * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkDelete
-     *
      * @return mixed
+     *
+     * @throws Exception
+     *
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkDelete
      */
     public function remove(string $id)
     {
@@ -133,6 +137,8 @@ class Network
      * @param string $name
      *
      * @return mixed
+     *
+     * @throws Exception
      *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkCreate
      */
@@ -156,6 +162,8 @@ class Network
      *
      * @return mixed
      *
+     * @throws Exception
+     *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkConnect
      */
     public function connect(string $id, string $container, array $endpointConfig)
@@ -173,6 +181,8 @@ class Network
      * @param bool   $force
      *
      * @return mixed
+     *
+     * @throws Exception
      *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkDisconnect
      */

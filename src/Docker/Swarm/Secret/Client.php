@@ -6,7 +6,7 @@ namespace Docker\Swarm\Secret;
 
 use Curl\Curl;
 
-class Secret
+class Client
 {
     const HEADER = ['Content-Type' => 'application/json;charset=utf-8'];
 

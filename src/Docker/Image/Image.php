@@ -154,7 +154,6 @@ class Image
      *                                 }
      *                                 }
      *                                 </pre>
-     *
      * @param string      $tag         name:tag
      * @param string      $dockerfile
      * @param string|null $extrahosts
@@ -170,6 +169,8 @@ class Image
      * @param string      $platform
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function build(?string $gitAddress,
                           ?string $auth,
@@ -201,7 +202,7 @@ class Image
             'buildargs' => json_encode($buildargs),
             'labels' => json_encode($labels),
             'networkmode' => $networkmode,
-            'platform' => $platform
+            'platform' => $platform,
         ];
 
         $url = self::$docker_host.'/build?'.http_build_query(array_filter($data));
@@ -219,6 +220,8 @@ class Image
 
     /**
      * @return mixed
+     *
+     * @throws Exception
      */
     public function deleteBuildCache()
     {
@@ -233,6 +236,8 @@ class Image
      * @param string $auth
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     private function create(array $queryParameters, string $request = null, string $auth = null)
     {
@@ -284,6 +289,8 @@ class Image
      * @param string|null $request
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function import(string $fromSrc,
                            string $repo = null,
@@ -308,6 +315,8 @@ class Image
      * @param string $name
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function inspect(string $name)
     {
@@ -320,6 +329,8 @@ class Image
      * @param string $name
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function history(string $name)
     {
@@ -334,6 +345,8 @@ class Image
      * @param string $auth
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function push(string $name, string $tag = 'latest', string $auth)
     {
@@ -354,6 +367,8 @@ class Image
      * @param string $tag
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function tag(string $name, string $repo, string $tag)
     {
@@ -373,6 +388,8 @@ class Image
      * @param bool   $noprune
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function remove(string $name, bool $force = false, bool $noprune = false)
     {
@@ -429,6 +446,8 @@ class Image
      * @param array  $request_body
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function commit(string $container,
                            string $repo,
@@ -460,6 +479,8 @@ class Image
      * @param string $name
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function export(string $name)
     {
@@ -472,6 +493,8 @@ class Image
      * @param array $names
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function exports(array $names)
     {
@@ -485,6 +508,8 @@ class Image
      * @param string $tar
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function load(bool $quiet = false, string $tar)
     {
@@ -520,6 +545,8 @@ class Image
      * @param bool   $noprune
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function delete(string $name, bool $force, bool $noprune)
     {

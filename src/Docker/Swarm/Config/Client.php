@@ -6,7 +6,7 @@ namespace Docker\Swarm\Config;
 
 use Curl\Curl;
 
-class Config
+class Client
 {
     const HEADER = [
         'Content-Type' => 'application/json;charset=utf-8',

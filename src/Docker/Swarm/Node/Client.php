@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Docker\Swarm\Node;
 
-class Node
+class Client
 {
     const BASE_URL = '/nodes';
 

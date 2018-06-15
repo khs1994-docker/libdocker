@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Docker\Swarm\Service;
 
-class Service
+class Client
 {
     const BASE_URL = '/services';
 

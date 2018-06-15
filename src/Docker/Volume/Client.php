@@ -7,7 +7,7 @@ namespace Docker\Volume;
 use Curl\Curl;
 use Exception;
 
-class Volume
+class Client
 {
     const BASE_URL = '/volumes';
 
@@ -74,6 +74,8 @@ class Volume
      *
      * @return mixed
      *
+     * @throws Exception
+     *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/VolumeCreate
      */
     public function create(string $name, string $drive = null, array $driveOpts = null, array $labels = null)
@@ -94,6 +96,8 @@ class Volume
      * @param string $name
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function inspect(string $name)
     {
@@ -107,6 +111,8 @@ class Volume
      * @param bool   $force
      *
      * @return mixed
+     *
+     * @throws Exception
      */
     public function remove(string $name, bool $force = false)
     {
@@ -119,6 +125,8 @@ class Volume
      * @param array|null $filters
      *
      * @return mixed
+     *
+     * @throws Exception
      *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/VolumePrune
      */

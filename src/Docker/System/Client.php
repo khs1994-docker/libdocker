@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Docker\System;
 
-class System
+class Client
 {
     public function checkAuthConfig($username, $password, $email, $serverAddress)
     {
