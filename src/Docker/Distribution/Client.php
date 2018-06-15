@@ -6,6 +6,11 @@ namespace Docker\Distribution;
 
 use Docker\DockerTrait;
 
+/**
+ * Class Client.
+ *
+ * @see https://docs.docker.com/engine/api/v1.37/#tag/Distribution
+ */
 class Client
 {
     use DockerTrait;

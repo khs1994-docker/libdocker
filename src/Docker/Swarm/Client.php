@@ -6,6 +6,11 @@ namespace Docker\Swarm;
 
 use Curl\Curl;
 
+/**
+ * Class Client.
+ *
+ * @see https://docs.docker.com/engine/api/v1.37/#tag/Swarm
+ */
 class Client
 {
     const BASE_URL = '/swarm';
@@ -146,25 +151,5 @@ class Client
         $request = json_encode(['UnlockKey' => $unlockKey]);
 
         return $this->curl->post($url, $request, self::$header);
-    }
-
-    private function list(): void
-    {
-    }
-
-    private function create(): void
-    {
-    }
-
-    private function prune(): void
-    {
-    }
-
-    private function remove(): void
-    {
-    }
-
-    private function delete(): void
-    {
     }
 }

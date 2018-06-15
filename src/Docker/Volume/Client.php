@@ -7,6 +7,11 @@ namespace Docker\Volume;
 use Curl\Curl;
 use Exception;
 
+/**
+ * Class Client.
+ *
+ * @see https://docs.docker.com/engine/api/v1.37/#tag/Volume
+ */
 class Client
 {
     const BASE_URL = '/volumes';

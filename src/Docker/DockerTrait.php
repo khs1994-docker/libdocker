@@ -12,6 +12,10 @@ trait DockerTrait
 
     private $url;
 
+    private static $header = [
+        'Content-Type' => 'application/json;charset=utf8',
+    ];
+
     /**
      * Volume constructor.
      *

@@ -6,6 +6,11 @@ namespace Docker\Plugin;
 
 use Curl\Curl;
 
+/**
+ * Class Client.
+ *
+ * @see https://docs.docker.com/engine/api/v1.37/#tag/Plugin
+ */
 class Client
 {
     const TYPE = 'plugins';

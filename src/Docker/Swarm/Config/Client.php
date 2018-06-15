@@ -6,31 +6,57 @@ namespace Docker\Swarm\Config;
 
 use Curl\Curl;
 
+/**
+ * Class Client.
+ *
+ * @see https://docs.docker.com/engine/api/v1.37/#tag/Config
+ */
 class Client
 {
-    const HEADER = [
+    private $header = [
         'Content-Type' => 'application/json;charset=utf-8',
     ];
 
-    const TYPE = 'configs';
+    const BASE_URL = '/configs';
 
-    const BASE_URL = '/'.self::TYPE;
+    private $url;
 
-    private static $base_url;
-
-    private static $curl;
+    private $curl;
 
     public function __construct(Curl $curl, string $docker_host)
     {
-        self::$base_url = $docker_host.self::BASE_URL;
-        self::$curl = $curl;
+        $this->url = $docker_host.self::BASE_URL;
+        $this->curl = $curl;
     }
 
-    public function list(): void
+    /**
+     * @param array $filters
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function list(array $filters = [])
     {
+        $data = [
+            'filters' => '',
+        ];
+
+        $url = $this->url.'?'.http_build_query($data);
+
+        return $this->curl->get($url);
     }
 
-    public function create(string $name, array $labels, string $data)
+    /**
+     * @param string $name
+     * @param array  $labels
+     * @param string $data
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function create(string $name, array $labels = [], string $data)
     {
         $data = [
             'Name' => $name,
@@ -38,15 +64,54 @@ class Client
             'Data' => $data,
         ];
 
-        $url = self::$base_url.'/create';
+        $url = $this->url.'/create';
 
-        return self::$curl->post($url, json_encode($data), self::HEADER);
+        return $this->curl->post($url, json_encode($data), $this->header);
     }
 
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function inspect(string $id)
+    {
+        $url = $this->url.'/'.$id;
+
+        return $this->curl->get($url);
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function delete(string $id)
+    {
+        $url = $this->url.'/'.$id;
+
+        return $this->curl->delete($url);
+    }
+
+    /**
+     * @param string $id
+     * @param int    $version
+     * @param string $name
+     * @param array  $labels
+     * @param string $data
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
     public function update(string $id,
                            int $version,
                            string $name,
-                           array $labels,
+                           array $labels = [],
                            string $data)
     {
         $data = [
@@ -55,8 +120,8 @@ class Client
             'Data' => $data,
         ];
 
-        $url = self::BASE_URL.'/'.$id.'/update'.http_build_query(['version' => $version]);
+        $url = $this->url.'/'.$id.'/update?'.http_build_query(['version' => $version]);
 
-        return self::$curl->post($url, json_encode($data));
+        return $this->curl->post($url, json_encode($data));
     }
 }

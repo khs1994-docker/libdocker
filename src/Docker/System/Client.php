@@ -6,6 +6,11 @@ namespace Docker\System;
 
 use Curl\Curl;
 
+/**
+ * Class Client.
+ *
+ * @see https://docs.docker.com/engine/api/v1.37/#tag/System
+ */
 class Client
 {
     private $curl;
@@ -67,6 +72,22 @@ class Client
     public function getVersion()
     {
         return $this->curl->get($this->url.'/version');
+    }
+
+    /**
+     * @return string
+     *
+     * @throws \Exception
+     */
+    public function getArch()
+    {
+        $version = json_decode($this->getVersion());
+
+        $os = $version->Os;
+
+        $arch = $version->Arch;
+
+        return $os.$arch;
     }
 
     /**

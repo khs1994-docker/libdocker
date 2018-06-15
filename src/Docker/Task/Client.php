@@ -6,6 +6,11 @@ namespace Docker\Task;
 
 use Curl\Curl;
 
+/**
+ * Class Client.
+ *
+ * @see https://docs.docker.com/engine/api/v1.37/#tag/Task
+ */
 class Client
 {
     const BASE_URL = '/tasks';
@@ -44,6 +49,8 @@ class Client
      * @return mixed
      *
      * @throws \Exception
+     *
+     * @see
      */
     public function getLog(string $id,
                            bool $details = false,

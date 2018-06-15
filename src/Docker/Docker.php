@@ -25,6 +25,8 @@ use Pimple\Container as ServiceContainer;
  * @property Volume\Client        $volume
  * @property Curl                 $curl
  * @property string               $docker_host
+ *
+ * @see https://docs.docker.com/engine/api/v1.37/
  */
 class Docker extends ServiceContainer
 {

@@ -6,6 +6,11 @@ namespace Docker\Swarm\Secret;
 
 use Curl\Curl;
 
+/**
+ * Class Client.
+ *
+ * @see https://docs.docker.com/engine/api/v1.37/#tag/Secret
+ */
 class Client
 {
     const HEADER = ['Content-Type' => 'application/json;charset=utf-8'];
@@ -28,6 +33,16 @@ class Client
     {
     }
 
+    /**
+     * @param string $name
+     * @param array  $labels
+     * @param string $data
+     * @param array  $drive
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
     public function create(string $name, array $labels, string $data, array $drive)
     {
         $data = [
@@ -46,10 +61,22 @@ class Client
     {
     }
 
-    public function remove(): void
+    public function delete(): void
     {
     }
 
+    /**
+     * @param string $id
+     * @param int    $version
+     * @param string $name
+     * @param array  $labels
+     * @param string $data
+     * @param array  $drive
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
     public function update(string $id,
                            int $version,
                            string $name,
