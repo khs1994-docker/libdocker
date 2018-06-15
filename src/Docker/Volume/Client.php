@@ -11,9 +11,9 @@ class Client
 {
     const BASE_URL = '/volumes';
 
-    private static $curl;
+    private $curl;
 
-    private static $base_url;
+    private $base_url;
 
     private static $header = [
         'Content-Type' => 'application/json;charset=utf8',
@@ -27,9 +27,9 @@ class Client
      */
     public function __construct(Curl $curl, string $docker_host)
     {
-        self::$curl = $curl;
+        $this->curl = $curl;
 
-        self::$base_url = $docker_host.self::BASE_URL;
+        $this->base_url = $docker_host.self::BASE_URL;
     }
 
     /**
@@ -61,9 +61,9 @@ class Client
             $filters_array = null;
         }
 
-        $url = self::$base_url.'?'.http_build_query(['filters' => json_encode($filters_array)]);
+        $url = $this->base_url.'?'.http_build_query(['filters' => json_encode($filters_array)]);
 
-        return self::$curl->get($url);
+        return $this->curl->get($url);
     }
 
     /**
@@ -80,7 +80,7 @@ class Client
      */
     public function create(string $name, string $drive = null, array $driveOpts = null, array $labels = null)
     {
-        $url = self::$base_url.'/create';
+        $url = $this->base_url.'/create';
 
         $data = [
             'Name' => $name,
@@ -89,7 +89,7 @@ class Client
             'Driver' => $drive,
         ];
 
-        return self::$curl->post($url, json_encode($data), self::$header);
+        return $this->curl->post($url, json_encode($data), self::$header);
     }
 
     /**
@@ -101,9 +101,9 @@ class Client
      */
     public function inspect(string $name)
     {
-        $url = self::$base_url.'/'.$name;
+        $url = $this->base_url.'/'.$name;
 
-        return self::$curl->get($url);
+        return $this->curl->get($url);
     }
 
     /**
@@ -116,9 +116,9 @@ class Client
      */
     public function remove(string $name, bool $force = false)
     {
-        $url = self::$base_url.'/'.$name.'?'.http_build_query(['force' => $force]);
+        $url = $this->base_url.'/'.$name.'?'.http_build_query(['force' => $force]);
 
-        return self::$curl->delete($url);
+        return $this->curl->delete($url);
     }
 
     /**
@@ -146,8 +146,8 @@ class Client
             $filters_array = null;
         }
 
-        $url = self::$base_url.'/prune?'.http_build_query(['filters' => json_encode($filters_array)]);
+        $url = $this->base_url.'/prune?'.http_build_query(['filters' => json_encode($filters_array)]);
 
-        return self::$curl->post($url);
+        return $this->curl->post($url);
     }
 }

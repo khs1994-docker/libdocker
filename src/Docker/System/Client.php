@@ -4,11 +4,38 @@ declare(strict_types=1);
 
 namespace Docker\System;
 
+use Curl\Curl;
+
 class Client
 {
-    public function checkAuthConfig($username, $password, $email, $serverAddress)
+    private $curl;
+
+    private $url;
+
+    private static $header = [
+        'Content-Type' => 'application/json',
+    ];
+
+    public function __construct(Curl $curl, string $docker_host)
     {
-        $url = '/auth';
+        $this->curl = $curl;
+
+        $this->url = $docker_host;
+    }
+
+    /**
+     * @param $username
+     * @param $password
+     * @param $email
+     * @param $serverAddress
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function checkAuthConfig($username, $password, $email = null, $serverAddress = 'https://index.docker.io/v1/')
+    {
+        $url = $this->url.'/auth';
 
         $data = [
             'username' => $username,
@@ -17,26 +44,50 @@ class Client
             'serveraddress' => $serverAddress,
         ];
 
-        $request = json_encode($data);
+        $request = json_encode(array_filter($data));
 
-        return $this->request($url, 'post', $request, $this->header);
+        return $this->curl->post($url, $request, self::$header);
     }
 
+    /**
+     * @return mixed
+     *
+     * @throws \Exception
+     */
     public function getInfo()
     {
-        return $this->request('/info');
+        return $this->curl->get($this->url.'/info');
     }
 
+    /**
+     * @return mixed
+     *
+     * @throws \Exception
+     */
     public function getVersion()
     {
-        return $this->request('/version');
+        return $this->curl->get($this->url.'/version');
     }
 
+    /**
+     * @return mixed
+     *
+     * @throws \Exception
+     */
     public function ping()
     {
-        return $this->request('/_ping');
+        return $this->curl->get($this->url.'/_ping');
     }
 
+    /**
+     * @param $since
+     * @param $until
+     * @param $filters
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
     public function events($since, $until, $filters)
     {
         $filters_array = [];
@@ -50,13 +101,18 @@ class Client
 
         $data = array_merge($data, $filters_array);
 
-        $url = '/events?'.http_build_query($data);
+        $url = $this->url.'/events?'.http_build_query($data);
 
-        return $this->request($url);
+        return $this->curl->get($url);
     }
 
+    /**
+     * @return mixed
+     *
+     * @throws \Exception
+     */
     public function getDataUsageInfo()
     {
-        return $this->request('/system/df');
+        return $this->curl->get($this->url.'/system/df');
     }
 }

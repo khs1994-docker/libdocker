@@ -22,22 +22,12 @@ class Client
     }
 
     // list
+    public function list(): void
+    {
+    }
 
     // inspect
-
-    private function create(): void
-    {
-    }
-
-    private function prune(): void
-    {
-    }
-
-    private function remove(): void
-    {
-    }
-
-    private function delete(): void
+    public function inspect(): void
     {
     }
 
