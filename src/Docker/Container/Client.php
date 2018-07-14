@@ -186,9 +186,18 @@ class Client
      */
     private $container_name;
     /**
+     * @var string
+     */
+    private $container_id;
+
+    /**
      * @var array
      */
     private $raw;
+    /**
+     * @var array
+     */
+    private $create_raw;
 
     /**
      * @var int
@@ -1851,6 +1860,22 @@ class Client
     }
 
     /**
+     * @return string
+     */
+    public function getContainerId(): string
+    {
+        return $this->container_id;
+    }
+
+    /**
+     * @param string $container_id
+     */
+    public function setContainerId(string $container_id): void
+    {
+        $this->container_id = $container_id;
+    }
+
+    /**
      * @param string $type
      * @param array  $filters
      *
@@ -1907,6 +1932,22 @@ class Client
      * @param bool       $size
      * @param array|null $filters
      *
+     * ancestor=(<image-name>[:<tag>], <image id>, or <image@digest>)
+     * before=(<container id> or <container name>)
+     * expose=(<port>[/<proto>]|<startport-endport>/[<proto>])
+     * exited=<int> containers with exit code of <int>
+     * health=(starting|healthy|unhealthy|none)
+     * id=<ID> a container's ID
+     * isolation=(default|process|hyperv) (Windows daemon only)
+     * is-task=(true|false)
+     * label=key or label="key=value" of a container label
+     * name=<name> a container's name
+     * network=(<network id> or <network name>)
+     * publish=(<port>[/<proto>]|<startport-endport>/[<proto>])
+     * since=(<container id> or <container name>)
+     * status=(created|restarting|running|removing|paused|exited|dead)
+     * volume=(<volume name> or <mount point destination>)
+     *
      * @return mixed
      *
      * @throws Exception
@@ -1948,54 +1989,30 @@ class Client
         $id = json_decode($json)->Id ?? null;
 
         if (null === $id) {
-            throw new Exception(json_decode($json)->message, 500);
+            throw new Exception(json_decode($json)->message, self::$curl->getCode());
         }
+
+        $this->container_id = $id;
+
+        // clean raw
+
+        $this->create_raw = $this->raw;
+
+        $this->raw = null;
 
         return $id;
     }
 
     public function getCreateJson()
     {
-        return $this->raw;
+        return $this->create_raw;
     }
 
     /**
-     * @param string      $id         ID      or name of the container
-     * @param string|null $detachKeys
+     * Inspect a container.
      *
-     * @return string
+     * Return low-level information about a container.
      *
-     * @throws Exception
-     */
-    public function start(string $id, string $detachKeys = null)
-    {
-        $url = self::$base_url.'/'.$id.'/start?'.http_build_query(['detachKeys' => $detachKeys]);
-
-        $output = self::$curl->post($url);
-
-        if ($output) {
-            throw new Exception(json_decode($output)->message, 404);
-        }
-
-        return $id;
-    }
-
-    /**
-     * @param string $id
-     * @param bool   $stream
-     *
-     * @return mixed
-     *
-     * @throws Exception
-     */
-    public function stats(string $id, bool $stream = false)
-    {
-        $url = self::$base_url.'/'.$id.'/stats?'.http_build_query(['stream' => $stream]);
-
-        return self::$curl->get($url);
-    }
-
-    /**
      * @param string $id
      * @param bool   $size
      *
@@ -2011,29 +2028,39 @@ class Client
     }
 
     /**
-     * @param string $id
-     * @param string $ps_args
+     * List processes running inside a container.
+     *
+     * On Unix systems, this is done by running the ps command. This endpoint is not supported on Windows.
+     *
+     * @param string|null $id
+     * @param string      $ps_args
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function top(string $id, string $ps_args = '-ef')
+    public function top(?string $id, string $ps_args = '-ef')
     {
-        $url = self::$base_url.'/'.$id.'/'.__FUNCTION__.'?'.http_build_query(['ps_args' => $ps_args]);
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/'.__FUNCTION__.'?'.http_build_query(['ps_args' => $ps_args]);
 
         return self::$curl->get($url);
     }
 
     /**
-     * @param string $id
-     * @param bool   $follow
-     * @param bool   $stdout
-     * @param bool   $stderr
-     * @param int    $since
-     * @param int    $until
-     * @param bool   $timestamps
-     * @param string $tail
+     * Get container logs.
+     *
+     * Get stdout and stderr logs from a container.
+     *
+     * Note: This endpoint works only for containers with the json-file or journald logging driver.
+     *
+     * @param string|null $id
+     * @param bool        $follow
+     * @param bool        $stdout
+     * @param bool        $stderr
+     * @param int         $since
+     * @param int         $until
+     * @param bool        $timestamps
+     * @param string      $tail
      *
      * @return mixed
      *
@@ -2058,27 +2085,40 @@ class Client
             'tail' => $tail,
         ];
 
-        $url = self::$base_url.'/'.$id.'/'.__FUNCTION__.'?'.http_build_query($data);
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/'.__FUNCTION__.'?'.http_build_query($data);
 
         return self::$curl->get($url);
     }
 
     /**
-     * @param string $id
+     * Get changes on a container’s filesystem.
+     *
+     * Returns which files in a container's filesystem have been added, deleted, or modified. The Kind of modification
+     * can be one of:
+     *
+     * 0: Modified
+     * 1: Added
+     * 2: Deleted
+     *
+     * @param string|null $id
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function changes(string $id)
+    public function changes(?string $id)
     {
-        $url = self::$base_url.'/'.$id.'/'.__FUNCTION__;
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/'.__FUNCTION__;
 
         return self::$curl->get($url);
     }
 
     /**
-     * @param string $id
+     * Export a container.
+     *
+     * Export the contents of a container as a tarball.
+     *
+     * @param string|null $id
      *
      * @return mixed
      *
@@ -2086,74 +2126,118 @@ class Client
      */
     public function export(string $id)
     {
-        $url = self::$base_url.'/'.$id.'/'.__FUNCTION__;
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/'.__FUNCTION__;
 
         return self::$curl->get($url);
     }
 
     /**
-     * TODO.
+     * Get container stats based on resource usage.
      *
-     * @param string $id
-     * @param int    $height
-     * @param int    $width
+     * @param string|null $id
+     * @param bool        $stream Stream the output. If false, the stats will be output once and then it will
+     *                            disconnect.
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function resize(string $id, int $height, int $width)
+    public function stats(?string $id, bool $stream = false)
+    {
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/stats?'.http_build_query(['stream' => $stream]);
+
+        return self::$curl->get($url);
+    }
+
+    /**
+     * Resize a container TTY.
+     *
+     * Resize the TTY for a container. You must restart the container for the resize to take effect.
+     *
+     * @param string|null $id
+     * @param int         $height Height of the tty session in characters
+     * @param int         $width  Width of the tty session in characters
+     *
+     * @return mixed
+     *
+     * @throws Exception
+     */
+    public function resize(?string $id, int $height, int $width)
     {
         $data = [
             'height' => $height,
             'width' => $width,
         ];
-        $url = self::$base_url.'/'.$id.'/resize?'.http_build_query($data);
+
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/resize?'.http_build_query($data);
 
         return self::$curl->post($url);
     }
 
     /**
-     * @param string $id
-     * @param int    $waitTime
+     * @param string|null $id         ID or name of the container
+     * @param string|null $detachKeys Override the key sequence for detaching a container.
+     *                                Format is a single character `[a-Z]`
+     *                                or `ctrl-<value>` where <value> is one of: `a-z`,`@`,`^`,`[`,`,` or `_`.
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
+    public function start(?string $id, string $detachKeys = null)
+    {
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/start?'.http_build_query(['detachKeys' => $detachKeys]);
+
+        $output = self::$curl->post($url);
+
+        if ($output) {
+            throw new Exception(json_decode($output)->message, 404);
+        }
+
+        return $id;
+    }
+
+    /**
+     * @param string|null $id
+     * @param int         $waitTime
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function stop(string $id, int $waitTime = 0)
+    public function stop(?string $id, int $waitTime = 0)
     {
-        $url = self::$base_url.'/'.$id.'/stop?'.http_build_query(['t' => $waitTime]);
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/stop?'.http_build_query(['t' => $waitTime]);
 
         return self::$curl->post($url);
     }
 
     /**
-     * @param string $id
-     * @param int    $waitTime
+     * @param string|null $id
+     * @param int         $waitTime
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function restart(string $id, int $waitTime = 0)
+    public function restart(?string $id, int $waitTime = 0)
     {
-        $url = self::$base_url.'/'.$id.'/restart?'.http_persistent_handles_clean(['t' => $waitTime]);
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/restart?'.http_persistent_handles_clean(['t' => $waitTime]);
 
         return self::$curl->post($url);
     }
 
     /**
-     * @param string $id
-     * @param string $signal
+     * @param string|null $id
+     * @param string      $signal
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function kill(string $id, string $signal = 'SIGKILL')
+    public function kill(?string $id, string $signal = 'SIGKILL')
     {
-        $url = self::$base_url.'/'.$id.'/kill?'.http_build_query(['signal' => $signal]);
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/kill?'.http_build_query(['signal' => $signal]);
 
         return self::$curl->post($url);
     }
@@ -2161,68 +2245,66 @@ class Client
     /**
      * TODO.
      *
-     * @param string $id
-     * @param array  $request_body
+     * @param string|null $id
+     * @param array       $request_body
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function update(string $id, array $request_body = [])
+    public function update(?string $id, array $request_body = [])
     {
-        $url = self::$base_url.'/'.$id.'/update';
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/update';
         $request = json_encode($request_body);
 
         return self::$curl->post($url, $request, self::$header);
     }
 
     /**
-     * @param string $id
-     * @param string $name
+     * @param string|null $id
+     * @param string      $name
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function rename(string $id, string $name)
+    public function rename(?string $id, string $name)
     {
-        $url = self::$base_url.'/'.$id.'/rename?'.http_build_query(['name' => $name]);
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/rename?'.http_build_query(['name' => $name]);
 
         return self::$curl->post($url);
     }
 
     /**
-     * @param string $id
+     * @param string|null $id
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function pause(string $id)
+    public function pause(?string $id)
     {
-        $url = self::$base_url.'/'.$id.'/pause';
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/pause';
 
         return self::$curl->post($url);
     }
 
     /**
-     * @param string $id
+     * @param string|null $id
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function unpause(string $id)
+    public function unpause(?string $id)
     {
-        $url = self::$base_url.'/'.$id.'/unpause';
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/unpause';
 
         return self::$curl->post($url);
     }
 
     /**
-     * TODO.
-     *
-     * @param string      $id
+     * @param string|null $id
      * @param string|null $detachKeys
      * @param bool        $logs
      * @param bool        $stream
@@ -2236,7 +2318,7 @@ class Client
      *
      * @see https://docs.docker.com/engine/api/v1.35/#operation/ContainerAttach
      */
-    public function attach(string $id,
+    public function attach(?string $id,
                            string $detachKeys = null,
                            bool $logs = false,
                            bool $stream = false,
@@ -2255,50 +2337,114 @@ class Client
             'stderr' => $stderr,
         ];
 
-        $url = self::$base_url.'/'.$id.'/attach?'.http_build_query($data);
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/attach?'.http_build_query($data);
 
         return self::$curl->post($url);
     }
 
     /**
-     * @param string $id
-     * @param string $condition
+     * Attach to a container via a websocket.
+     *
+     * @param null|string $id
+     * @param string      $detachKeys
+     * @param bool        $logs
+     * @param bool        $stream
+     * @param bool        $stdin
+     * @param bool        $stdout
+     * @param bool        $stderr
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function wait(string $id, string $condition = 'not-running')
+    public function attachViaWebSocket(?string $id,
+                                       string $detachKeys,
+                                       bool $logs = false,
+                                       bool $stream = false,
+                                       bool $stdin = false,
+                                       bool $stdout = false,
+                                       bool $stderr = false)
     {
-        $url = self::$base_url.'/'.$id.'/wait?'.http_build_query(['condition' => $condition]);
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/attach/ws?'.http_build_query([
+                    'detachKeys' => $detachKeys,
+                    'logs' => $logs,
+                    'stream' => $stream,
+                    'stdin' => $stdin,
+                    'stdout' => $stdout,
+                    'stderr' => $stderr,
+                ]
+            );
 
-        return self::$curl->post($url);
+        return self::$curl->get($url);
     }
 
     /**
-     * @param string $id
-     * @param bool   $v
-     * @param bool   $force
-     * @param bool   $link
+     * Wait for a container.
+     *
+     * Block until a container stops, then returns the exit code.
+     *
+     * @param string|null $id
+     * @param string      $condition
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function remove(string $id, bool $v = false, bool $force = false, bool $link = false)
+    public function wait(?string $id, string $condition = 'not-running')
+    {
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/wait?'.http_build_query(['condition' => $condition]);
+
+        return self::$curl->post($url);
+    }
+
+    /**
+     * @param string|null $id
+     * @param bool        $v
+     * @param bool        $force
+     * @param bool        $link
+     *
+     * @return mixed
+     *
+     * @throws Exception
+     */
+    public function remove(?string $id, bool $v = false, bool $force = false, bool $link = false)
     {
         $data = [
             'v' => $v,
             'force' => $force,
             'link' => $link,
         ];
-        $url = self::$base_url.'/'.$id.'?'.http_build_query($data);
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'?'.http_build_query($data);
 
         return self::$curl->delete($url);
     }
 
     /**
-     * TODO.
+     * Get information about files in a container.
+     *
+     * A response header `X-Docker-Container-Path-Stat` is return containing a base64 - encoded JSON object with some
+     * filesystem header information about the path.
+     *
+     * @param null|string $id
+     * @param string      $path
+     *
+     * @return mixed
+     *
+     * @throws Exception
+     */
+    public function getFileInfo(?string $id, string $path)
+    {
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/archive?'.http_build_query([
+                'path' => $path,
+            ]);
+
+        self::$curl->get($url);
+
+        return self::$curl->getResponseHeaders();
+    }
+
+    /**
+     * Get an archive of a filesystem resource in a container.
      *
      * @param string $id
      * @param string $path
@@ -2307,27 +2453,45 @@ class Client
      *
      * @throws Exception
      */
-    public function archive(string $id, string $path)
+    public function archive(?string $id, string $path)
     {
-        $url = self::$base_url.'/'.$id.'/archive?'.http_build_query(['path' => $path]);
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/archive?'.http_build_query(['path' => $path]);
 
         return self::$curl->get($url);
     }
 
     /**
-     * TODO.
+     * Extract an archive of files or folders to a directory in a container.
      *
-     * @param string $id
-     * @param string $path
-     * @param bool   $noOverwriteDirNonDir
-     * @param string $request
+     * @param string|null $id
+     * @param string      $path
+     * @param bool        $noOverwriteDirNonDir
+     * @param string      $request
+     *
+     * @return mixed
+     *
+     * @throws Exception
      */
-    public function archiveFiles(string $id, string $path, bool $noOverwriteDirNonDir, string $request): void
+    public function extract(?string $id, string $path, bool $noOverwriteDirNonDir, string $request)
     {
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/archive?'.http_build_query([
+                'path' => $path,
+                'noOverwriteDirNonDir' => $noOverwriteDirNonDir,
+            ]);
+
+        return self::$curl->put($url, $request);
     }
 
     /**
      * @param array $filters
+     *
+     * Available filters:
+     *
+     * `until=<timestamp>` Prune containers created before this timestamp. The <timestamp> can be Unix timestamps, date
+     * formatted timestamps, or Go duration strings (e.g. 10m, 1h30m) computed relative to the daemon machine’s time.
+     *
+     * label (label=<key>, label=<key>=<value>, label!=<key>, or label!=<key>=<value>) Prune containers with (or
+     * without, in case label!=... is used) the specified labels.
      *
      * @return mixed
      *
@@ -2345,50 +2509,25 @@ class Client
     }
 
     /**
-     * @param string $id
-     * @param bool   $v
-     * @param bool   $force
-     * @param bool   $link
+     * @param string|null $id
+     * @param array|null  $cmd
+     * @param array|null  $env
+     * @param string      $user
+     * @param string      $workingDir
+     * @param array       $other
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function delete(string $id, bool $v = false, bool $force = false, bool $link = false)
-    {
-        $url = self::$base_url.'/'.$id;
-
-        $data = [
-            'v' => $v,
-            'force' => $force,
-            'link' => $link,
-        ];
-
-        $url = $url.'?'.http_build_query($data);
-
-        return self::$curl->delete($url);
-    }
-
-    /**
-     * @param string     $id
-     * @param array|null $cmd
-     * @param array|null $env
-     * @param string     $user
-     * @param string     $workingDir
-     * @param array      $other
-     *
-     * @return mixed
-     *
-     * @throws Exception
-     */
-    public function createExec(string $id,
+    public function createExec(?string $id,
                                array $cmd = null,
                                array $env = null,
                                string $user,
                                string $workingDir,
                                array $other)
     {
-        $url = self::$base_url.'/'.$id.'/exec';
+        $url = self::$base_url.'/'.$id ?? $this->container_id.'/exec';
 
         $data = [
             'Cmd' => $cmd,
@@ -2403,17 +2542,17 @@ class Client
     }
 
     /**
-     * @param string $id
-     * @param bool   $detach
-     * @param bool   $tty
+     * @param string|null $id
+     * @param bool        $detach
+     * @param bool        $tty
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function startExec(string $id, bool $detach = false, bool $tty = false)
+    public function startExec(?string $id, bool $detach = false, bool $tty = false)
     {
-        $url = self::$base_url.'/exec'.$id.'/start';
+        $url = self::$base_url.'/exec'.$id ?? $this->container_id.'/start';
 
         $data = [
             'Detach' => $detach,
@@ -2426,24 +2565,22 @@ class Client
     }
 
     /**
-     * TODO.
-     *
-     * @param string $id
-     * @param int    $height
-     * @param int    $width
+     * @param string|null $id
+     * @param int         $height
+     * @param int         $width
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function resizeExec(string $id, int $height, int $width)
+    public function resizeExec(?string $id, int $height, int $width)
     {
         $data = [
             'h' => $height,
             'w' => $width,
         ];
 
-        $url = self::$base_url.'/exec'.$id.'/resize'.http_build_query($data);
+        $url = self::$base_url.'/exec'.$id ?? $this->container_id.'/resize'.http_build_query($data);
 
         return self::$curl->post($url);
     }

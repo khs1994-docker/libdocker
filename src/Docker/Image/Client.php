@@ -111,7 +111,13 @@ class Client
     /**
      * @param bool       $all
      * @param array|null $filters
-     * @param bool       $digests
+     *
+     * before=(<image-name>[:<tag>], <image id> or <image@digest>)
+     * dangling=true
+     * label=key or label="key=value" of an image label
+     * reference=(<image-name>[:<tag>])
+     * since=(<image-name>[:<tag>], <image id> or <image@digest>)
+     * @param bool $digests
      *
      * @return mixed
      *
@@ -164,9 +170,12 @@ class Client
      * @param bool        $rm
      * @param bool        $forcerm
      * @param array       $buildargs   ['a'=>'b']
+     * @param int|null    $shmsize
+     * @param bool        $squash
      * @param array       $labels      ['a'=>'b']
      * @param string|null $networkmode bridge, host, none, and container:<name|id>
-     * @param string      $platform
+     * @param string      $platform    os[/arch[/variant]]
+     * @param string      $request
      *
      * @return mixed
      *
@@ -184,9 +193,12 @@ class Client
                           bool $rm = true,
                           bool $forcerm = false,
                           array $buildargs = null,
+                          ?int $shmsize,
+                          bool $squash = false,
                           array $labels = null,
                           string $networkmode = null,
-                          string $platform = null)
+                          string $platform = null,
+                          ?string $request)
     {
         $data = [
             'dockerfile' => $dockerfile,
@@ -200,6 +212,8 @@ class Client
             'rm' => $rm,
             'forcerm' => $forcerm,
             'buildargs' => json_encode($buildargs),
+            'shmsize' => $shmsize,
+            'squash' => $squash,
             'labels' => json_encode($labels),
             'networkmode' => $networkmode,
             'platform' => $platform,
@@ -209,7 +223,9 @@ class Client
 
         $header = [];
 
-        $header['Content-type'] = 'application/x-tar';
+        if ($request) {
+            $header['Content-type'] = 'application/x-tar';
+        }
 
         if ($auth) {
             $header['X-Registry-Config'] = base64_encode($auth);
@@ -225,7 +241,7 @@ class Client
      */
     public function deleteBuildCache()
     {
-        $url = self::$base_url.'/build/prune';
+        $url = self::$docker_host.'/build/prune';
 
         return self::$curl->post($url);
     }
@@ -258,7 +274,7 @@ class Client
      * @param string      $tag
      * @param bool        $force
      * @param string|null $auth
-     * @param string|null $platform
+     * @param string|null $platform os[/arch[/variant]]
      *
      * @return mixed
      *
@@ -370,7 +386,7 @@ class Client
      *
      * @throws Exception
      */
-    public function tag(string $name, string $repo, string $tag)
+    public function tag(string $name, string $repo, string $tag = 'latest')
     {
         $data = [
             'repo' => $repo,
@@ -408,6 +424,10 @@ class Client
      * @param int|null $limit
      * @param array    $filters
      *
+     * is-automated=(true|false)
+     * is-official=(true|false)
+     * stars=<number> Matches images that has at least 'number' stars
+     *
      * @return mixed
      *
      * @throws Exception
@@ -436,89 +456,6 @@ class Client
     }
 
     /**
-     * @param string $container
-     * @param string $repo
-     * @param string $tag
-     * @param string $comment
-     * @param string $author
-     * @param bool   $pause
-     * @param string $changes
-     * @param array  $request_body
-     *
-     * @return mixed
-     *
-     * @throws Exception
-     */
-    public function commit(string $container,
-                           string $repo,
-                           string $tag,
-                           string $comment,
-                           string $author,
-                           bool $pause,
-                           string $changes,
-                           array $request_body)
-    {
-        $data = [
-            'container' => $container,
-            'repo' => $repo,
-            'tag' => $tag,
-            'comment' => $comment,
-            'author' => $author,
-            'pause' => $pause,
-            'changes' => $changes,
-        ];
-
-        $url = self::$base_url.'/commit?'.http_build_query($data);
-
-        $request = json_encode($request_body);
-
-        return self::$curl->post($url, $request, self::$header);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     *
-     * @throws Exception
-     */
-    public function export(string $name)
-    {
-        $url = self::$base_url.'/'.$name.'/get';
-
-        return self::$curl->get($url);
-    }
-
-    /**
-     * @param array $names
-     *
-     * @return mixed
-     *
-     * @throws Exception
-     */
-    public function exports(array $names)
-    {
-        $url = self::$base_url.'/get?'.http_build_query(['names' => $names]);
-
-        return self::$curl->get($url);
-    }
-
-    /**
-     * @param bool   $quiet
-     * @param string $tar
-     *
-     * @return mixed
-     *
-     * @throws Exception
-     */
-    public function load(bool $quiet = false, string $tar)
-    {
-        $url = self::$base_url.'/load?'.http_build_query(['quiet' => $quiet]);
-
-        return self::$curl->post($url, null, $tar);
-    }
-
-    /**
      * @param array $filters
      *
      * @return mixed
@@ -540,24 +477,95 @@ class Client
     }
 
     /**
+     * Create a new image from a container.
+     *
+     * @param string $container
+     * @param string $repo
+     * @param string $tag
+     * @param string $comment
+     * @param string $author
+     * @param bool   $pause
+     * @param string $changes
+     * @param array  $request_body
+     *
+     * @return mixed
+     *
+     * @throws Exception
+     *
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/ImageCommit
+     */
+    public function commit(string $container,
+                           string $repo,
+                           string $tag,
+                           string $comment,
+                           string $author,
+                           bool $pause,
+                           string $changes,
+                           array $request_body)
+    {
+        $data = [
+            'container' => $container,
+            'repo' => $repo,
+            'tag' => $tag,
+            'comment' => $comment,
+            'author' => $author,
+            'pause' => $pause,
+            'changes' => $changes,
+        ];
+
+        $url = self::$docker_host.'/commit?'.http_build_query($data);
+
+        $request = json_encode($request_body);
+
+        return self::$curl->post($url, $request, self::$header);
+    }
+
+    /**
+     * Get a tarball containing all images and metadata for a repository.
+     *
      * @param string $name
-     * @param bool   $force
-     * @param bool   $noprune
      *
      * @return mixed
      *
      * @throws Exception
      */
-    public function delete(string $name, bool $force, bool $noprune)
+    public function export(string $name)
     {
-        $url = self::$base_url.'/'.$name;
+        $url = self::$base_url.'/'.$name.'/get';
 
-        $url = $url.'?'.http_build_query([
-                    'force' => $force,
-                    'noprune' => $noprune,
-                ]
-            );
+        return self::$curl->get($url);
+    }
 
-        return self::$curl->delete($url);
+    /**
+     * Get a tarball containing all images and metadata for several image repositories.
+     *
+     * @param array $names
+     *
+     * @return mixed
+     *
+     * @throws Exception
+     */
+    public function exports(array $names)
+    {
+        $url = self::$base_url.'/get?'.http_build_query(['names' => $names]);
+
+        return self::$curl->get($url);
+    }
+
+    /**
+     * Load a set of images and tags into a repository.
+     *
+     * @param bool   $quiet
+     * @param string $tar
+     *
+     * @return mixed
+     *
+     * @throws Exception
+     */
+    public function load(bool $quiet = false, string $tar)
+    {
+        $url = self::$base_url.'/load?'.http_build_query(['quiet' => $quiet]);
+
+        return self::$curl->post($url, $tar);
     }
 }
