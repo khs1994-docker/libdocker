@@ -12,7 +12,7 @@ class ServiceProvider implements ServiceProviderInterface
     public function register(ServiceContainer $pimple): void
     {
         $pimple['container'] = function ($app) {
-            return new Container($app['curl'], $app['docker_host']);
+            return new Client($app['curl'], $app['docker_host']);
         };
     }
 }

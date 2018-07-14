@@ -18,12 +18,14 @@ class Client
     const BASE_URL = null;
 
     /**
+     * @param string $name
+     *
      * @return mixed
      *
      * @throws \Exception
      */
-    public function getImageInfoFromRegistry()
+    public function getImageInfoFromRegistry(string $name)
     {
-        return $this->curl->get($this->url.'/distribution/{name}/json');
+        return $this->curl->get($this->url.'/distribution/'.$name.'/json');
     }
 }

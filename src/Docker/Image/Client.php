@@ -11,11 +11,11 @@ use Error;
 use Exception;
 
 /**
- * Class Image.
+ * Image.
  *
  * @see https://docs.docker.com/engine/api/v1.37/#tag/Image
  */
-class Image
+class Client
 {
     const TYPE = 'images';
 

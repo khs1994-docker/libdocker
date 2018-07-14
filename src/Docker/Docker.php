@@ -12,9 +12,9 @@ use Pimple\Container as ServiceContainer;
 
 /**
  * @property Swarm\Config\Client  $config
- * @property Container\Container  $container
- * @property Image\Image          $image
- * @property Network\Network      $network
+ * @property Container\Client     $container
+ * @property Image\Client         $image
+ * @property Network\Client       $network
  * @property Plugin\Client        $plugin
  * @property Swarm\Secret\Client  $secret
  * @property Swarm\Client         $swarm

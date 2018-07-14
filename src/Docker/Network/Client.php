@@ -8,11 +8,11 @@ use Curl\Curl;
 use Exception;
 
 /**
- * Class Network.
+ * Network.
  *
  * @see https://docs.docker.com/engine/api/v1.37/#tag/Network
  */
-class Network
+class Client
 {
     const HEADER = [
         'Content-Type' => 'application/json;charset=utf-8',
