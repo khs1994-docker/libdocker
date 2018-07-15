@@ -74,6 +74,13 @@ class Client
     /**
      * @param array $filter
      *
+     * driver=<driver-name> Matches a network's driver.
+     * id=<network-id> Matches all or part of a network ID.
+     * label=<key> or label=<key>=<value> of a network label.
+     * name=<network-name> Matches all or part of a network name.
+     * scope=["swarm"|"global"|"local"] Filters networks by scope (swarm, global, or local).
+     * type=["custom"|"builtin"] Filters networks by type. The custom keyword returns all user-defined networks.
+     *
      * @return mixed
      *
      * @throws Exception
@@ -91,8 +98,8 @@ class Client
 
     /**
      * @param string $id
-     * @param bool   $verbose
-     * @param string $scope
+     * @param bool   $verbose Detailed inspect output for troubleshooting
+     * @param string $scope   Filter the network by scope (swarm, global, or local)
      *
      * @return mixed
      *
@@ -132,9 +139,17 @@ class Client
     }
 
     /**
-     * TODO.
-     *
      * @param string $name
+     * @param bool   $checkDuplicate check for networks with duplicate names
+     * @param string $driver
+     * @param bool   $internal
+     * @param bool   $attachable     globally scoped network is manually attachable by regular containers from workers
+     *                               in swarm mode
+     * @param bool   $ingress
+     * @param bool   $enableIPv6     enable IPv6 on the network
+     * @param array  $ipam           [ "Driver" => "default", "Config" => [], "Options" => []]
+     * @param array  $options        [ 'a' => 1 ]
+     * @param array  $labels         [ 'k' => 'v' ]
      *
      * @return mixed
      *
@@ -142,23 +157,40 @@ class Client
      *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkCreate
      */
-    public function create(string $name)
+    public function create(string $name,
+                           bool $checkDuplicate = false,
+                           string $driver = 'bridge',
+                           bool $internal = true,
+                           bool $attachable = false,
+                           bool $ingress = false,
+                           bool $enableIPv6 = false,
+                           array $ipam,
+                           array $options,
+                           array $labels)
     {
         $url = self::$base_url.'/create';
 
         $request = [
             'Name' => $name,
+            'CheckDuplicate' => $checkDuplicate,
+            'Driver' => $driver,
+            'Internal' => $internal,
+            'Attachable' => $attachable,
+            'Ingress' => $ingress,
+            'IPAM' => $ipam,
+            'EnableIPv6' => $enableIPv6,
+            'Options' => $options,
+            'Labels' => $labels,
         ];
 
         return self::$curl->post($url, json_encode($request), self::HEADER);
     }
 
     /**
-     * TODO.
-     *
      * @param string $id
-     * @param string $container
-     * @param array  $endpointConfig
+     * @param string $container      the ID or name of the container to connect to the network
+     * @param array  $endpointConfig Configuration for a network endpoint.
+     *                               [ 'IPAMConfig' => [], 'Links' => [] ]
      *
      * @return mixed
      *
@@ -166,11 +198,16 @@ class Client
      *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkConnect
      */
-    public function connect(string $id, string $container, array $endpointConfig)
+    public function connect(string $id, string $container, array $endpointConfig = [])
     {
         $url = self::$base_url.'/'.$id.'/connect';
 
-        $request = json_encode(array_merge(['Container' => $container], $endpointConfig));
+        $request = json_encode(array_merge([
+                    'Container' => $container,
+                    'EndpointConfig' => $endpointConfig,
+                ]
+            )
+        );
 
         return self::$curl->post($url, $request);
     }
@@ -231,14 +268,14 @@ class Client
         if ($filters) {
             foreach ($filters as $k => $v) {
                 if (!in_array($k, ['label', 'until'], true)) {
-                    throw new Exception('Network Prune Filters Not Found', 404);
+                    throw new Exception('Network Prune Filters '.$k.' Not Found', 404);
                 }
-            }
 
-            if (is_array($v)) {
-                $filters_array[$k] = $v;
-            } else {
-                $filters_array[$k] = [$v];
+                if (is_array($v)) {
+                    $filters_array[$k] = $v;
+                } else {
+                    $filters_array[$k] = [$v];
+                }
             }
         } else {
             $filters_array = null;

@@ -148,18 +148,6 @@ class Client
     /**
      * @param string      $gitAddress
      * @param string|null $auth
-     *                                 <pre>
-     *                                 {
-     *                                 "docker.example.com": {
-     *                                 "username": "janedoe",
-     *                                 "password": "hunter2"
-     *                                 },
-     *                                 "https://index.docker.io/v1/": {
-     *                                 "username": "mobydock",
-     *                                 "password": "conta1n3rize14"
-     *                                 }
-     *                                 }
-     *                                 </pre>
      * @param string      $tag         name:tag
      * @param string      $dockerfile
      * @param string|null $extrahosts
@@ -228,7 +216,7 @@ class Client
         }
 
         if ($auth) {
-            $header['X-Registry-Config'] = base64_encode($auth);
+            $header['X-Registry-Config'] = $auth;
         }
 
         return self::$curl->post($url, null, $header);
@@ -258,7 +246,9 @@ class Client
     private function create(array $queryParameters, string $request = null, string $auth = null)
     {
         $url = self::$base_url.'/create?'.http_build_query($queryParameters);
+
         $header = [];
+
         if ($auth) {
             $header['X-Registry-Auth'] = $auth;
         }

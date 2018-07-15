@@ -29,8 +29,21 @@ class Client
         self::$curl = $curl;
     }
 
-    public function list(): void
+    /**
+     * @param array $filters
+     *
+     * id=<secret id>
+     * label=<key> or label=<key>=value
+     * name=<secret name>
+     * names=<secret name>
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function list(array $filters)
     {
+        return self::$curl->get(self::$base_url.'?'.http_build_query(['filters' => json_encode($filters)]));
     }
 
     /**
@@ -38,18 +51,20 @@ class Client
      * @param array  $labels
      * @param string $data
      * @param array  $drive
+     * @param array  $templating
      *
      * @return mixed
      *
      * @throws \Exception
      */
-    public function create(string $name, array $labels, string $data, array $drive)
+    public function create(string $name, array $labels, string $data, array $drive, array $templating)
     {
         $data = [
             'Name' => $name,
             'Labels' => $labels,
             'Data' => $data,
             'Drive' => $drive,
+            'Templating' => $templating,
         ];
 
         $url = self::$base_url.'/create';
@@ -57,12 +72,28 @@ class Client
         return self::$curl->post($url, json_encode($data), self::HEADER);
     }
 
-    public function inspect(): void
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function inspect(string $id)
     {
+        return self::$curl->get(self::$base_url.'/'.$id);
     }
 
-    public function delete(): void
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function delete(string $id)
     {
+        return self::$curl->delete(self::$base_url.'/'.$id);
     }
 
     /**
@@ -72,6 +103,7 @@ class Client
      * @param array  $labels
      * @param string $data
      * @param array  $drive
+     * @param array  $templating
      *
      * @return mixed
      *
@@ -82,13 +114,15 @@ class Client
                            string $name,
                            array $labels,
                            string $data,
-                           array $drive)
+                           array $drive,
+                           array $templating)
     {
         $data = [
             'Name' => $name,
             'Labels' => $labels,
             'Data' => $data,
             'Drive' => $drive,
+            'Templating' => $templating,
         ];
 
         $url = self::$base_url.'/'.$id.'/update?'.http_build_query(['version' => $version]);

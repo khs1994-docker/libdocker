@@ -32,17 +32,22 @@ class Client
     /**
      * @param array $filters
      *
+     * id=<config id>
+     * label=<key> or label=<key>=value
+     * name=<config name>
+     * names=<config name>
+     *
      * @return mixed
      *
      * @throws \Exception
      */
     public function list(array $filters = [])
     {
-        $data = [
-            'filters' => '',
+        $query = [
+            'filters' => json_encode($filters),
         ];
 
-        $url = $this->url.'?'.http_build_query($data);
+        $url = $this->url.'?'.http_build_query($query);
 
         return $this->curl->get($url);
     }
@@ -56,17 +61,18 @@ class Client
      *
      * @throws \Exception
      */
-    public function create(string $name, array $labels = [], string $data)
+    public function create(string $name, array $labels = [], string $data, array $templating)
     {
-        $data = [
+        $request = [
             'Name' => $name,
             'Labels' => $labels,
             'Data' => $data,
+            'Templating' => $templating,
         ];
 
         $url = $this->url.'/create';
 
-        return $this->curl->post($url, json_encode($data), $this->header);
+        return $this->curl->post($url, json_encode($request), $this->header);
     }
 
     /**
@@ -103,6 +109,7 @@ class Client
      * @param string $name
      * @param array  $labels
      * @param string $data
+     * @param array  $templating
      *
      * @return mixed
      *
@@ -112,12 +119,14 @@ class Client
                            int $version,
                            string $name,
                            array $labels = [],
-                           string $data)
+                           string $data,
+                           array $templating)
     {
         $data = [
             'Name' => $name,
             'Labels' => $labels,
             'Data' => $data,
+            'Templating' => $templating,
         ];
 
         $url = $this->url.'/'.$id.'/update?'.http_build_query(['version' => $version]);

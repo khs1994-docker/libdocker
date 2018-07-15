@@ -40,13 +40,13 @@ class Client
     /**
      * @param array $filters
      *
-     * @see https://docs.docker.com/engine/api/v1.37/#operation/VolumeList
-     *
      * @return mixed
      *
      * @throws Exception
+     *
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/VolumeList
      */
-    public function list(array $filters = null)
+    public function list(array $filters = [])
     {
         if ($filters) {
             $filters_array = [];
@@ -128,6 +128,10 @@ class Client
 
     /**
      * @param array|null $filters
+     *
+     * label (label=<key>, label=<key>=<value>, label!=<key>, or label!=<key>=<value>)
+     *
+     * Prune volumes with (or without, in case label!=... is used) the specified labels.
      *
      * @return mixed
      *

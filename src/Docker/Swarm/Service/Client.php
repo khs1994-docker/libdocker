@@ -20,17 +20,18 @@ class Client
     /**
      * @param array $filters
      *
+     * id=<service id>
+     * label=<service label>
+     * mode=["replicated"|"global"]
+     * name=<service name>
+     *
      * @return mixed
      *
      * @throws \Exception
      */
     public function list(array $filters = [])
     {
-        $data = [
-            'filters' => $filters,
-        ];
-
-        $url = $this->url.'?'.http_build_query($data);
+        $url = $this->url.'?'.http_build_query(['filters' => json_encode($filters)]);
 
         return $this->curl->get($url);
     }
@@ -49,6 +50,8 @@ class Client
      * @return mixed
      *
      * @throws \Exception
+     *
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/ServiceCreate
      */
     public function create(string $auth,
                            string $name,
@@ -60,10 +63,13 @@ class Client
                            array $networks,
                            array $endpointSpec)
     {
+        $header = [];
+
         if ($auth) {
             $header['X-Registry-Auth'] = $auth;
         }
-        $data = [
+
+        $request = [
             'Name' => $name,
             'Labels' => $labels,
             'TaskTemplate' => $taskTemplate,
@@ -73,9 +79,10 @@ class Client
             'Networks' => $networks,
             'EndpointSpec' => $endpointSpec,
         ];
+
         $url = self::BASE_URL.'/create';
 
-        return $this->curl->post($url, json_encode($data), $header);
+        return $this->curl->post($url, json_encode($request), $header);
     }
 
     /**
@@ -88,13 +95,21 @@ class Client
      */
     public function inspect(string $id, bool $insertDefaults = false)
     {
-        $url = self::BASE_URL.'/'.$id.'/?'.http_build_query(['insertDefaults' => $insertDefaults]);
+        $url = self::BASE_URL.'/'.$id.'?'.http_build_query(['insertDefaults' => $insertDefaults]);
 
         return $this->curl->get($url);
     }
 
-    public function delete(): void
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function delete(string $id)
     {
+        return $this->curl->delete($this->url.'/'.$id);
     }
 
     /**
@@ -108,6 +123,8 @@ class Client
      * @return mixed
      *
      * @throws \Exception
+     *
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/ServiceUpdate
      */
     public function update(string $id,
                            int $version,
@@ -149,16 +166,16 @@ class Client
      *
      * @throws \Exception
      */
-    public function getLog(string $id,
-                           bool $details = false,
-                           bool $follow = false,
-                           bool $stdout = false,
-                           bool $stderr = false,
-                           int $since = 0,
-                           bool $timestamps = false,
-                           string $tail = 'all')
+    public function logs(string $id,
+                         bool $details = false,
+                         bool $follow = false,
+                         bool $stdout = false,
+                         bool $stderr = false,
+                         int $since = 0,
+                         bool $timestamps = false,
+                         string $tail = 'all')
     {
-        $data = [
+        $query = [
             'details' => $details,
             'follow' => $follow,
             'stdout' => $stdout,
@@ -168,7 +185,7 @@ class Client
             'tail' => $tail,
         ];
 
-        $url = self::BASE_URL.'/'.$id.'/logs?'.http_build_query($data);
+        $url = self::BASE_URL.'/'.$id.'/logs?'.http_build_query($query);
 
         return $this->curl->get($url);
     }

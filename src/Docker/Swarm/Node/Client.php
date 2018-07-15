@@ -20,6 +20,12 @@ class Client
     /**
      * @param array $filters
      *
+     * id=<node id>
+     * label=<engine label>
+     * membership=(accepted|pending)`
+     * name=<node name>
+     * role=(manager|worker)`
+     *
      * @return mixed
      *
      * @throws \Exception
@@ -27,7 +33,7 @@ class Client
     public function list(array $filters = [])
     {
         $data = [
-            'filters' => $filters,
+            'filters' => json_encode($filters),
         ];
 
         $url = $this->url.'?'.http_build_query($data);
@@ -35,12 +41,29 @@ class Client
         return $this->curl->get($url);
     }
 
-    public function inspect(): void
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function inspect(string $id)
     {
+        return $this->curl->get($this->url.'/'.$id);
     }
 
-    public function delete(): void
+    /**
+     * @param string $id
+     * @param bool   $force
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function delete(string $id, bool $force)
     {
+        return $this->curl->delete($this->url.'/'.$id.'?'.http_build_query(['force' => $force]));
     }
 
     /**
@@ -62,14 +85,15 @@ class Client
                            string $role,
                            string $availability)
     {
-        $data = [
+        $url = self::BASE_URL.'/'.$id.'/update?'.http_build_query(['version' => $version]);
+
+        $request = [
             'Name' => $name,
             'Labels' => $labels,
             'Role' => $role,
             'Availability' => $availability,
         ];
-        $url = self::BASE_URL.'/'.$id.'/update?'.http_build_query(['version' => $version]);
 
-        return $this->curl->post($url, json_encode($data));
+        return $this->curl->post($url, json_encode($request));
     }
 }

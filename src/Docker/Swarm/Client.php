@@ -52,6 +52,8 @@ class Client
      * @return mixed
      *
      * @throws \Exception
+     *
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/SwarmInit
      */
     public function initialize(string $listenAddr,
                                string $advertiseAddr,
@@ -75,11 +77,11 @@ class Client
     }
 
     /**
-     * @param string     $listenAddress
-     * @param string     $advertiseAddress
-     * @param string     $dataPathAddress
-     * @param array|null $remoteAddress
-     * @param string     $joinToken
+     * @param string $listenAddress
+     * @param string $advertiseAddress
+     * @param string $dataPathAddress
+     * @param string $remoteAddress
+     * @param string $joinToken
      *
      * @return mixed
      *
@@ -88,14 +90,14 @@ class Client
     public function join(string $listenAddress,
                          string $advertiseAddress,
                          string $dataPathAddress,
-                         array $remoteAddress = null,
+                         string $remoteAddress,
                          string $joinToken)
     {
         $data = [
             'ListenAddr' => $listenAddress,
             'AdvertiseAddr' => $advertiseAddress,
             'DataPathAddr' => $dataPathAddress,
-            'RemoteAddrs' => $dataPathAddress,
+            'RemoteAddrs' => $remoteAddress,
             'JoinToken' => $joinToken,
         ];
 
@@ -115,15 +117,64 @@ class Client
      */
     public function leave(bool $force = false)
     {
-        $url = $this->url.'/leave';
+        $url = $this->url.'/leave?'.http_build_query(['force' => $force]);
 
         return $this->curl->post($url);
     }
 
-    // TODO
-
-    public function update(): void
+    /**
+     * @param int    $version
+     * @param bool   $rotateWorkerToken
+     * @param bool   $rotateManagerToken
+     * @param bool   $rotateManagerUnlockKey
+     * @param string $name
+     * @param array  $labels
+     * @param array  $orchestration
+     * @param array  $raft
+     * @param array  $dispatcher
+     * @param array  $caConfig
+     * @param array  $encryptionConfig
+     * @param array  $taskDefaults
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     *
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/SwarmUpdate
+     */
+    public function update(int $version,
+                           bool $rotateWorkerToken = false,
+                           bool $rotateManagerToken = false,
+                           bool $rotateManagerUnlockKey = false,
+                           string $name,
+                           array $labels,
+                           array $orchestration,
+                           array $raft,
+                           array $dispatcher,
+                           array $caConfig,
+                           array $encryptionConfig,
+                           array $taskDefaults)
     {
+        $url = $this->url.'/update?'.http_build_query([
+                    'version' => $version,
+                    'rotateWorkerToken' => $rotateWorkerToken,
+                    'rotateManagerToken' => $rotateManagerToken,
+                    'rotateManagerUnlockKey' => $rotateManagerUnlockKey,
+                ]
+            );
+
+        $request = [
+            'Name' => $name,
+            'Labels' => $labels,
+            'Orchestration' => $orchestration,
+            'raft' => $raft,
+            'Dispatcher' => $dispatcher,
+            'CAConfig' => $caConfig,
+            'EncryptionConfig' => $encryptionConfig,
+            'TaskDefaults' => $taskDefaults,
+        ];
+
+        return $this->curl->post($url, json_encode($request));
     }
 
     /**

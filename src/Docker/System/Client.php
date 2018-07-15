@@ -38,7 +38,7 @@ class Client
      *
      * @throws \Exception
      */
-    public function checkAuthConfig($username, $password, $email = null, $serverAddress = 'https://index.docker.io/v1/')
+    public function checkAuthConfig(string $username, string $password, string $email = null, string $serverAddress = 'https://index.docker.io/v1/')
     {
         $url = $this->url.'/auth';
 
@@ -55,11 +55,33 @@ class Client
     }
 
     /**
+     * @param string $username
+     * @param string $password
+     * @param string $email
+     * @param string $serveraddress
+     *
+     * @return string
+     */
+    public function authJson(string $username, string $password, ?string $email, string $serveraddress = 'https://index.docker.io/v1/')
+    {
+        return base64_encode(json_encode(
+                array_filter([
+                        'username' => $username,
+                        'passsword' => $password,
+                        'email' => $email,
+                        'serveraddress' => $serveraddress,
+                    ]
+                )
+            )
+        );
+    }
+
+    /**
      * @return mixed
      *
      * @throws \Exception
      */
-    public function getInfo()
+    public function info()
     {
         return $this->curl->get($this->url.'/info');
     }
@@ -69,7 +91,7 @@ class Client
      *
      * @throws \Exception
      */
-    public function getVersion()
+    public function version()
     {
         return $this->curl->get($this->url.'/version');
     }
@@ -79,9 +101,9 @@ class Client
      *
      * @throws \Exception
      */
-    public function getArch()
+    public function arch()
     {
-        $version = json_decode($this->getVersion());
+        $version = json_decode($this->version());
 
         $os = $version->Os;
 
@@ -105,24 +127,36 @@ class Client
      * @param $until
      * @param $filters
      *
+     * config=<string> config name or ID
+     * container=<string> container name or ID
+     * daemon=<string> daemon name or ID
+     * event=<string> event type
+     * image=<string> image name or ID
+     * label=<string> image or container label
+     * network=<string> network name or ID
+     * node=<string> node ID
+     * plugin= plugin name or ID
+     * scope= local or swarm
+     * secret=<string> secret name or ID
+     * service=<string> service name or ID
+     * type=<string> object to filter by, one of container, image, volume, network, daemon, plugin, node, service,
+     * secret or config volume=<string> volume name
+     *
      * @return mixed
      *
      * @throws \Exception
+     *
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/SystemEvents
      */
-    public function events($since, $until, $filters)
+    public function events(string $since, string $until, array $filters = [])
     {
-        $filters_array = [];
-        if ($filters) {
-            $filters_array = $this->resolveFilters($filters);
-        }
-        $data = [
+        $query = [
             'since' => $since,
             'until' => $until,
+            'filters' => json_encode($filters),
         ];
 
-        $data = array_merge($data, $filters_array);
-
-        $url = $this->url.'/events?'.http_build_query($data);
+        $url = $this->url.'/events?'.http_build_query($query);
 
         return $this->curl->get($url);
     }
@@ -132,7 +166,7 @@ class Client
      *
      * @throws \Exception
      */
-    public function getDataUsageInfo()
+    public function dataUsageInfo()
     {
         return $this->curl->get($this->url.'/system/df');
     }

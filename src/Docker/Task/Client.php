@@ -26,14 +26,39 @@ class Client
         $this->url = $docker_host.self::BASE_URL;
     }
 
-    // list
-    public function list(): void
+    /**
+     * @param array $filters
+     *
+     * desired-state=(running | shutdown | accepted)
+     * id=<task id>
+     * label=key or label="key=value"
+     * name=<task name>
+     * node=<node id or name>
+     * service=<service name>
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function list(array $filters = [])
     {
+        return $this->curl->get($this->url.'?'.http_build_query([
+                    'filters' => $filters,
+                ]
+            )
+        );
     }
 
-    // inspect
-    public function inspect(): void
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function inspect(string $id)
     {
+        return $this->curl->get($this->url.'/'.$id);
     }
 
     /**
@@ -52,14 +77,14 @@ class Client
      *
      * @see
      */
-    public function getLog(string $id,
-                           bool $details = false,
-                           bool $follow = false,
-                           bool $stdout = false,
-                           bool $stderr = false,
-                           int $since = 0,
-                           bool $timestamps = false,
-                           string $tail = 'all')
+    public function logs(string $id,
+                         bool $details = false,
+                         bool $follow = false,
+                         bool $stdout = false,
+                         bool $stderr = false,
+                         int $since = 0,
+                         bool $timestamps = false,
+                         string $tail = 'all')
     {
         $data = [
             'details' => $details,

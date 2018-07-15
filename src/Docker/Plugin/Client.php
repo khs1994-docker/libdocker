@@ -17,23 +17,36 @@ class Client
 
     const BASE_URL = '/'.self::TYPE;
 
-    private static $base_url;
+    private $base_url;
 
-    private static $curl;
+    private $curl;
 
     public function __construct(Curl $curl, string $docker_hsot)
     {
-        self::$base_url = $docker_hsot.self::BASE_URL;
-        self::$curl = $curl;
-    }
-
-    public function list(): void
-    {
+        $this->base_url = $docker_hsot.self::BASE_URL;
+        $this->curl = $curl;
     }
 
     /**
-     * TODO.
+     * @param array $filters
      *
+     * capability=<capability name>
+     * enable=<true>|<false>
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function list(array $filters)
+    {
+        return $this->curl->get($this->base_url.'?'.http_build_query([
+                    'filters' => json_encode($filters),
+                ]
+            )
+        );
+    }
+
+    /**
      * @param string $remote
      *
      * @return mixed
@@ -42,13 +55,41 @@ class Client
      */
     public function getPrivileges(string $remote)
     {
-        $url = self::$base_url.'/privileges?'.http_build_query(['remote' => $remote]);
+        $url = $this->base_url.'/privileges?'.http_build_query(['remote' => $remote]);
 
-        return self::$curl->get($url);
+        return $this->curl->get($url);
     }
 
-    public function install(): void
+    /**
+     * @param string $remote
+     * @param string $name
+     * @param string $auth
+     * @param array  $request
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function install(string $remote,
+                            string $name,
+                            ?string $auth,
+                            array $request)
     {
+        $url = $this->base_url.'/pull?'.http_build_query([
+                    'remote' => $remote,
+                    'name' => $name,
+                ]
+            );
+
+        $header = [];
+
+        if ($auth) {
+            $header = [
+                ['X-Registry-Auth' => $auth],
+            ];
+        }
+
+        return $this->curl->post($url, json_encode($request), $header);
     }
 
     /**
@@ -60,36 +101,125 @@ class Client
      */
     public function inspect(string $name)
     {
-        $url = self::BASE_URL.'/'.$name.'/json';
+        $url = $this->base_url.'/'.$name.'/json';
 
-        return self::$curl->get($url);
+        return $this->curl->get($url);
     }
 
-    public function remove(): void
+    /**
+     * @param string $name
+     * @param bool   $force
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function remove(string $name, bool $force = false)
     {
+        return $this->curl->delete($this->base_url.'/'.$name.'?'.http_build_query([
+                    'force' => $force,
+                ]
+            )
+        );
     }
 
-    public function enable(string $name, int $timeout = 0): void
+    /**
+     * @param string $name
+     * @param int    $timeout
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function enable(string $name, int $timeout = 0)
     {
+        return $this->curl->post($this->base_url.'/'.$name.'/enable?'.http_build_query([
+                    'timeout' => $timeout,
+                ]
+            )
+        );
     }
 
-    public function disable(string $name): void
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function disable(string $name)
     {
+        return $this->curl->post($this->base_url.'/'.$name.'/disable');
     }
 
-    public function upgrade(string $name, string $remote, string $auth, array $requestBody): void
+    /**
+     * @param string $local_name
+     * @param string $remote
+     * @param string $auth
+     * @param array  $request
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function upgrade(string $local_name,
+                            string $remote,
+                            string $auth,
+                            array $request)
     {
+        $url = $this->base_url.'/'.$local_name.'/upgrade?'.http_build_query([
+                    'remote' => $remote,
+                ]
+            );
+
+        $header = [];
+
+        if ($auth) {
+            $header = ['X-Registry-Auth' => $auth];
+        }
+
+        return $this->curl->post($url, json_encode($request), $header);
     }
 
-    public function create(string $name, string $requestBody): void
+    /**
+     * @param string $name
+     * @param string $request
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function create(string $name, string $request)
     {
+        return $this->curl->post($this->base_url.'/create?'.http_build_query([
+                    'name' => $name,
+                ]
+            ), $request
+        );
     }
 
-    public function push(string $name): void
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function push(string $name)
     {
+        return $this->curl->post($this->base_url.'/'.$name.'/push');
     }
 
-    public function config($name, $requestBody): void
+    /**
+     * @param       $name
+     * @param array $request
+     *
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function config($name, array $request)
     {
+        return $this->curl->post($this->base_url.'/'.$name.'/set', json_encode($request));
     }
 }

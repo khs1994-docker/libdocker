@@ -18,13 +18,17 @@ class Client
     const BASE_URL = null;
 
     /**
+     * Get image information from the registry.
+     *
+     * Return image digest and platform information by contacting the registry.
+     *
      * @param string $name
      *
      * @return mixed
      *
      * @throws \Exception
      */
-    public function getImageInfoFromRegistry(string $name)
+    public function info(string $name)
     {
         return $this->curl->get($this->url.'/distribution/'.$name.'/json');
     }
