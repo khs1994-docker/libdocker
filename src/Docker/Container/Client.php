@@ -185,6 +185,7 @@ class Client
      * @var string
      */
     private $container_name;
+
     /**
      * @var string
      */
@@ -194,6 +195,7 @@ class Client
      * @var array
      */
     private $raw;
+
     /**
      * @var array
      */
@@ -203,262 +205,327 @@ class Client
      * @var int
      */
     private $cpuShares;
+
     /**
      * @var int
      */
     private $memory;
+
     /**
      * @var string
      */
     private $CgroupParent;
+
     /**
      * @var int 0-1000
      */
     private $bikioWeight;
+
     /**
      * @var array
      */
     private $bikioWeightDevice;
+
     /**
      * @var array
      */
     private $bikioDeviceReadBps;
+
     /**
      * @var array
      */
     private $bikioDeviceWriteBps;
+
     /**
      * @var array
      */
     private $bikioDeviceReadIOps;
+
     /**
      * @var array
      */
     private $bikioDeviceWriteIOps;
+
     /**
      * @var int
      */
     private $cpuPeriod;
+
     /**
      * @var int
      */
     private $cpuQuota;
+
     /**
      * @var int
      */
     private $cpuRealtimePeriod;
+
     /**
      * @var int
      */
     private $cpuRealtimeRuntime;
+
     /**
      * @var string
      */
     private $cpusetCpus;
+
     /**
      * @var string
      */
     private $cpusetMems;
+
     /**
      * @var array
      */
     private $devices;
+
     /**
      * @var array
      */
     private $deviceCgroupRules;
+
     /**
      * @var int
      */
     private $diskQuote;
+
     /**
      * @var int
      */
     private $kernelMemory;
+
     /**
      * @var int
      */
     private $memoryReservation;
+
     /**
      * @var int
      */
     private $memorySwap;
+
     /**
      * @var int 0-100
      */
     private $memorySwappiness;
+
     /**
      * @var int
      */
     private $NanoCPUs;
+
     /**
      * @var bool
      */
     private $oomKillDisable = true;
+
     /**
      * @var bool
      */
     private $init = true;
+
     /**
      * @var int
      */
     private $pidsLimit;
+
     /**
      * @var array
      */
     private $ulimits;
+
     /**
      * @var int
      */
     private $cpuCount;
+
     /**
      * @var int
      */
     private $cpuPercent;
+
     /**
      * @var int
      */
     private $IOMaximumIOps;
+
     /**
      * @var int
      */
     private $IOMaximumBandWidth;
+
     /**
      * @var array
      */
     private $binds;
+
     /**
      * @var string
      */
     private $containerIDFile;
+
     /**
      * @var array
      */
     private $logConfig;
+
     /**
      * @var string
      */
     private $networkMode;
+
     /**
      * @var array
      */
     private $PortBindings;
+
     /**
      * @var array
      */
     private $restartPolicy;
+
     /**
      * @var bool
      */
     private $autoRemove;
+
     /**
      * @var string
      */
     private $volumeDriver;
+
     /**
      * @var array
      */
     private $volumesFrom;
+
     /**
      * @var array
      */
     private $mounts;
+
     /**
      * @var array
      */
     private $capAdd;
+
     /**
      * @var array
      */
     private $capDrop;
+
     /**
      * @var array
      */
     private $dns;
+
     /**
      * @var array
      */
     private $dnsOptions;
+
     /**
      * @var array
      */
     private $dnsSearch;
+
     /**
      * @var array
      */
     private $extraHosts;
+
     /**
      * @var array
      */
     private $groupAdd;
+
     /**
      * @var string
      */
     private $ipcMode;
+
     /**
      * @var string
      */
     private $Cgroup;
+
     /**
      * @var int
      */
     private $oomScoreAdj;
+
     /**
      * @var string
      */
     private $pidMode;
+
     /**
      * @var bool
      */
     private $privileged;
+
     /**
      * @var bool
      */
     private $publishAllPorts;
+
     /**
      * @var bool
      */
     private $readonlyRootfs;
+
     /**
      * @var array
      */
     private $securityOpt;
+
     /**
      * @var array
      */
     private $StorageOpt;
+
     /**
      * @var array
      */
     private $tmpfs;
+
     /**
      * @var string
      */
     private $UTSMode;
+
     /**
      * @var string
      */
     private $usernsMode;
+
     /**
      * @var int >=0
      */
     private $shmSize;
+
     /**
      * @var array
      */
     private $sysctls;
+
     /**
      * @var string
      */
     private $runtime;
+
     /**
      * @var array Windows only
      */
     private $consoleSize;
+
     /**
      * @var string
      */
     private $isolation;
+
     /**
      * @var array
      */
