@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit>
-    <testsuites>
-        <testsuite name="Feature">
-            <directory>tests/Docker</directory>
-        </testsuite>
-    </testsuites>
-    <groups>
-        <exclude>
-            <group>DON'TTEST</group>
-        </exclude>
-    </groups>
+  <testsuites>
+    <testsuite name="Feature">
+      <directory>tests/Docker</directory>
+    </testsuite>
+  </testsuites>
+  <groups>
+    <exclude>
+      <group>no-test</group>
+    </exclude>
+  </groups>
 </phpunit>

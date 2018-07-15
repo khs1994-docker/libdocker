@@ -13,6 +13,7 @@ use Pimple\Container as ServiceContainer;
 /**
  * @property Swarm\Config\Client  $config
  * @property Container\Client     $container
+ * @property Distribution\Client  $distribution
  * @property Image\Client         $image
  * @property Network\Client       $network
  * @property Plugin\Client        $plugin
@@ -56,6 +57,7 @@ class Docker extends ServiceContainer
 
     protected $providers = [
         Container\ServiceProvider::class,
+        Distribution\ServiceProvider::class,
         Image\ServiceProvider::class,
         Network\ServiceProvider::class,
         Plugin\ServiceProvider::class,
@@ -170,7 +172,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return Container\Container
+     * @return Container\Client
      */
     public function container()
     {
@@ -178,7 +180,15 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return Image\Image
+     * @return mixed
+     */
+    public function distribution()
+    {
+        return $this['distribution'];
+    }
+
+    /**
+     * @return Image\Client
      */
     public function image()
     {
@@ -186,7 +196,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return Network\Network
+     * @return Network\Client
      */
     public function network()
     {

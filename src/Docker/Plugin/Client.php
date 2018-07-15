@@ -37,7 +37,7 @@ class Client
      *
      * @throws \Exception
      */
-    public function list(array $filters)
+    public function list(array $filters = [])
     {
         return $this->curl->get($this->base_url.'?'.http_build_query([
                     'filters' => json_encode($filters),

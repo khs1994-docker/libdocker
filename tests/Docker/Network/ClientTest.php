@@ -4,8 +4,28 @@ declare(strict_types=1);
 
 namespace Docker\Tests\Network;
 
+use Docker\Network\Client;
 use Docker\Tests\TestCase;
 
 class ClientTest extends TestCase
 {
+    /**
+     * @var Client
+     */
+    public $client;
+
+    public function setUp(): void
+    {
+        $this->client = $this->mockApiClient()->network;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testList(): void
+    {
+        $output = $this->client->list();
+
+        $this->assertJson($output);
+    }
 }

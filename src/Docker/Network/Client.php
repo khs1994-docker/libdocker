@@ -87,7 +87,7 @@ class Client
      *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/NetworkList
      */
-    public function list(array $filter = null)
+    public function list(array $filter = [])
     {
         $filter = self::parseListFilter($filter);
 
