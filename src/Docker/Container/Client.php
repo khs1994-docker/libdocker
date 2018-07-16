@@ -1995,7 +1995,7 @@ class Client
 
         $this->networkingConfig = [];
 
-        $this->raw = null;
+        $this->raw = [];
 
         if ($returnID) {
             return $id;
@@ -2086,7 +2086,7 @@ class Client
             'tail' => $tail,
         ];
 
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/'.__FUNCTION__.'?'.http_build_query($data);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/'.__FUNCTION__.'?'.http_build_query($data);
 
         return self::$curl->get($url);
     }
@@ -2109,7 +2109,7 @@ class Client
      */
     public function changes(?string $id)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/'.__FUNCTION__;
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/'.__FUNCTION__;
 
         return self::$curl->get($url);
     }
@@ -2127,7 +2127,7 @@ class Client
      */
     public function export(string $id)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/'.__FUNCTION__;
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/'.__FUNCTION__;
 
         return self::$curl->get($url);
     }
@@ -2145,7 +2145,7 @@ class Client
      */
     public function stats(?string $id, bool $stream = false)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/stats?'.http_build_query(['stream' => $stream]);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/stats?'.http_build_query(['stream' => $stream]);
 
         return self::$curl->get($url);
     }
@@ -2170,7 +2170,7 @@ class Client
             'width' => $width,
         ];
 
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/resize?'.http_build_query($data);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/resize?'.http_build_query($data);
 
         return self::$curl->post($url);
     }
@@ -2353,7 +2353,7 @@ class Client
     {
         $id = $id ?? $this->container_id;
 
-        $url = self::$base_url.'/'.($id ?? $this->container_id).'/unpause';
+        $url = self::$base_url.'/'.$id.'/unpause';
 
         $output = self::$curl->post($url);
 
