@@ -81,7 +81,7 @@ class Client
      * scope=["swarm"|"global"|"local"] Filters networks by scope (swarm, global, or local).
      * type=["custom"|"builtin"] Filters networks by type. The custom keyword returns all user-defined networks.
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      *
@@ -101,7 +101,7 @@ class Client
      * @param bool   $verbose Detailed inspect output for troubleshooting
      * @param string $scope   Filter the network by scope (swarm, global, or local)
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      *
@@ -125,7 +125,7 @@ class Client
     /**
      * @param string $id
      *
-     * @return mixed
+     * @return mixed 204
      *
      * @throws Exception
      *
@@ -151,7 +151,7 @@ class Client
      * @param array  $options        [ 'a' => 1 ]
      * @param array  $labels         [ 'k' => 'v' ]
      *
-     * @return mixed
+     * @return mixed 201
      *
      * @throws Exception
      *
@@ -192,7 +192,7 @@ class Client
      * @param array  $endpointConfig Configuration for a network endpoint.
      *                               [ 'IPAMConfig' => [], 'Links' => [] ]
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      *
@@ -217,7 +217,7 @@ class Client
      * @param string $container
      * @param bool   $force
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      *
@@ -240,7 +240,7 @@ class Client
     /**
      * @param array|null $filters
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      *

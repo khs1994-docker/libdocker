@@ -179,7 +179,7 @@ class Client
 
     private $hostConfig = [];
 
-    private $networkingConfig;
+    private $networkingConfig = [];
 
     /**
      * @var string
@@ -528,12 +528,16 @@ class Client
 
     /**
      * @param array $cmd [ "nginx", "-g", "daemon off;"]
+     *
+     * @return Client
      */
-    public function setCmd(array $cmd): void
+    public function setCmd(array $cmd)
     {
         $this->cmd = $cmd;
 
         $this->raw = array_merge($this->raw, ['Cmd' => $cmd]);
+
+        return $this;
     }
 
     /**
@@ -1931,7 +1935,7 @@ class Client
      * status=(created|restarting|running|removing|paused|exited|dead)
      * volume=(<volume name> or <mount point destination>)
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -1959,7 +1963,7 @@ class Client
     /**
      * @param bool $returnID
      *
-     * @return string|Client
+     * @return string|Client 201
      *
      * @throws Exception
      */
@@ -1987,6 +1991,10 @@ class Client
 
         $this->create_raw = $this->raw;
 
+        $this->hostConfig = [];
+
+        $this->networkingConfig = [];
+
         $this->raw = null;
 
         if ($returnID) {
@@ -2009,7 +2017,7 @@ class Client
      * @param string|null $id
      * @param bool        $size
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2028,7 +2036,7 @@ class Client
      * @param string|null $id
      * @param string      $ps_args
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2055,7 +2063,7 @@ class Client
      * @param bool        $timestamps
      * @param string      $tail
      *
-     * @return mixed
+     * @return mixed 101 200
      *
      * @throws Exception
      */
@@ -2095,7 +2103,7 @@ class Client
      *
      * @param string|null $id
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2113,7 +2121,7 @@ class Client
      *
      * @param string|null $id
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2131,7 +2139,7 @@ class Client
      * @param bool        $stream Stream the output. If false, the stats will be output once and then it will
      *                            disconnect.
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2151,7 +2159,7 @@ class Client
      * @param int         $height Height of the tty session in characters
      * @param int         $width  Width of the tty session in characters
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2173,7 +2181,7 @@ class Client
      *                                Format is a single character `[a-Z]`
      *                                or `ctrl-<value>` where <value> is one of: `a-z`,`@`,`^`,`[`,`,` or `_`.
      *
-     * @return string
+     * @return string 204 304
      *
      * @throws Exception
      */
@@ -2196,7 +2204,7 @@ class Client
      * @param string|null $id
      * @param int         $waitTime
      *
-     * @return mixed
+     * @return mixed 204 304
      *
      * @throws Exception
      */
@@ -2221,7 +2229,7 @@ class Client
      * @param string|null $id
      * @param int         $waitTime
      *
-     * @return mixed
+     * @return mixed 204
      *
      * @throws Exception
      */
@@ -2246,7 +2254,7 @@ class Client
      * @param string|null $id
      * @param string      $signal
      *
-     * @return mixed
+     * @return mixed 204
      *
      * @throws Exception
      */
@@ -2268,19 +2276,19 @@ class Client
     }
 
     /**
-     * TODO.
-     *
      * @param string|null $id
-     * @param array       $request_body
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
+     *
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/ContainerUpdate
      */
-    public function update(?string $id, array $request_body = [])
+    public function update(?string $id)
     {
         $url = self::$base_url.'/'.($id ?? $this->container_id).'/update';
-        $request = json_encode($request_body);
+
+        $request = json_encode($request = $this->hostConfig);
 
         return self::$curl->post($url, $request, self::$header);
     }
@@ -2289,7 +2297,7 @@ class Client
      * @param string|null $id
      * @param string      $name
      *
-     * @return mixed
+     * @return mixed 204
      *
      * @throws Exception
      */
@@ -2313,7 +2321,7 @@ class Client
     /**
      * @param string|null $id
      *
-     * @return mixed
+     * @return mixed 204
      *
      * @throws Exception
      */
@@ -2337,7 +2345,7 @@ class Client
     /**
      * @param string|null $id
      *
-     * @return mixed
+     * @return mixed 204
      *
      * @throws Exception
      */
@@ -2367,7 +2375,7 @@ class Client
      * @param bool        $stdout
      * @param bool        $stderr
      *
-     * @return mixed
+     * @return mixed 101 200
      *
      * @throws Exception
      *
@@ -2408,7 +2416,7 @@ class Client
      * @param bool        $stdout
      * @param bool        $stderr
      *
-     * @return mixed
+     * @return mixed 101 200
      *
      * @throws Exception
      *
@@ -2444,7 +2452,7 @@ class Client
      * @param string      $condition wait until a container state reaches the given condition,
      *                               either 'not - running'(default), 'next - exit', or 'removed'
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2461,7 +2469,7 @@ class Client
      * @param bool        $force
      * @param bool        $link
      *
-     * @return mixed
+     * @return mixed 204
      *
      * @throws Exception
      */
@@ -2497,7 +2505,7 @@ class Client
      * @param null|string $id
      * @param string      $path
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2518,7 +2526,7 @@ class Client
      * @param string $id
      * @param string $path
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2533,11 +2541,14 @@ class Client
      * Extract an archive of files or folders to a directory in a container.
      *
      * @param string|null $id
-     * @param string      $path                 path to a directory in the container to extract the archive’s contents into
-     * @param bool        $noOverwriteDirNonDir
+     * @param string      $path                 path to a directory in the container to extract the archive’s contents
+     *                                          into
+     * @param bool        $noOverwriteDirNonDir if “1”, “true”, or “True” then it will be an error if unpacking the
+     *                                          given content would cause an existing directory to be replaced with a
+     *                                          non-directory and vice versa
      * @param string      $request
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2572,7 +2583,7 @@ class Client
      * label (label=<key>, label=<key>=<value>, label!=<key>, or label!=<key>=<value>) Prune containers with (or
      * without, in case label!=... is used) the specified labels.
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */

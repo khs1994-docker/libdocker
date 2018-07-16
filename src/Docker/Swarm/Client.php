@@ -55,19 +55,19 @@ class Client
      *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/SwarmInit
      */
-    public function initialize(string $listenAddr,
-                               string $advertiseAddr,
-                               string $dataPathAddr,
-                               bool $forceNewCluster,
+    public function initialize(string $advertiseAddr,
+                               string $listenAddr = '0.0.0.0:2377',
+                               string $dataPathAddr = null,
+                               bool $forceNewCluster = false,
                                array $spec = null)
     {
-        $data = [
+        $data = array_filter([
             'ListenAddr' => $listenAddr,
             'AdvertiseAddr' => $advertiseAddr,
             'DataPathAddr' => $dataPathAddr,
             'ForceNewCluster' => $forceNewCluster,
             'Spec' => $spec,
-        ];
+        ]);
 
         $request = json_encode($data);
 
