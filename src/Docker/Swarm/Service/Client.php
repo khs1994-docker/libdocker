@@ -69,7 +69,7 @@ class Client
             $header['X-Registry-Auth'] = $auth;
         }
 
-        $request = [
+        $request = array_filter([
             'Name' => $name,
             'Labels' => $labels,
             'TaskTemplate' => $taskTemplate,
@@ -78,7 +78,7 @@ class Client
             'RollbackConfig' => $rollbackConfig,
             'Networks' => $networks,
             'EndpointSpec' => $endpointSpec,
-        ];
+        ]);
 
         $url = self::BASE_URL.'/create';
 
@@ -115,7 +115,9 @@ class Client
     /**
      * @param string $id
      * @param int    $version
-     * @param string $registryAuthFrom
+     * @param string $registryAuthFrom If the X-Registry-Auth header is not specified, this parameter indicates where
+     *                                 to find registry authorization credentials. The valid values are spec and
+     *                                 previous-spec.
      * @param string $rollback
      * @param string $auth
      * @param array  $request_body
@@ -128,7 +130,7 @@ class Client
      */
     public function update(string $id,
                            int $version,
-                           string $registryAuthFrom,
+                           string $registryAuthFrom = 'spec',
                            string $rollback,
                            string $auth,
                            array $request_body)

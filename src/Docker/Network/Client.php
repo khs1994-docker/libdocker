@@ -164,13 +164,13 @@ class Client
                            bool $attachable = false,
                            bool $ingress = false,
                            bool $enableIPv6 = false,
-                           array $ipam,
-                           array $options,
-                           array $labels)
+                           array $ipam = [],
+                           array $options = [],
+                           array $labels = [])
     {
         $url = self::$base_url.'/create';
 
-        $request = [
+        $request = array_filter([
             'Name' => $name,
             'CheckDuplicate' => $checkDuplicate,
             'Driver' => $driver,
@@ -181,7 +181,7 @@ class Client
             'EnableIPv6' => $enableIPv6,
             'Options' => $options,
             'Labels' => $labels,
-        ];
+        ]);
 
         return self::$curl->post($url, json_encode($request), self::HEADER);
     }

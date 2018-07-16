@@ -87,12 +87,12 @@ class Client
     {
         $url = $this->base_url.'/create';
 
-        $data = [
+        $data = array_filter([
             'Name' => $name,
             'Labels' => $labels,
             'DriverOpts' => $driveOpts,
             'Driver' => $drive,
-        ];
+        ]);
 
         return $this->curl->post($url, json_encode($data), self::$header);
     }
@@ -139,7 +139,7 @@ class Client
      *
      * @see https://docs.docker.com/engine/api/v1.37/#operation/VolumePrune
      */
-    public function prune(array $filters = null)
+    public function prune(array $filters = [])
     {
         $filters_array = [];
 

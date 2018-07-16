@@ -143,17 +143,17 @@ class Client
      * @see https://docs.docker.com/engine/api/v1.37/#operation/SwarmUpdate
      */
     public function update(int $version,
+                           string $name,
                            bool $rotateWorkerToken = false,
                            bool $rotateManagerToken = false,
                            bool $rotateManagerUnlockKey = false,
-                           string $name,
-                           array $labels,
-                           array $orchestration,
-                           array $raft,
-                           array $dispatcher,
-                           array $caConfig,
-                           array $encryptionConfig,
-                           array $taskDefaults)
+                           array $labels = [],
+                           array $orchestration = [],
+                           array $raft = [],
+                           array $dispatcher = [],
+                           array $caConfig = [],
+                           array $encryptionConfig = [],
+                           array $taskDefaults = [])
     {
         $url = $this->url.'/update?'.http_build_query([
                     'version' => $version,
@@ -163,7 +163,7 @@ class Client
                 ]
             );
 
-        $request = [
+        $request = array_filter([
             'Name' => $name,
             'Labels' => $labels,
             'Orchestration' => $orchestration,
@@ -172,7 +172,7 @@ class Client
             'CAConfig' => $caConfig,
             'EncryptionConfig' => $encryptionConfig,
             'TaskDefaults' => $taskDefaults,
-        ];
+        ]);
 
         return $this->curl->post($url, json_encode($request));
     }

@@ -61,7 +61,7 @@ class Client
      *
      * @throws \Exception
      */
-    public function delete(string $id, bool $force)
+    public function delete(string $id, bool $force = false)
     {
         return $this->curl->delete($this->url.'/'.$id.'?'.http_build_query(['force' => $force]));
     }
@@ -82,8 +82,8 @@ class Client
                            int $version,
                            string $name,
                            array $labels = null,
-                           string $role,
-                           string $availability)
+                           string $role = null,
+                           string $availability = null)
     {
         $url = self::BASE_URL.'/'.$id.'/update?'.http_build_query(['version' => $version]);
 
