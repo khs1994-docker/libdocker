@@ -119,7 +119,7 @@ class Client
      * since=(<image-name>[:<tag>], <image id> or <image@digest>)
      * @param bool $digests
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -165,7 +165,7 @@ class Client
      * @param string      $platform    os[/arch[/variant]]
      * @param string      $request
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -223,7 +223,7 @@ class Client
     }
 
     /**
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -239,7 +239,7 @@ class Client
      * @param string $request
      * @param string $auth
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -266,7 +266,7 @@ class Client
      * @param string|null $auth
      * @param string|null $platform os[/arch[/variant]]
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -294,7 +294,7 @@ class Client
      * @param string|null $platform
      * @param string|null $request
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -320,7 +320,7 @@ class Client
     /**
      * @param string $name
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -334,7 +334,7 @@ class Client
     /**
      * @param string $name
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -350,7 +350,7 @@ class Client
      * @param string $tag
      * @param string $auth
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -372,7 +372,7 @@ class Client
      * @param string $repo
      * @param string $tag
      *
-     * @return mixed
+     * @return mixed 201
      *
      * @throws Exception
      */
@@ -393,7 +393,7 @@ class Client
      * @param bool   $force
      * @param bool   $noprune
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -418,7 +418,7 @@ class Client
      * is-official=(true|false)
      * stars=<number> Matches images that has at least 'number' stars
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -448,7 +448,7 @@ class Client
     /**
      * @param array $filters
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -478,7 +478,7 @@ class Client
      * @param string $changes
      * @param array  $request_body
      *
-     * @return mixed
+     * @return mixed 201
      *
      * @throws Exception
      *
@@ -515,7 +515,7 @@ class Client
      *
      * @param string $name
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -531,7 +531,7 @@ class Client
      *
      * @param array $names
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -548,7 +548,7 @@ class Client
      * @param bool   $quiet
      * @param string $tar
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */

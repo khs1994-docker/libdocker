@@ -54,21 +54,22 @@ class Client
 
     /**
      * @param string $name
-     * @param array  $labels
      * @param string $data
+     * @param array  $labels
+     * @param array  $templating
      *
      * @return mixed
      *
      * @throws \Exception
      */
-    public function create(string $name, array $labels = [], string $data, array $templating)
+    public function create(string $name, string $data, array $labels = [], array $templating = [])
     {
-        $request = [
+        $request = array_filter([
             'Name' => $name,
             'Labels' => $labels,
             'Data' => $data,
             'Templating' => $templating,
-        ];
+        ]);
 
         $url = $this->url.'/create';
 
@@ -118,16 +119,16 @@ class Client
     public function update(string $id,
                            int $version,
                            string $name,
-                           array $labels = [],
                            string $data,
-                           array $templating)
+                           array $labels = [],
+                           array $templating = [])
     {
-        $data = [
+        $data = array_filter([
             'Name' => $name,
             'Labels' => $labels,
             'Data' => $data,
             'Templating' => $templating,
-        ];
+        ]);
 
         $url = $this->url.'/'.$id.'/update?'.http_build_query(['version' => $version]);
 

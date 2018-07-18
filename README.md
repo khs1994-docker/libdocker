@@ -1,6 +1,6 @@
 # Docker PHP SDK
 
-[![GitHub stars](https://img.shields.io/github/stars/khs1994-docker/libdocker.svg?style=social&label=Stars)](https://github.com/khs1994-docker/libdocker) [![PHP from Packagist](https://img.shields.io/packagist/php-v/khs1994/docker.svg)](https://packagist.org/packages/khs1994/docker) [![GitHub (pre-)release](https://img.shields.io/github/release/khs1994-docker/libdocker/all.svg)](https://github.com/khs1994-docker/libdocker/releases) [![Build Status](https://travis-ci.org/khs1994-docker/libdocker.svg?branch=master)](https://travis-ci.org/khs1994-docker/libdocker) [![StyleCI](https://styleci.io/repos/119828346/shield?branch=master)](https://styleci.io/repos/119828346)
+[![GitHub stars](https://img.shields.io/github/stars/khs1994-docker/libdocker.svg?style=social&label=Stars)](https://github.com/khs1994-docker/libdocker) [![PHP from Packagist](https://img.shields.io/packagist/php-v/khs1994/docker.svg)](https://packagist.org/packages/khs1994/docker) [![GitHub (pre-)release](https://img.shields.io/github/release/khs1994-docker/libdocker/all.svg)](https://github.com/khs1994-docker/libdocker/releases) [![Build Status](https://travis-ci.com/khs1994-docker/libdocker.svg?branch=master)](https://travis-ci.com/khs1994-docker/libdocker) [![StyleCI](https://styleci.io/repos/119828346/shield?branch=master)](https://styleci.io/repos/119828346)  [![codecov](https://codecov.io/gh/khs1994-docker/libdocker/branch/master/graph/badge.svg)](https://codecov.io/gh/khs1994-docker/libdocker)
 
 A PHP library for the Docker Engine API
 

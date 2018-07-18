@@ -179,7 +179,7 @@ class Client
 
     private $hostConfig = [];
 
-    private $networkingConfig;
+    private $networkingConfig = [];
 
     /**
      * @var string
@@ -194,7 +194,7 @@ class Client
     /**
      * @var array
      */
-    private $raw;
+    private $raw = [];
 
     /**
      * @var array
@@ -219,32 +219,32 @@ class Client
     /**
      * @var int 0-1000
      */
-    private $bikioWeight;
+    private $blkioWeight;
 
     /**
      * @var array
      */
-    private $bikioWeightDevice;
+    private $blkioWeightDevice;
 
     /**
      * @var array
      */
-    private $bikioDeviceReadBps;
+    private $blkioDeviceReadBps;
 
     /**
      * @var array
      */
-    private $bikioDeviceWriteBps;
+    private $blkioDeviceWriteBps;
 
     /**
      * @var array
      */
-    private $bikioDeviceReadIOps;
+    private $blkioDeviceReadIOps;
 
     /**
      * @var array
      */
-    private $bikioDeviceWriteIOps;
+    private $blkioDeviceWriteIOps;
 
     /**
      * @var int
@@ -527,103 +527,57 @@ class Client
     private $isolation;
 
     /**
-     * @var array
+     * @param array $cmd [ "nginx", "-g", "daemon off;"]
+     *
+     * @return Client
      */
-    private $network_aliases;
-
-    /**
-     * @return mixed
-     */
-    public function getCmd()
-    {
-        return $this->cmd;
-    }
-
-    /**
-     * @param mixed $cmd
-     */
-    public function setCmd($cmd): void
+    public function setCmd(array $cmd)
     {
         $this->cmd = $cmd;
-    }
 
-    /**
-     * @return mixed
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    /**
-     * @param mixed $image
-     */
-    public function setImage($image): void
-    {
-        $this->image = $image;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getContainerName()
-    {
-        return $this->container_name;
-    }
-
-    /**
-     * @param mixed $container_name
-     */
-    public function setContainerName($container_name): void
-    {
-        $this->container_name = $container_name;
-    }
-
-    /**
-     * @param array|null  $binds         ["$unique_id:$work_dir", 'tmp:/tmp']
-     * @param string|null $networkMode
-     * @param array|null  $portBindings
-     * @param array|null  $restartPolicy
-     * @param bool        $autoRemove
-     * @param array|null  $mounts
-     * @param array|null  $dns
-     * @param array|null  $extraHosts
-     *
-     * @return $this
-     */
-    public function setHostConfig(array $binds = null,
-                                  string $networkMode = null,
-                                  array $portBindings = null,
-                                  array $restartPolicy = null,
-                                  bool $autoRemove = false,
-                                  array $mounts = null,
-                                  array $dns = null,
-                                  array $extraHosts = null)
-    {
-        $this->hostConfig = array_filter([
-            'Binds' => $binds,
-            'NetworkMode' => $networkMode,
-            'PortBindings' => $portBindings,
-            'RestartPolicy' => $restartPolicy,
-            'AutoRemove ' => $autoRemove,
-            'Mounts' => $mounts,
-            'Dns' => $dns,
-            'ExtraHosts' => $extraHosts,
-        ]);
+        $this->raw = array_merge($this->raw, ['Cmd' => $cmd]);
 
         return $this;
     }
 
-    public function setNetworkingConfig(): void
+    /**
+     * @param mixed $image
+     *
+     * @return Client
+     */
+    public function setImage($image)
     {
+        $this->image = $image;
+
+        $this->raw = array_merge($this->raw, ['Image' => $image]);
+
+        return $this;
     }
 
     /**
-     * @return string
+     * @param string $container_name
+     *
+     * @return Client
      */
-    public function getHostname(): string
+    public function setContainerName(string $container_name)
     {
-        return $this->hostname;
+        $this->container_name = $container_name;
+
+        return $this;
+    }
+
+    /**
+     * @param array $networkingConfig
+     *
+     * @return Client
+     */
+    public function setNetworkingConfig(array $networkingConfig)
+    {
+        $this->networkingConfig = $networkingConfig;
+
+        $this->raw = array_merge($this->raw, ['NetworkingConfig' => $networkingConfig]);
+
+        return $this;
     }
 
     /**
@@ -641,14 +595,6 @@ class Client
     }
 
     /**
-     * @return string
-     */
-    public function getDomainname(): string
-    {
-        return $this->domainname;
-    }
-
-    /**
      * @param string $domainname
      *
      * @return Client
@@ -660,14 +606,6 @@ class Client
         $this->raw = array_merge($this->raw, ['Domainname' => $domainname]);
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUser(): string
-    {
-        return $this->user;
     }
 
     /**
@@ -685,14 +623,6 @@ class Client
     }
 
     /**
-     * @return bool
-     */
-    public function isAttachStdin(): bool
-    {
-        return $this->attachStdin;
-    }
-
-    /**
      * @param bool $attachStdin
      *
      * @return Client
@@ -704,14 +634,6 @@ class Client
         $this->raw = array_merge($this->raw, ['AttachStdin' => $attachStdin]);
 
         return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAttachStdout(): bool
-    {
-        return $this->attachStdout;
     }
 
     /**
@@ -729,14 +651,6 @@ class Client
     }
 
     /**
-     * @return bool
-     */
-    public function isAttachStderr(): bool
-    {
-        return $this->attachStderr;
-    }
-
-    /**
      * @param bool $attachStderr
      *
      * @return Client
@@ -751,15 +665,7 @@ class Client
     }
 
     /**
-     * @return array
-     */
-    public function getExposedPorts(): array
-    {
-        return $this->ExposedPorts;
-    }
-
-    /**
-     * @param array $exposedPorts {"<port>/<tcp|udp|sctp>": {}} ["22/tcp":[]]
+     * @param array $exposedPorts ["22/<tcp|udp|sctp>":[]]
      *
      * @return Client
      */
@@ -770,14 +676,6 @@ class Client
         $this->raw = array_merge($this->raw, ['ExposedPorts' => $exposedPorts]);
 
         return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isTty(): bool
-    {
-        return $this->tty;
     }
 
     /**
@@ -795,14 +693,6 @@ class Client
     }
 
     /**
-     * @return bool
-     */
-    public function isOpenStdin(): bool
-    {
-        return $this->openStdin;
-    }
-
-    /**
      * @param bool $openStdin
      *
      * @return Client
@@ -814,14 +704,6 @@ class Client
         $this->raw = array_merge($this->raw, ['OpenStdin' => $openStdin]);
 
         return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isStdinOnce(): bool
-    {
-        return $this->stdinOnce;
     }
 
     /**
@@ -839,33 +721,17 @@ class Client
     }
 
     /**
-     * @return array
-     */
-    public function getEnv(): array
-    {
-        return $this->env;
-    }
-
-    /**
      * @param array|null $env ['env=value']
      *
      * @return Client
      */
-    public function setEnv(array $env)
+    public function setEnv(array $env = ['k=v'])
     {
         $this->env = $env;
 
         $this->raw = array_merge($this->raw, ['Env' => $env]);
 
         return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getHealthcheck()
-    {
-        return $this->healthcheck;
     }
 
     /**
@@ -893,14 +759,6 @@ class Client
     }
 
     /**
-     * @return bool
-     */
-    public function isArgsEscaped(): bool
-    {
-        return $this->argsEscaped;
-    }
-
-    /**
      * @param bool $argsEscaped
      *
      * @return Client
@@ -912,14 +770,6 @@ class Client
         $this->raw = array_merge($this->raw, ['ArgsEscaped' => $argsEscaped]);
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getVolumes(): array
-    {
-        return $this->volumes;
     }
 
     /**
@@ -937,14 +787,6 @@ class Client
     }
 
     /**
-     * @return string
-     */
-    public function getWorkingDir(): string
-    {
-        return $this->workingDir;
-    }
-
-    /**
      * @param string $workingDir
      *
      * @return Client
@@ -956,14 +798,6 @@ class Client
         $this->raw = array_merge($this->raw, ['WorkingDir' => $workingDir]);
 
         return $this;
-    }
-
-    /**
-     * @return array|string
-     */
-    public function getEntrypoint()
-    {
-        return $this->entrypoint;
     }
 
     /**
@@ -981,14 +815,6 @@ class Client
     }
 
     /**
-     * @return bool
-     */
-    public function isNetworkDisabled(): bool
-    {
-        return $this->networkDisabled;
-    }
-
-    /**
      * @param bool $networkDisabled
      *
      * @return Client
@@ -1000,14 +826,6 @@ class Client
         $this->raw = array_merge($this->raw, ['NetworkDisabled' => $networkDisabled]);
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMacAddress(): string
-    {
-        return $this->macAddress;
     }
 
     /**
@@ -1025,14 +843,6 @@ class Client
     }
 
     /**
-     * @return array|string
-     */
-    public function getOnBuild()
-    {
-        return $this->onBuild;
-    }
-
-    /**
      * @param array|string $onBuild
      *
      * @return Client
@@ -1047,33 +857,17 @@ class Client
     }
 
     /**
-     * @return array
-     */
-    public function getLabels(): array
-    {
-        return $this->labels;
-    }
-
-    /**
-     * @param array|null $labels
+     * @param array|null $labels ['com.khs1994.docker' => 'value']
      *
      * @return Client
      */
-    public function setLabels(?array $labels = ['com.khs1994.docker' => 'value'])
+    public function setLabels(array $labels = ['k' => 'v'])
     {
         $this->labels = $labels;
 
         $this->raw = array_merge($this->raw, ['Labels' => $labels]);
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStopSignal(): string
-    {
-        return $this->stopSignal;
     }
 
     /**
@@ -1091,14 +885,6 @@ class Client
     }
 
     /**
-     * @return int
-     */
-    public function getStopTimeout(): int
-    {
-        return $this->stopTimeout;
-    }
-
-    /**
      * @param int $stopTimeout
      *
      * @return Client
@@ -1110,14 +896,6 @@ class Client
         $this->raw = array_merge($this->raw, ['StopTimeout' => $stopTimeout]);
 
         return $this;
-    }
-
-    /**
-     * @return array|string
-     */
-    public function getShell()
-    {
-        return $this->shell;
     }
 
     /**
@@ -1143,6 +921,8 @@ class Client
     {
         $this->cpuShares = $cpuShares;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['CpuShares' => $cpuShares]);
+
         return $this;
     }
 
@@ -1155,89 +935,105 @@ class Client
     {
         $this->memory = $memory;
 
-        return $this;
-    }
-
-    /**
-     * @param string $CgroupParent
-     *
-     * @return Client
-     */
-    public function setCgroupParent(string $CgroupParent)
-    {
-        $this->CgroupParent = $CgroupParent;
+        $this->hostConfig = array_merge($this->hostConfig, ['Memory' => $memory]);
 
         return $this;
     }
 
     /**
-     * @param int $bikioWeight
+     * @param string $cgroupParent
      *
      * @return Client
      */
-    public function setBikioWeight(int $bikioWeight)
+    public function setCgroupParent(string $cgroupParent)
     {
-        $this->bikioWeight = $bikioWeight;
+        $this->CgroupParent = $cgroupParent;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['CgroupParent' => $cgroupParent]);
 
         return $this;
     }
 
     /**
-     * @param array $bikioWeightDevice
+     * @param int $blkioWeight
      *
      * @return Client
      */
-    public function setBikioWeightDevice(array $bikioWeightDevice)
+    public function setBlkioWeight(int $blkioWeight)
     {
-        $this->bikioWeightDevice = $bikioWeightDevice;
+        $this->blkioWeight = $blkioWeight;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['BlkioWeight' => $blkioWeight]);
 
         return $this;
     }
 
     /**
-     * @param array $bikioDeviceReadBps
+     * @param array $blkioWeightDevice
      *
      * @return Client
      */
-    public function setBikioDeviceReadBps(array $bikioDeviceReadBps)
+    public function setBlkioWeightDevice(array $blkioWeightDevice)
     {
-        $this->bikioDeviceReadBps = $bikioDeviceReadBps;
+        $this->blkioWeightDevice = $blkioWeightDevice;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['BlkioWeightDevice' => $blkioWeightDevice]);
 
         return $this;
     }
 
     /**
-     * @param array $bikioDeviceWriteBps
+     * @param array $blkioDeviceReadBps
      *
      * @return Client
      */
-    public function setBikioDeviceWriteBps(array $bikioDeviceWriteBps)
+    public function setBlkioDeviceReadBps(array $blkioDeviceReadBps)
     {
-        $this->bikioDeviceWriteBps = $bikioDeviceWriteBps;
+        $this->blkioDeviceReadBps = $blkioDeviceReadBps;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['BlkioDeviceReadBps' => $blkioDeviceReadBps]);
 
         return $this;
     }
 
     /**
-     * @param array $bikioDeviceReadIOps
+     * @param array $blkioDeviceWriteBps
      *
      * @return Client
      */
-    public function setBikioDeviceReadIOps(array $bikioDeviceReadIOps)
+    public function setBlkioDeviceWriteBps(array $blkioDeviceWriteBps)
     {
-        $this->bikioDeviceReadIOps = $bikioDeviceReadIOps;
+        $this->blkioDeviceWriteBps = $blkioDeviceWriteBps;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['BlkioDeviceWriteBps' => $blkioDeviceWriteBps]);
 
         return $this;
     }
 
     /**
-     * @param array $bikioDeviceWriteIOps
+     * @param array $blkioDeviceReadIOps
      *
      * @return Client
      */
-    public function setBikioDeviceWriteIOps(array $bikioDeviceWriteIOps)
+    public function setBlkioDeviceReadIOps(array $blkioDeviceReadIOps)
     {
-        $this->bikioDeviceWriteIOps = $bikioDeviceWriteIOps;
+        $this->blkioDeviceReadIOps = $blkioDeviceReadIOps;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['BlkioDeviceReadIOps' => $blkioDeviceReadIOps]);
+
+        return $this;
+    }
+
+    /**
+     * @param array $blkioDeviceWriteIOps
+     *
+     * @return Client
+     */
+    public function setBlkioDeviceWriteIOps(array $blkioDeviceWriteIOps)
+    {
+        $this->blkioDeviceWriteIOps = $blkioDeviceWriteIOps;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['BlkioDeviceWriteIOps' => $blkioDeviceWriteIOps]);
 
         return $this;
     }
@@ -1251,6 +1047,8 @@ class Client
     {
         $this->cpuPeriod = $cpuPeriod;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['CpuPeriod' => $cpuPeriod]);
+
         return $this;
     }
 
@@ -1262,6 +1060,8 @@ class Client
     public function setCpuQuota(int $cpuQuota)
     {
         $this->cpuQuota = $cpuQuota;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['CpuQuota' => $cpuQuota]);
 
         return $this;
     }
@@ -1275,6 +1075,8 @@ class Client
     {
         $this->cpuRealtimePeriod = $cpuRealtimePeriod;
 
+        $this->hostConfig = array_merge($this->hostConfig, [' CpuRealtimePeriod ' => $cpuRealtimePeriod]);
+
         return $this;
     }
 
@@ -1287,17 +1089,21 @@ class Client
     {
         $this->cpuRealtimeRuntime = $cpuRealtimeRuntime;
 
+        $this->hostConfig = array_merge($this->hostConfig, [' CpuRealtimeRuntime ' => $cpuRealtimeRuntime]);
+
         return $this;
     }
 
     /**
-     * @param string $cpusetCpus
+     * @param string $cpusetCpus CPUs in which to allow execution (e.g., 0-3, 0,1)
      *
      * @return Client
      */
     public function setCpusetCpus(string $cpusetCpus)
     {
         $this->cpusetCpus = $cpusetCpus;
+
+        $this->hostConfig = array_merge($this->hostConfig, [' CpusetCpus' => $cpusetCpus]);
 
         return $this;
     }
@@ -1311,6 +1117,8 @@ class Client
     {
         $this->cpusetMems = $cpusetMems;
 
+        $this->hostConfig = array_merge($this->hostConfig, [' CpusetMems ' => $cpusetMems]);
+
         return $this;
     }
 
@@ -1322,6 +1130,8 @@ class Client
     public function setDevices(array $devices)
     {
         $this->devices = $devices;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['Devices' => $devices]);
 
         return $this;
     }
@@ -1335,17 +1145,21 @@ class Client
     {
         $this->deviceCgroupRules = $deviceCgroupRules;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['DeviceCgroupRules' => $deviceCgroupRules]);
+
         return $this;
     }
 
     /**
-     * @param int $diskQuote
+     * @param int $diskQuote disk limit (in bytes)
      *
      * @return Client
      */
     public function setDiskQuote(int $diskQuote)
     {
         $this->diskQuote = $diskQuote;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['DiskQuota ' => $diskQuote]);
 
         return $this;
     }
@@ -1359,6 +1173,8 @@ class Client
     {
         $this->kernelMemory = $kernelMemory;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['KernelMemory' => $kernelMemory]);
+
         return $this;
     }
 
@@ -1370,6 +1186,8 @@ class Client
     public function setMemoryReservation(int $memoryReservation)
     {
         $this->memoryReservation = $memoryReservation;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['MemoryReservation ' => $memoryReservation]);
 
         return $this;
     }
@@ -1383,6 +1201,8 @@ class Client
     {
         $this->memorySwap = $memorySwap;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['MemorySwap' => $memorySwap]);
+
         return $this;
     }
 
@@ -1395,17 +1215,21 @@ class Client
     {
         $this->memorySwappiness = $memorySwappiness;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['MemorySwappiness ' => $memorySwappiness]);
+
         return $this;
     }
 
     /**
-     * @param int $NanoCPUs
+     * @param int $nanoCPUs
      *
      * @return Client
      */
-    public function setNanoCPUs(int $NanoCPUs)
+    public function setNanoCPUs(int $nanoCPUs)
     {
-        $this->NanoCPUs = $NanoCPUs;
+        $this->NanoCPUs = $nanoCPUs;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['NanoCPUs' => $nanoCPUs]);
 
         return $this;
     }
@@ -1419,6 +1243,8 @@ class Client
     {
         $this->oomKillDisable = $oomKillDisable;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['OomKillDisable ' => $oomKillDisable]);
+
         return $this;
     }
 
@@ -1430,6 +1256,8 @@ class Client
     public function setInit(bool $init)
     {
         $this->init = $init;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['Init' => $init]);
 
         return $this;
     }
@@ -1443,6 +1271,8 @@ class Client
     {
         $this->pidsLimit = $pidsLimit;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['PidsLimit' => $pidsLimit]);
+
         return $this;
     }
 
@@ -1454,6 +1284,8 @@ class Client
     public function setUlimits(array $ulimits)
     {
         $this->ulimits = $ulimits;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['Ulimits' => $ulimits]);
 
         return $this;
     }
@@ -1467,6 +1299,8 @@ class Client
     {
         $this->cpuCount = $cpuCount;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['CpuCount' => $cpuCount]);
+
         return $this;
     }
 
@@ -1478,6 +1312,8 @@ class Client
     public function setCpuPercent(int $cpuPercent)
     {
         $this->cpuPercent = $cpuPercent;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['CpuPercent' => $cpuPercent]);
 
         return $this;
     }
@@ -1491,6 +1327,8 @@ class Client
     {
         $this->IOMaximumIOps = $IOMaximumIOps;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['IOMaximumIOps' => $IOMaximumIOps]);
+
         return $this;
     }
 
@@ -1503,17 +1341,28 @@ class Client
     {
         $this->IOMaximumBandWidth = $IOMaximumBandWidth;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['IOMaximumBandwidth' => $IOMaximumBandWidth]);
+
         return $this;
     }
 
     /**
      * @param array $binds
      *
+     * [
+     * "host-src:container-dest",
+     * "host-src:container-dest:ro",
+     * "volume-name:container-dest",
+     * "volume-name:container-dest:ro"
+     * ]
+     *
      * @return Client
      */
     public function setBinds(array $binds)
     {
         $this->binds = $binds;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['Binds' => $binds]);
 
         return $this;
     }
@@ -1527,6 +1376,8 @@ class Client
     {
         $this->containerIDFile = $containerIDFile;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['ContainerIDFile' => $containerIDFile]);
+
         return $this;
     }
 
@@ -1538,6 +1389,8 @@ class Client
     public function setLogConfig(array $logConfig)
     {
         $this->logConfig = $logConfig;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['LogConfig' => $logConfig]);
 
         return $this;
     }
@@ -1551,17 +1404,35 @@ class Client
     {
         $this->networkMode = $networkMode;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['NetworkMode' => $networkMode]);
+
         return $this;
     }
 
     /**
-     * @param array $PortBindings
+     * @param array $portBindings
+     *
+     * [ "80/tcp" => [
+     *   [
+     *     "HostIp" => "",
+     *     "HostPort" => "80"
+     *   ],
+     * ],
+     *   "443/tcp" => [
+     *   [
+     *     "HostIp"=>"",
+     *     "HostPort"=> "443"
+     *   ],
+     * ],
+     * ]
      *
      * @return Client
      */
-    public function setPortBindings(array $PortBindings)
+    public function setPortBindings(array $portBindings)
     {
-        $this->PortBindings = $PortBindings;
+        $this->PortBindings = $portBindings;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['PortBindings' => $portBindings]);
 
         return $this;
     }
@@ -1575,6 +1446,8 @@ class Client
     {
         $this->restartPolicy = $restartPolicy;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['RestartPolicy' => $restartPolicy]);
+
         return $this;
     }
 
@@ -1586,6 +1459,8 @@ class Client
     public function setAutoRemove(bool $autoRemove)
     {
         $this->autoRemove = $autoRemove;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['AutoRemove' => $autoRemove]);
 
         return $this;
     }
@@ -1599,6 +1474,8 @@ class Client
     {
         $this->volumeDriver = $volumeDriver;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['VolumeDriver' => $volumeDriver]);
+
         return $this;
     }
 
@@ -1611,17 +1488,24 @@ class Client
     {
         $this->volumesFrom = $volumesFrom;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['VolumesFrom' => $volumesFrom]);
+
         return $this;
     }
 
     /**
      * @param array $mounts
+     *                      [["Type" => "bind","Source" => "/host_mnt/c","Destination" => "/data",
+     *                      "Mode" => "","RW" => true,"Propagation" => "rprivate"],
+     *                      ]
      *
      * @return Client
      */
     public function setMounts(array $mounts)
     {
         $this->mounts = $mounts;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['Mounts' => $mounts]);
 
         return $this;
     }
@@ -1635,6 +1519,8 @@ class Client
     {
         $this->capAdd = $capAdd;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['CapAdd' => $capAdd]);
+
         return $this;
     }
 
@@ -1646,6 +1532,8 @@ class Client
     public function setCapDrop(array $capDrop)
     {
         $this->capDrop = $capDrop;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['CapDrop' => $capDrop]);
 
         return $this;
     }
@@ -1659,6 +1547,8 @@ class Client
     {
         $this->dns = $dns;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['Dns' => $dns]);
+
         return $this;
     }
 
@@ -1670,6 +1560,8 @@ class Client
     public function setDnsOptions(array $dnsOptions)
     {
         $this->dnsOptions = $dnsOptions;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['DnsOptions' => $dnsOptions]);
 
         return $this;
     }
@@ -1683,6 +1575,8 @@ class Client
     {
         $this->dnsSearch = $dnsSearch;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['DnsSearch' => $dnsSearch]);
+
         return $this;
     }
 
@@ -1694,6 +1588,8 @@ class Client
     public function setExtraHosts(array $extraHosts)
     {
         $this->extraHosts = $extraHosts;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['ExtraHosts' => $extraHosts]);
 
         return $this;
     }
@@ -1707,6 +1603,8 @@ class Client
     {
         $this->groupAdd = $groupAdd;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['GroupAdd' => $groupAdd]);
+
         return $this;
     }
 
@@ -1718,6 +1616,8 @@ class Client
     public function setIpcMode(string $ipcMode)
     {
         $this->ipcMode = $ipcMode;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['IpcMode' => $ipcMode]);
 
         return $this;
     }
@@ -1731,6 +1631,8 @@ class Client
     {
         $this->Cgroup = $Cgroup;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['Cgroup' => $Cgroup]);
+
         return $this;
     }
 
@@ -1742,6 +1644,8 @@ class Client
     public function setOomScoreAdj(int $oomScoreAdj)
     {
         $this->oomScoreAdj = $oomScoreAdj;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['OomScoreAdj' => $oomScoreAdj]);
 
         return $this;
     }
@@ -1755,6 +1659,8 @@ class Client
     {
         $this->pidMode = $pidMode;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['PidMode' => $pidMode]);
+
         return $this;
     }
 
@@ -1766,6 +1672,8 @@ class Client
     public function setPrivileged(bool $privileged)
     {
         $this->privileged = $privileged;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['Privileged' => $privileged]);
 
         return $this;
     }
@@ -1779,6 +1687,8 @@ class Client
     {
         $this->publishAllPorts = $publishAllPorts;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['PublishAllPorts' => $publishAllPorts]);
+
         return $this;
     }
 
@@ -1790,6 +1700,8 @@ class Client
     public function setReadonlyRootfs(bool $readonlyRootfs)
     {
         $this->readonlyRootfs = $readonlyRootfs;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['ReadonlyRootfs' => $readonlyRootfs]);
 
         return $this;
     }
@@ -1803,17 +1715,21 @@ class Client
     {
         $this->securityOpt = $securityOpt;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['SecurityOpt' => $securityOpt]);
+
         return $this;
     }
 
     /**
-     * @param array $StorageOpt
+     * @param array $storageOpt
      *
      * @return Client
      */
-    public function setStorageOpt(array $StorageOpt)
+    public function setStorageOpt(array $storageOpt)
     {
-        $this->StorageOpt = $StorageOpt;
+        $this->StorageOpt = $storageOpt;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['StorageOpt' => $storageOpt]);
 
         return $this;
     }
@@ -1827,6 +1743,8 @@ class Client
     {
         $this->tmpfs = $tmpfs;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['Tmpfs' => $tmpfs]);
+
         return $this;
     }
 
@@ -1838,6 +1756,8 @@ class Client
     public function setUTSMode(string $UTSMode)
     {
         $this->UTSMode = $UTSMode;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['UTSMode' => $UTSMode]);
 
         return $this;
     }
@@ -1851,6 +1771,8 @@ class Client
     {
         $this->usernsMode = $usernsMode;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['UsernsMode' => $usernsMode]);
+
         return $this;
     }
 
@@ -1862,6 +1784,8 @@ class Client
     public function setShmSize(int $shmSize)
     {
         $this->shmSize = $shmSize;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['ShmSize' => $shmSize]);
 
         return $this;
     }
@@ -1875,6 +1799,8 @@ class Client
     {
         $this->sysctls = $sysctls;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['Sysctls' => $sysctls]);
+
         return $this;
     }
 
@@ -1886,6 +1812,8 @@ class Client
     public function setRuntime(string $runtime)
     {
         $this->runtime = $runtime;
+
+        $this->hostConfig = array_merge($this->hostConfig, ['Runtime' => $runtime]);
 
         return $this;
     }
@@ -1899,6 +1827,8 @@ class Client
     {
         $this->consoleSize = $consoleSize;
 
+        $this->hostConfig = array_merge($this->hostConfig, ['ConsoleSize' => $consoleSize]);
+
         return $this;
     }
 
@@ -1911,17 +1841,7 @@ class Client
     {
         $this->isolation = $isolation;
 
-        return $this;
-    }
-
-    /**
-     * @param array $network_aliases
-     *
-     * @return Client
-     */
-    public function setNetworkAliases(array $network_aliases)
-    {
-        $this->network_aliases = $network_aliases;
+        $this->hostConfig = array_merge($this->hostConfig, ['Isolation' => $isolation]);
 
         return $this;
     }
@@ -2015,7 +1935,7 @@ class Client
      * status=(created|restarting|running|removing|paused|exited|dead)
      * volume=(<volume name> or <mount point destination>)
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2041,15 +1961,21 @@ class Client
     }
 
     /**
-     * @return mixed
+     * @param bool $returnID
+     *
+     * @return string|Client 201
      *
      * @throws Exception
      */
-    public function create()
+    public function create(bool $returnID = false)
     {
         $url = self::$base_url.'/'.__FUNCTION__.'?'.http_build_query(['name' => $this->container_name]);
 
-        $request = json_encode($this->raw);
+        if (!$this->image) {
+            throw new Exception('Image Not Found, please set image', 404);
+        }
+
+        $request = json_encode(array_merge($this->raw, ['HostConfig' => $this->hostConfig]));
 
         $json = self::$curl->post($url, $request, self::$header);
 
@@ -2065,9 +1991,17 @@ class Client
 
         $this->create_raw = $this->raw;
 
-        $this->raw = null;
+        $this->hostConfig = [];
 
-        return $id;
+        $this->networkingConfig = [];
+
+        $this->raw = [];
+
+        if ($returnID) {
+            return $id;
+        }
+
+        return $this;
     }
 
     public function getCreateJson()
@@ -2080,16 +2014,16 @@ class Client
      *
      * Return low-level information about a container.
      *
-     * @param string $id
-     * @param bool   $size
+     * @param string|null $id
+     * @param bool        $size
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
-    public function inspect(string $id, bool $size = false)
+    public function inspect(?string $id, bool $size = false)
     {
-        $url = self::$base_url.'/'.$id.'/json?'.http_build_query(['size' => $size]);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/json?'.http_build_query(['size' => $size]);
 
         return self::$curl->get($url);
     }
@@ -2102,7 +2036,7 @@ class Client
      * @param string|null $id
      * @param string      $ps_args
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2129,7 +2063,7 @@ class Client
      * @param bool        $timestamps
      * @param string      $tail
      *
-     * @return mixed
+     * @return mixed 101 200
      *
      * @throws Exception
      */
@@ -2152,7 +2086,7 @@ class Client
             'tail' => $tail,
         ];
 
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/'.__FUNCTION__.'?'.http_build_query($data);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/'.__FUNCTION__.'?'.http_build_query($data);
 
         return self::$curl->get($url);
     }
@@ -2169,13 +2103,13 @@ class Client
      *
      * @param string|null $id
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
     public function changes(?string $id)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/'.__FUNCTION__;
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/'.__FUNCTION__;
 
         return self::$curl->get($url);
     }
@@ -2187,13 +2121,13 @@ class Client
      *
      * @param string|null $id
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
     public function export(string $id)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/'.__FUNCTION__;
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/'.__FUNCTION__;
 
         return self::$curl->get($url);
     }
@@ -2205,13 +2139,13 @@ class Client
      * @param bool        $stream Stream the output. If false, the stats will be output once and then it will
      *                            disconnect.
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
     public function stats(?string $id, bool $stream = false)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/stats?'.http_build_query(['stream' => $stream]);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/stats?'.http_build_query(['stream' => $stream]);
 
         return self::$curl->get($url);
     }
@@ -2225,7 +2159,7 @@ class Client
      * @param int         $height Height of the tty session in characters
      * @param int         $width  Width of the tty session in characters
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2236,7 +2170,7 @@ class Client
             'width' => $width,
         ];
 
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/resize?'.http_build_query($data);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/resize?'.http_build_query($data);
 
         return self::$curl->post($url);
     }
@@ -2247,13 +2181,15 @@ class Client
      *                                Format is a single character `[a-Z]`
      *                                or `ctrl-<value>` where <value> is one of: `a-z`,`@`,`^`,`[`,`,` or `_`.
      *
-     * @return string
+     * @return string 204 304
      *
      * @throws Exception
      */
     public function start(?string $id, string $detachKeys = null)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/start?'.http_build_query(['detachKeys' => $detachKeys]);
+        $id = $id ?? $this->container_id;
+
+        $url = self::$base_url.'/'.$id.'/start?'.http_build_query(['detachKeys' => $detachKeys]);
 
         $output = self::$curl->post($url);
 
@@ -2268,61 +2204,91 @@ class Client
      * @param string|null $id
      * @param int         $waitTime
      *
-     * @return mixed
+     * @return mixed 204 304
      *
      * @throws Exception
      */
     public function stop(?string $id, int $waitTime = 0)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/stop?'.http_build_query(['t' => $waitTime]);
+        $id = $id ?? $this->container_id;
 
-        return self::$curl->post($url);
+        $url = self::$base_url.'/'.$id.'/stop?'.http_build_query(['t' => $waitTime]);
+
+        $output = self::$curl->post($url);
+
+        $http_return_code = self::$curl->getCode();
+
+        if (204 === $http_return_code) {
+            return null;
+        }
+
+        throw new Exception(json_decode($output)->message, $http_return_code);
     }
 
     /**
      * @param string|null $id
      * @param int         $waitTime
      *
-     * @return mixed
+     * @return mixed 204
      *
      * @throws Exception
      */
     public function restart(?string $id, int $waitTime = 0)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/restart?'.http_persistent_handles_clean(['t' => $waitTime]);
+        $id = $id ?? $this->container_id;
 
-        return self::$curl->post($url);
+        $url = self::$base_url.'/'.$id.'/restart?'.http_build_query(['t' => $waitTime]);
+
+        $output = self::$curl->post($url);
+
+        $http_return_code = self::$curl->getCode();
+
+        if (204 === $http_return_code) {
+            return null;
+        }
+
+        throw new Exception(json_decode($output)->message, $http_return_code);
     }
 
     /**
      * @param string|null $id
      * @param string      $signal
      *
-     * @return mixed
+     * @return mixed 204
      *
      * @throws Exception
      */
     public function kill(?string $id, string $signal = 'SIGKILL')
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/kill?'.http_build_query(['signal' => $signal]);
+        $id = $id ?? $this->container_id;
 
-        return self::$curl->post($url);
+        $url = self::$base_url.'/'.$id.'/kill?'.http_build_query(['signal' => $signal]);
+
+        $output = self::$curl->post($url);
+
+        $http_return_code = self::$curl->getCode();
+
+        if (204 === $http_return_code) {
+            return null;
+        }
+
+        throw new Exception(json_decode($output)->message, $http_return_code);
     }
 
     /**
-     * TODO.
-     *
      * @param string|null $id
-     * @param array       $request_body
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
+     *
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/ContainerUpdate
      */
-    public function update(?string $id, array $request_body = [])
+    public function update(?string $id)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/update';
-        $request = json_encode($request_body);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/update';
+
+        $request = json_encode($request = $this->hostConfig);
 
         return self::$curl->post($url, $request, self::$header);
     }
@@ -2331,43 +2297,73 @@ class Client
      * @param string|null $id
      * @param string      $name
      *
-     * @return mixed
+     * @return mixed 204
      *
      * @throws Exception
      */
     public function rename(?string $id, string $name)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/rename?'.http_build_query(['name' => $name]);
+        $id = $id ?? $this->container_id;
 
-        return self::$curl->post($url);
+        $url = self::$base_url.'/'.$id.'/rename?'.http_build_query(['name' => $name]);
+
+        $output = self::$curl->post($url);
+
+        $http_return_code = self::$curl->getCode();
+
+        if (204 === $http_return_code) {
+            return null;
+        }
+
+        throw new Exception(json_decode($output)->message, $http_return_code);
     }
 
     /**
      * @param string|null $id
      *
-     * @return mixed
+     * @return mixed 204
      *
      * @throws Exception
      */
     public function pause(?string $id)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/pause';
+        $id = $id ?? $this->container_id;
 
-        return self::$curl->post($url);
+        $url = self::$base_url.'/'.$id.'/pause';
+
+        $output = self::$curl->post($url);
+
+        $http_return_code = self::$curl->getCode();
+
+        if (204 === $http_return_code) {
+            return null;
+        }
+
+        throw new Exception(json_decode($output)->message, $http_return_code);
     }
 
     /**
      * @param string|null $id
      *
-     * @return mixed
+     * @return mixed 204
      *
      * @throws Exception
      */
     public function unpause(?string $id)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/unpause';
+        $id = $id ?? $this->container_id;
 
-        return self::$curl->post($url);
+        $url = self::$base_url.'/'.$id.'/unpause';
+
+        $output = self::$curl->post($url);
+
+        $http_return_code = self::$curl->getCode();
+
+        if (204 === $http_return_code) {
+            return null;
+        }
+
+        throw new Exception(json_decode($output)->message, $http_return_code);
     }
 
     /**
@@ -2379,11 +2375,11 @@ class Client
      * @param bool        $stdout
      * @param bool        $stderr
      *
-     * @return mixed
+     * @return mixed 101 200
      *
      * @throws Exception
      *
-     * @see https://docs.docker.com/engine/api/v1.35/#operation/ContainerAttach
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/ContainerAttach
      */
     public function attach(?string $id,
                            string $detachKeys = null,
@@ -2404,7 +2400,7 @@ class Client
             'stderr' => $stderr,
         ];
 
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/attach?'.http_build_query($data);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/attach?'.http_build_query($data);
 
         return self::$curl->post($url);
     }
@@ -2420,19 +2416,21 @@ class Client
      * @param bool        $stdout
      * @param bool        $stderr
      *
-     * @return mixed
+     * @return mixed 101 200
      *
      * @throws Exception
+     *
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/ContainerAttachWebsocket
      */
     public function attachViaWebSocket(?string $id,
-                                       string $detachKeys,
+                                       string $detachKeys = null,
                                        bool $logs = false,
                                        bool $stream = false,
                                        bool $stdin = false,
                                        bool $stdout = false,
                                        bool $stderr = false)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/attach/ws?'.http_build_query([
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/attach/ws?'.http_build_query([
                     'detachKeys' => $detachKeys,
                     'logs' => $logs,
                     'stream' => $stream,
@@ -2451,15 +2449,16 @@ class Client
      * Block until a container stops, then returns the exit code.
      *
      * @param string|null $id
-     * @param string      $condition
+     * @param string      $condition wait until a container state reaches the given condition,
+     *                               either 'not - running'(default), 'next - exit', or 'removed'
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
-    public function wait(?string $id, string $condition = 'not-running')
+    public function wait(?string $id, string $condition = 'not - running')
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/wait?'.http_build_query(['condition' => $condition]);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/wait?'.http_build_query(['condition' => $condition]);
 
         return self::$curl->post($url);
     }
@@ -2470,7 +2469,7 @@ class Client
      * @param bool        $force
      * @param bool        $link
      *
-     * @return mixed
+     * @return mixed 204
      *
      * @throws Exception
      */
@@ -2481,9 +2480,20 @@ class Client
             'force' => $force,
             'link' => $link,
         ];
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'?'.http_build_query($data);
 
-        return self::$curl->delete($url);
+        $id = $id ?? $this->container_id;
+
+        $url = self::$base_url.'/'.$id.'?'.http_build_query($data);
+
+        $output = self::$curl->delete($url);
+
+        $http_return_code = self::$curl->getCode();
+
+        if (204 === $http_return_code) {
+            return null;
+        }
+
+        throw new Exception(json_decode($output)->message, $http_return_code);
     }
 
     /**
@@ -2495,13 +2505,13 @@ class Client
      * @param null|string $id
      * @param string      $path
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
     public function getFileInfo(?string $id, string $path)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/archive?'.http_build_query([
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/archive?'.http_build_query([
                 'path' => $path,
             ]);
 
@@ -2516,13 +2526,13 @@ class Client
      * @param string $id
      * @param string $path
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
     public function archive(?string $id, string $path)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/archive?'.http_build_query(['path' => $path]);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/archive?'.http_build_query(['path' => $path]);
 
         return self::$curl->get($url);
     }
@@ -2531,22 +2541,35 @@ class Client
      * Extract an archive of files or folders to a directory in a container.
      *
      * @param string|null $id
-     * @param string      $path
-     * @param bool        $noOverwriteDirNonDir
+     * @param string      $path                 path to a directory in the container to extract the archive’s contents
+     *                                          into
+     * @param bool        $noOverwriteDirNonDir if “1”, “true”, or “True” then it will be an error if unpacking the
+     *                                          given content would cause an existing directory to be replaced with a
+     *                                          non-directory and vice versa
      * @param string      $request
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
     public function extract(?string $id, string $path, bool $noOverwriteDirNonDir, string $request)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/archive?'.http_build_query([
+        $id = $id ?? $this->container_id;
+
+        $url = self::$base_url.'/'.$id.'/archive?'.http_build_query([
                 'path' => $path,
                 'noOverwriteDirNonDir' => $noOverwriteDirNonDir,
             ]);
 
-        return self::$curl->put($url, $request);
+        $output = self::$curl->put($url, $request);
+
+        $http_return_code = self::$curl->getCode();
+
+        if (200 === $http_return_code) {
+            return null;
+        }
+
+        throw new Exception(json_decode($output)->message, $http_return_code);
     }
 
     /**
@@ -2560,7 +2583,7 @@ class Client
      * label (label=<key>, label=<key>=<value>, label!=<key>, or label!=<key>=<value>) Prune containers with (or
      * without, in case label!=... is used) the specified labels.
      *
-     * @return mixed
+     * @return mixed 200
      *
      * @throws Exception
      */
@@ -2594,7 +2617,7 @@ class Client
                                string $workingDir,
                                array $other)
     {
-        $url = self::$base_url.'/'.$id ?? $this->container_id.'/exec';
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/exec';
 
         $data = [
             'Cmd' => $cmd,
@@ -2619,7 +2642,7 @@ class Client
      */
     public function startExec(?string $id, bool $detach = false, bool $tty = false)
     {
-        $url = self::$base_url.'/exec'.$id ?? $this->container_id.'/start';
+        $url = self::$base_url.'/exec'.($id ?? $this->container_id).'/start';
 
         $data = [
             'Detach' => $detach,
@@ -2647,7 +2670,7 @@ class Client
             'w' => $width,
         ];
 
-        $url = self::$base_url.'/exec'.$id ?? $this->container_id.'/resize'.http_build_query($data);
+        $url = self::$base_url.'/exec'.($id ?? $this->container_id).'/resize?'.http_build_query($data);
 
         return self::$curl->post($url);
     }

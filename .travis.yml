@@ -34,6 +34,12 @@ php:
 #   mariadb: '10.0'
 #   postgresql: '9.4'
 before_script:
+  - docker --version
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) test"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce
+  - docker --version
   # - sleep 15
   - sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'DROP DATABASE IF EXISTS tests;' -U postgres; fi"
   - sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'DROP DATABASE IF EXISTS tests_tmp;' -U postgres; fi"
@@ -41,7 +47,10 @@ before_script:
   - sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'CREATE DATABASE tests_tmp;' -U postgres; fi"
   - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE IF NOT EXISTS tests_tmp; CREATE DATABASE IF NOT EXISTS tests;'; fi"
   - sh -c "if [ '$ENABLE_MONGODB' = 'enable' ]; then mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'; fi"
-  - php .khsci.php
+  # https://docs.docker.com/edge/engine/reference/commandline/dockerd/#daemon-socket-option
+  - echo 'DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375"' | sudo tee /etc/default/docker
+  - sudo service docker restart
+  - docker pull khs1994/nginx:1.15.1-alpine
 
 jobs:
   include:
@@ -50,6 +59,7 @@ jobs:
         - composer install -q
         # - composer update -q
         - vendor/bin/phpunit --coverage-clover=coverage.xml
+      after_success:
         - bash <(curl -s https://codecov.io/bash)
     # - stage: deploy
     #   script: " if ! [ -z \"${TRAVIS_TAG}\" ];then

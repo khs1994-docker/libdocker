@@ -25,6 +25,8 @@ class ClientTest extends TestCase
     public function testPull(): void
     {
         $output = $this->client->pull('nginx', '1.15.1-alpine');
+
+        $this->assertStringMatchesFormat('%a', $output);
     }
 
     /**

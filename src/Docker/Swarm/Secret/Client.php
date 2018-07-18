@@ -41,7 +41,7 @@ class Client
      *
      * @throws \Exception
      */
-    public function list(array $filters)
+    public function list(array $filters = [])
     {
         return self::$curl->get(self::$base_url.'?'.http_build_query(['filters' => json_encode($filters)]));
     }
@@ -56,16 +56,18 @@ class Client
      * @return mixed
      *
      * @throws \Exception
+     *
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/SecretCreate
      */
-    public function create(string $name, array $labels, string $data, array $drive, array $templating)
+    public function create(string $name, string $data, array $labels = [], array $drive = [], array $templating = [])
     {
-        $data = [
+        $data = array_filter([
             'Name' => $name,
             'Labels' => $labels,
             'Data' => $data,
             'Drive' => $drive,
             'Templating' => $templating,
-        ];
+        ]);
 
         $url = self::$base_url.'/create';
 
@@ -112,18 +114,18 @@ class Client
     public function update(string $id,
                            int $version,
                            string $name,
-                           array $labels,
                            string $data,
-                           array $drive,
-                           array $templating)
+                           array $labels = [],
+                           array $drive = [],
+                           array $templating = [])
     {
-        $data = [
+        $data = array_filter([
             'Name' => $name,
             'Labels' => $labels,
             'Data' => $data,
             'Drive' => $drive,
             'Templating' => $templating,
-        ];
+        ]);
 
         $url = self::$base_url.'/'.$id.'/update?'.http_build_query(['version' => $version]);
 

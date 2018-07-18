@@ -13,6 +13,7 @@ use Pimple\Container as ServiceContainer;
 /**
  * @property Swarm\Config\Client  $config
  * @property Container\Client     $container
+ * @property Distribution\Client  $distribution
  * @property Image\Client         $image
  * @property Network\Client       $network
  * @property Plugin\Client        $plugin
@@ -56,6 +57,7 @@ class Docker extends ServiceContainer
 
     protected $providers = [
         Container\ServiceProvider::class,
+        Distribution\ServiceProvider::class,
         Image\ServiceProvider::class,
         Network\ServiceProvider::class,
         Plugin\ServiceProvider::class,
@@ -110,7 +112,7 @@ class Docker extends ServiceContainer
      *
      * @return array
      */
-    public static function createOptionArray(string $docker_host,
+    public static function createOptionArray(?string $docker_host,
                                              bool $docker_tls_verify = false,
                                              string $docker_cert_path = null,
                                              string $docker_username = null,
@@ -118,7 +120,7 @@ class Docker extends ServiceContainer
                                              string $docker_registry = null)
     {
         return [
-            'DOCKER_HOST' => $docker_host,
+            'DOCKER_HOST' => $docker_host ?? '127.0.0.1:2375',
             'DOCKER_TLS_VERIFY' => (int) $docker_tls_verify,
             'DOCKER_CERT_PATH' => $docker_cert_path,
             'DOCKER_USERNAME' => $docker_username,
@@ -170,7 +172,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return Container\Container
+     * @return Container\Client
      */
     public function container()
     {
@@ -178,7 +180,15 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return Image\Image
+     * @return mixed
+     */
+    public function distribution()
+    {
+        return $this['distribution'];
+    }
+
+    /**
+     * @return Image\Client
      */
     public function image()
     {
@@ -186,7 +196,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @return Network\Network
+     * @return Network\Client
      */
     public function network()
     {

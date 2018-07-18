@@ -11,5 +11,8 @@ class ServiceProvider implements ServiceProviderInterface
 {
     public function register(Container $pimple): void
     {
+        $pimple['plugin'] = function ($app) {
+            return new Client($app->curl, $app->docker_host);
+        };
     }
 }
