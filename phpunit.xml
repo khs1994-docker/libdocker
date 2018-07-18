@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit>
-  <testsuites>
-    <testsuite name="Feature">
-      <directory>tests/Docker</directory>
-    </testsuite>
-  </testsuites>
-  <groups>
-    <exclude>
-      <group>no-test</group>
-    </exclude>
-  </groups>
+    <testsuites>
+        <testsuite name="Feature">
+            <directory>tests/Doker</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+    <groups>
+        <exclude>
+            <group>no-test</group>
+        </exclude>
+    </groups>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+    </php>
 </phpunit>
