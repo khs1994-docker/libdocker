@@ -7,6 +7,7 @@ declare(strict_types=1);
 namespace Docker\Container;
 
 use Curl\Curl;
+use Docker\Image\Client as Image;
 use Error;
 use Exception;
 
@@ -27,6 +28,11 @@ class Client
     private static $base_url;
 
     private static $header = ['content-type' => 'application/json'];
+
+    /**
+     * @var Image
+     */
+    private $docker_image;
 
     /**
      * @var array
@@ -1920,10 +1926,11 @@ class Client
      *
      * @throws Exception
      */
-    public function __construct($curl, $docker_host)
+    public function __construct($curl, $docker_host, $image)
     {
         self::$curl = $curl;
         self::$base_url = $docker_host.'/'.self::TYPE;
+        $this->docker_image = $image;
     }
 
     /**
@@ -1974,23 +1981,25 @@ class Client
     }
 
     /**
-     * @param array|null $raw
+     * @param null|string $raw
      *
      * @return $this
      *
      * @throws Exception
      */
-    public function setCreateJson(?array $raw)
+    public function setCreateJson(?string $raw)
     {
         if ($raw) {
-            $request = json_encode($raw);
+            $this->create_raw = $raw;
 
-            $this->create_raw = $request;
+            $this->image = json_decode($this->create_raw)->Image;
 
             return $this;
         }
 
         if ($this->create_raw) {
+            $this->image = json_decode($this->create_raw)->Image;
+
             return $this;
         }
 
@@ -2022,16 +2031,19 @@ class Client
 
     /**
      * @param bool $returnID
+     * @param bool $pull_force
      *
      * @return string|Client 201
      *
      * @throws Exception
      */
-    public function create(bool $returnID = false)
+    public function create(bool $returnID = false, bool $pull_force = false)
     {
         $url = self::$base_url.'/'.__FUNCTION__.'?'.http_build_query(['name' => $this->container_name]);
 
         $this->setCreateJson(null);
+
+        $this->docker_image->pull($this->image, 'latest', $pull_force);
 
         $json = self::$curl->post($url, $this->getCreateJson(), self::$header);
 

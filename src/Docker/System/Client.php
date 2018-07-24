@@ -38,14 +38,13 @@ class Client
      *
      * @throws \Exception
      */
-    public function checkAuthConfig(string $username, string $password, string $email = null, string $serverAddress = 'https://index.docker.io/v1/')
+    public function checkAuthConfig(string $username, string $password, string $serverAddress = 'https://index.docker.io/v1/')
     {
         $url = $this->url.'/auth';
 
         $data = [
             'username' => $username,
             'password' => $password,
-            'email' => $email,
             'serveraddress' => $serverAddress,
         ];
 
@@ -62,13 +61,12 @@ class Client
      *
      * @return string
      */
-    public function authJson(string $username, string $password, ?string $email, string $serveraddress = 'https://index.docker.io/v1/')
+    public function authJson(string $username, string $password, string $serveraddress = 'https://index.docker.io/v1/')
     {
         return base64_encode(json_encode(
                 array_filter([
                         'username' => $username,
-                        'passsword' => $password,
-                        'email' => $email,
+                        'password' => $password,
                         'serveraddress' => $serveraddress,
                     ]
                 )

@@ -172,6 +172,7 @@ class Client
     public function build(?string $gitAddress,
                           ?string $auth,
                           string $tag,
+                          ?int $shmsize,
                           string $dockerfile = 'Dockerfile',
                           string $extrahosts = null,
                           bool $q = false,
@@ -181,12 +182,11 @@ class Client
                           bool $rm = true,
                           bool $forcerm = false,
                           array $buildargs = null,
-                          ?int $shmsize,
                           bool $squash = false,
                           array $labels = null,
                           string $networkmode = null,
                           string $platform = null,
-                          ?string $request)
+                          ?string $request = null)
     {
         $data = [
             'dockerfile' => $dockerfile,
@@ -257,6 +257,39 @@ class Client
     }
 
     /**
+     * @param $image
+     * @param $tag
+     *
+     * @return array
+     */
+    private function parseImage(string $image, string $tag)
+    {
+        $image_array = explode(':', $image);
+
+        $pull_tag = $tag;
+        $pull_image = $image;
+
+        /*
+         * 1 khs1994/nginx
+         * 2 khs1994/nginx:1.15.1-alpine
+         * 2 docker.khs1994.com:1000/khs1994/nginx
+         * 3 docker.khs1994.com:1000/khs1994/nginx:1.15.1-alpine
+         */
+        if (1 !== count($image_array)) {
+            // 取最后一位为 tag,删除 tag,得到 image
+            $tag = array_pop($image_array);
+            $image = implode('', $image_array);
+
+            if (preg_match('#/#', $tag)) {
+                $tag = $pull_tag;
+                $image = $pull_image;
+            }
+        }
+
+        return [$image, $tag];
+    }
+
+    /**
      * 如果 tag 为空，则拉取所有标签，所以必须指定名称
      * 额外增加 $force 参数，拉取前首先判断是否已存在。
      *
@@ -272,10 +305,12 @@ class Client
      */
     public function pull(string $image, string $tag = 'latest', bool $force = false, string $auth = null, string $platform = null)
     {
+        list($image, $tag) = $this->parseImage($image, $tag);
+
         $json = $this->list(true, ['reference' => "$image:$tag"]);
 
         if (false === $force and json_decode($json)) {
-            return 'Already Exists';
+            return "$image:$tag".' Already Exists';
         }
 
         $data = [
@@ -346,7 +381,7 @@ class Client
     }
 
     /**
-     * @param string $name
+     * @param string $image
      * @param string $tag
      * @param string $auth
      *
@@ -354,17 +389,21 @@ class Client
      *
      * @throws Exception
      */
-    public function push(string $name, string $tag = 'latest', string $auth)
+    public function push(string $image, string $tag = 'latest', string $auth = null)
     {
-        $url = self::$base_url.'/'.$name.'/push?'.http_build_query(['tag' => $tag]);
+        list($image, $tag) = $this->parseImage($image, $tag);
+
+        $url = self::$base_url.'/'.$image.'/push?'.http_build_query(['tag' => $tag]);
 
         $header = [];
 
         if ($auth) {
-            $header['X-Registry-Auth'] = [$auth];
+            $header['X-Registry-Auth'] = $auth;
         }
 
-        return self::$curl->post($url, null, $header);
+        echo self::$curl->post($url, null, $header);
+
+        var_dump(self::$curl->getRequestHeaders());
     }
 
     /**

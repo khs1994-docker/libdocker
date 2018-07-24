@@ -50,7 +50,6 @@ before_script:
   # https://docs.docker.com/edge/engine/reference/commandline/dockerd/#daemon-socket-option
   - echo 'DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375"' | sudo tee /etc/default/docker
   - sudo service docker restart
-  - docker pull khs1994/nginx:1.15.1-alpine
 
 jobs:
   include:

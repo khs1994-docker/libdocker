@@ -38,4 +38,14 @@ class ClientTest extends TestCase
 
         $this->assertJson($output);
     }
+
+    /**
+     * @throws \Exception
+     */
+    public function testTag()
+    {
+        $output = $this->client->tag('nginx:1.15.1-alpine', 'nginx', 'alpine');
+
+        $this->assertStringMatchesFormat('%S', $output);
+    }
 }
