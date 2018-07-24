@@ -197,7 +197,7 @@ class Client
     private $raw = [];
 
     /**
-     * @var array
+     * @var string
      */
     private $create_raw;
 
@@ -568,8 +568,21 @@ class Client
 
     /**
      * @param array $networkingConfig
+     *                                <pre>
+     *                                [
+     *                                'EndpointsConfig' => [
+     *                                'test' => [
+     *                                'Aliases' => [
+     *                                'nginx'
+     *                                ]
+     *                                ]
+     *                                ]
+     *                                ]
+     *                                <pre>
      *
      * @return Client
+     *
+     * @see https://docs.docker.com/engine/api/v1.37/#operation/ContainerCreate
      */
     public function setNetworkingConfig(array $networkingConfig)
     {
@@ -1961,6 +1974,28 @@ class Client
     }
 
     /**
+     * @return $this
+     *
+     * @throws Exception
+     */
+    public function setCreateJson()
+    {
+        if (!$this->image) {
+            throw new Exception('Image Not Found, please set image', 404);
+        }
+
+        $request = json_encode($this->raw);
+
+        if ($this->hostConfig) {
+            $request = json_encode(array_merge($this->raw, ['HostConfig' => $this->hostConfig]));
+        }
+
+        $this->create_raw = $request;
+
+        return $this;
+    }
+
+    /**
      * @param bool $returnID
      *
      * @return string|Client 201
@@ -1971,13 +2006,9 @@ class Client
     {
         $url = self::$base_url.'/'.__FUNCTION__.'?'.http_build_query(['name' => $this->container_name]);
 
-        if (!$this->image) {
-            throw new Exception('Image Not Found, please set image', 404);
-        }
+        $this->setCreateJson();
 
-        $request = json_encode(array_merge($this->raw, ['HostConfig' => $this->hostConfig]));
-
-        $json = self::$curl->post($url, $request, self::$header);
+        $json = self::$curl->post($url, $this->getCreateJson(), self::$header);
 
         $id = json_decode($json)->Id ?? null;
 
@@ -1988,8 +2019,6 @@ class Client
         $this->container_id = $id;
 
         // clean raw
-
-        $this->create_raw = $this->raw;
 
         $this->hostConfig = [];
 
@@ -2004,6 +2033,9 @@ class Client
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getCreateJson()
     {
         return $this->create_raw;
