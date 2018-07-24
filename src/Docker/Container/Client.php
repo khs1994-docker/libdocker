@@ -1981,16 +1981,16 @@ class Client
     }
 
     /**
-     * @param null|string $raw
+     * @param null|string $create_raw
      *
      * @return $this
      *
      * @throws Exception
      */
-    public function setCreateJson(?string $raw)
+    public function setCreateJson(?string $create_raw)
     {
-        if ($raw) {
-            $this->create_raw = $raw;
+        if ($create_raw) {
+            $this->create_raw = $create_raw;
 
             $this->image = json_decode($this->create_raw)->Image;
 
@@ -2002,6 +2002,8 @@ class Client
 
             return $this;
         }
+
+        // 没有传入，进行拼接
 
         if (!$this->image) {
             throw new Exception('Image Not Found, please set image', 404);
@@ -2018,7 +2020,7 @@ class Client
         return $this;
     }
 
-    public function cleanupConfig(): void
+    private function cleanupConfig(): void
     {
         $this->hostConfig = [];
 
@@ -2055,10 +2057,7 @@ class Client
 
         $this->container_id = $id;
 
-        // clean raw
-
         $this->container_name = null;
-
         $this->cleanupConfig();
 
         if ($returnID) {
@@ -2073,7 +2072,11 @@ class Client
      */
     public function getCreateJson()
     {
-        return $this->create_raw;
+        $create_raw = $this->create_raw;
+
+        $this->cleanupConfig();
+
+        return $create_raw;
     }
 
     /**

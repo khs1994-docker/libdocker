@@ -42,7 +42,7 @@ class ClientTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testTag()
+    public function testTag(): void
     {
         $output = $this->client->tag('nginx:1.15.1-alpine', 'nginx', 'alpine');
 
