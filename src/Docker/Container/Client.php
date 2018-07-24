@@ -199,7 +199,7 @@ class Client
     /**
      * @var string
      */
-    private $create_raw;
+    private $create_raw = null;
 
     /**
      * @var int
@@ -531,7 +531,7 @@ class Client
      *
      * @return Client
      */
-    public function setCmd(array $cmd)
+    public function setCmd(?array $cmd)
     {
         $this->cmd = $cmd;
 
@@ -541,11 +541,11 @@ class Client
     }
 
     /**
-     * @param mixed $image
+     * @param string $image
      *
      * @return Client
      */
-    public function setImage($image)
+    public function setImage(string $image)
     {
         $this->image = $image;
 
@@ -738,7 +738,7 @@ class Client
      *
      * @return Client
      */
-    public function setEnv(array $env = ['k=v'])
+    public function setEnv(?array $env)
     {
         $this->env = $env;
 
@@ -818,7 +818,7 @@ class Client
      *
      * @return Client
      */
-    public function setEntrypoint(array $entrypoint)
+    public function setEntrypoint(?array $entrypoint)
     {
         $this->entrypoint = $entrypoint;
 
@@ -1974,12 +1974,26 @@ class Client
     }
 
     /**
+     * @param array|null $raw
+     *
      * @return $this
      *
      * @throws Exception
      */
-    public function setCreateJson()
+    public function setCreateJson(?array $raw)
     {
+        if ($raw) {
+            $request = json_encode($raw);
+
+            $this->create_raw = $request;
+
+            return $this;
+        }
+
+        if ($this->create_raw) {
+            return $this;
+        }
+
         if (!$this->image) {
             throw new Exception('Image Not Found, please set image', 404);
         }
@@ -1995,6 +2009,17 @@ class Client
         return $this;
     }
 
+    public function cleanupConfig(): void
+    {
+        $this->hostConfig = [];
+
+        $this->networkingConfig = [];
+
+        $this->raw = [];
+
+        $this->create_raw = null;
+    }
+
     /**
      * @param bool $returnID
      *
@@ -2006,7 +2031,7 @@ class Client
     {
         $url = self::$base_url.'/'.__FUNCTION__.'?'.http_build_query(['name' => $this->container_name]);
 
-        $this->setCreateJson();
+        $this->setCreateJson(null);
 
         $json = self::$curl->post($url, $this->getCreateJson(), self::$header);
 
@@ -2020,11 +2045,9 @@ class Client
 
         // clean raw
 
-        $this->hostConfig = [];
+        $this->container_name = null;
 
-        $this->networkingConfig = [];
-
-        $this->raw = [];
+        $this->cleanupConfig();
 
         if ($returnID) {
             return $id;
