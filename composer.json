@@ -27,6 +27,7 @@
     "khs1994/curl": "dev-master"
   },
   "require-dev": {
+    "illuminate/console": "^5.5",
     "phpunit/phpunit": "^7.1"
   },
   "config": {
@@ -54,6 +55,14 @@
   "extra": {
     "branch-alias": {
       "dev-master": "18.06-dev"
+    },
+    "laravel": {
+      "providers": [
+        "Docker\\ServiceProvider"
+      ],
+      "aliases": {
+        "Docker": "Docker\\Facade"
+      }
     }
   }
 }

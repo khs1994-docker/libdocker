@@ -54,8 +54,10 @@ $image = 'php:7.2.5-alpine3.7';
 $docker_image->pull($image);
 
 $container_id = $docker_container
-  ->setHostConfig(['lnmp-data:/app'])
-  ->create($image, null, '/bin/sh');
+  ->setImage($image)
+  ->setCmd(['/bin/sh'])
+  ->setBinds(['lnmp-data:/app'])
+  ->create(true);
 
 $docker_container->start($container_id);
 
