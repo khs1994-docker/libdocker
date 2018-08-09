@@ -84,7 +84,7 @@ class Docker extends ServiceContainer
 
         ini_set('max_execution_time', '0');
 
-        $curl->setTimeout(0);
+        $curl->setTimeout($option['DOCKER_TIMEOUT']);
 
         $this['curl'] = $curl;
 
@@ -109,6 +109,7 @@ class Docker extends ServiceContainer
      * @param string|null $docker_username
      * @param string|null $docker_password
      * @param string|null $docker_registry
+     * @param int         $docker_timeout
      *
      * @return array
      */
@@ -117,7 +118,8 @@ class Docker extends ServiceContainer
                                              string $docker_cert_path = null,
                                              string $docker_username = null,
                                              string $docker_password = null,
-                                             string $docker_registry = null)
+                                             string $docker_registry = null,
+                                             int $docker_timeout = 0)
     {
         return [
             'DOCKER_HOST' => $docker_host ?? '127.0.0.1:2375',
@@ -126,6 +128,7 @@ class Docker extends ServiceContainer
             'DOCKER_USERNAME' => $docker_username,
             'DOCKER_PASSWORD' => $docker_password,
             'DOCKER_REGISTRY' => $docker_registry,
+            'DOCKER_TIMEOUT' => $docker_timeout,
         ];
     }
 

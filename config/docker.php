@@ -9,4 +9,5 @@ return [
     'username' => env('DOCKER_USERNAME', null),
     'password' => env('DOCKER_PASSWORD', null),
     'registry' => env('DOCKER_REGISTRY', null),
+    'timeout' => env('DOCKER_TIMEOUT', 0),
 ];

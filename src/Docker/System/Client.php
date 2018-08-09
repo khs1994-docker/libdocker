@@ -111,13 +111,23 @@ class Client
     }
 
     /**
+     * @param int $timeout
+     *
      * @return mixed
      *
      * @throws \Exception
      */
-    public function ping()
+    public function ping(int $timeout = 0)
     {
-        return $this->curl->get($this->url.'/_ping');
+        $source_timeout = $this->curl->timeout;
+
+        $this->curl->setTimeout($timeout);
+
+        $output = $this->curl->get($this->url.'/_ping');
+
+        $this->curl->setTimeout($source_timeout);
+
+        return $output;
     }
 
     /**

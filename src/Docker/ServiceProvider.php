@@ -26,7 +26,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 config('docker.cert_path'),
                 config('docker.username'),
                 config('docker.password'),
-                config('docker.registry')
+                config('docker.registry'),
+                config('docker.timeout')
             ));
         });
     }
@@ -36,5 +37,15 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $configPath = __DIR__.'/../../config/docker.php';
 
         $this->publishes([$configPath => config_path('docker.php')], 'config');
+    }
+
+    /**
+     * 获取提供器提供的服务。
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return [Docker::class];
     }
 }
