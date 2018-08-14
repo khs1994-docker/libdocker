@@ -11,6 +11,8 @@ use Exception;
 use Pimple\Container as ServiceContainer;
 
 /**
+ * @version 18.06.0
+ *
  * @property Swarm\Config\Client  $config
  * @property Container\Client     $container
  * @property Distribution\Client  $distribution
@@ -31,6 +33,8 @@ use Pimple\Container as ServiceContainer;
  */
 class Docker extends ServiceContainer
 {
+    const VERSION = '18.06.0';
+
     const DOCKER_HEALTH_STARTING = 'starting';
 
     const DOCKER_HEALTH_HEALTHY = 'healthy';
@@ -54,6 +58,8 @@ class Docker extends ServiceContainer
     const DOCKER_STATUS_DEAD = 'dead';
 
     private static $docker;
+
+    private static $docker_connection = [];
 
     protected $providers = [
         Container\ServiceProvider::class,
@@ -130,6 +136,23 @@ class Docker extends ServiceContainer
             'DOCKER_REGISTRY' => $docker_registry,
             'DOCKER_TIMEOUT' => $docker_timeout,
         ];
+    }
+
+    public function connection(string $name)
+    {
+        if (!(self::$docker_connection[$name] instanceof self)) {
+            self::$docker_connection[$name] = new self(self::createOptionArray(
+                config('docker.'.$name.'.host'),
+                config('docker.tls_verify') ?? config('docker.'.$name.'.tls_verify'),
+                config('docker.cert_path') ?? config('docker.'.$name.'.cert_path'),
+                config('docker.username') ?? config('docker.'.$name.'.username'),
+                config('docker.password') ?? config('docker.'.$name.'.password'),
+                config('docker.registry') ?? config('docker.'.$name.'.registry'),
+                config('docker.timeout') ?? config('docker.'.$name.'.timeout')
+            ), new Curl());
+        }
+
+        return self::$docker_connection[$name];
     }
 
     /**

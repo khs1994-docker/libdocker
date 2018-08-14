@@ -24,7 +24,7 @@
     "lib-curl": "*",
     "ext-curl": "*",
     "pimple/pimple": "~3.0",
-    "khs1994/curl": "dev-master"
+    "khs1994/curl": "18.06.0"
   },
   "require-dev": {
     "illuminate/console": "^5.5",
@@ -43,14 +43,15 @@
   "autoload": {
     "psr-4": {
       "Docker\\": "src/Docker/"
-    }
+    },
+    "files": ["src/Docker/helpers.php"]
   },
   "autoload-dev": {
     "psr-4": {
       "Docker\\Tests\\": "tests/Docker/"
     }
   },
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "prefer-stable": true,
   "extra": {
     "branch-alias": {

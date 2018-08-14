@@ -46,10 +46,10 @@ $docker_container = $docker->container;
 $docker_image = $docker->image;
 
 /*
- * $ docker run -it -d -v lnmp-data:/app php:7.2.5-alpine3.7 /bin/sh
+ * $ docker run -it -d -v lnmp-data:/app php:7.2.8-fpm-alpine3.7 /bin/sh
  */
 
-$image = 'php:7.2.5-alpine3.7';
+$image = 'php:7.2.8-fpm-alpine3.7';
 
 $docker_image->pull($image);
 
@@ -62,6 +62,41 @@ $container_id = $docker_container
 $docker_container->start($container_id);
 
 var_dump($docker_container->logs($container_id));
+```
+
+## Laravel
+
+```bash
+$ php artisan vendor:publish --tag=config
+```
+
+Then edit `config/docker.php`
+
+```php
+use Docker;
+
+// call by facade
+Docker::container()->list();
+
+// call by helper function
+docker()->container()->list();
+
+// call by DI
+
+class MyController
+{
+    public $docker;
+    
+    public function __construct(\Docker\Docker $docker)
+    {
+        $this->docker = $docker;
+    }
+    
+    public function demo()
+    {
+        $this->docker->container()->list();
+    }
+}
 ```
 
 ## Who use it?
