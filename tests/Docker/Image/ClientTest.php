@@ -24,7 +24,7 @@ class ClientTest extends TestCase
      */
     public function testPull(): void
     {
-        $output = $this->client->pull('nginx', '1.15.1-alpine');
+        $output = $this->client->pull('nginx', '1.15.3-alpine');
 
         $this->assertStringMatchesFormat('%a', $output);
     }
@@ -44,7 +44,7 @@ class ClientTest extends TestCase
      */
     public function testTag(): void
     {
-        $output = $this->client->tag('nginx:1.15.1-alpine', 'nginx', 'alpine');
+        $output = $this->client->tag('nginx:1.15.3-alpine', 'nginx', 'alpine');
 
         $this->assertStringMatchesFormat('%S', $output);
     }

@@ -35,7 +35,7 @@ class ClientTest extends TestCase
     public function testCreate()
     {
         $output = $this->client
-            ->setImage('khs1994/nginx:1.15.1-alpine')
+            ->setImage('khs1994/nginx:1.15.3-alpine')
             ->setEnv(['a=1'])
             ->setBinds(['/c:/c'])
             ->setPortBindings([
