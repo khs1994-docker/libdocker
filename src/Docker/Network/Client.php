@@ -54,11 +54,11 @@ class Client
 
         if ($filter) {
             foreach ($filter as $k => $v) {
-                if (!in_array($k, self::$filterArray, true)) {
+                if (!\in_array($k, self::$filterArray, true)) {
                     throw new Exception('Network Filters Not Found');
                 }
 
-                if (is_array($v)) {
+                if (\is_array($v)) {
                     $filter_array[$k] = $v;
                 } else {
                     $filter_array[$k] = [$v];
@@ -189,7 +189,7 @@ class Client
     /**
      * @param string $id
      * @param string $container      the ID or name of the container to connect to the network
-     * @param array  $endpointConfig Configuration for a network endpoint.
+     * @param array  $endpointConfig configuration for a network endpoint.
      *                               [ 'IPAMConfig' => [], 'Links' => [] ]
      *
      * @return mixed 200
@@ -267,11 +267,11 @@ class Client
         $filters_array = [];
         if ($filters) {
             foreach ($filters as $k => $v) {
-                if (!in_array($k, ['label', 'until'], true)) {
+                if (!\in_array($k, ['label', 'until'], true)) {
                     throw new Exception('Network Prune Filters '.$k.' Not Found', 404);
                 }
 
-                if (is_array($v)) {
+                if (\is_array($v)) {
                     $filters_array[$k] = $v;
                 } else {
                     $filters_array[$k] = [$v];

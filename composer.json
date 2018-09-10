@@ -21,10 +21,9 @@
   "require": {
     "php": ">=7.1",
     "ext-json": "*",
-    "lib-curl": "*",
     "ext-curl": "*",
     "pimple/pimple": "~3.0",
-    "khs1994/curl": "18.06.0"
+    "khs1994/curl": "~18.06.0"
   },
   "require-dev": {
     "illuminate/console": "^5.5",

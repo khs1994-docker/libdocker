@@ -52,11 +52,11 @@ class Client
             $filters_array = [];
 
             foreach ($filters as $k => $v) {
-                if (!in_array($k, ['dangling', 'driver', 'label', 'name'], true)) {
+                if (!\in_array($k, ['dangling', 'driver', 'label', 'name'], true)) {
                     throw new Exception('Volume List Filters Not Found', 404);
                 }
 
-                if (is_array($v)) {
+                if (\is_array($v)) {
                     $filters_array[$k] = $v;
                 } else {
                     $filters_array[$k] = [$v];
@@ -145,7 +145,7 @@ class Client
 
         if ($filters) {
             foreach ($filters as $k => $v) {
-                if (is_array($v)) {
+                if (\is_array($v)) {
                     $filters_array[$k] = $v;
                 } else {
                     $filters_array[$k] = [$v];

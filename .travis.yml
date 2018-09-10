@@ -6,12 +6,15 @@
 #
 
 language: php
-# cache:
-#   directories:
-#   - vendor
+
+cache:
+  directories:
+  - cache
+
 sudo: required
+
 services:
- - docker
+- docker
 # - rabbitmq
 # - memcached
 # - redis-server
@@ -19,11 +22,12 @@ services:
 # - mariadb
 # - postgresql
 # - mongodb
+
 php:
-  # - 5.6
-  # - 7.0
-  # - 7.1
-  - 7.2
+# - 5.6
+# - 7.0
+# - 7.1
+- 7.2
 
 #
 # 设置数据库
@@ -33,56 +37,61 @@ php:
 # addons:
 #   mariadb: '10.0'
 #   postgresql: '9.4'
-before_script:
-  - docker --version
-  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-  - sudo apt-get update
-  - sudo apt-get -y install docker-ce
-  - docker --version
-  # - sleep 15
-  - sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'DROP DATABASE IF EXISTS tests;' -U postgres; fi"
-  - sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'DROP DATABASE IF EXISTS tests_tmp;' -U postgres; fi"
-  - sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'CREATE DATABASE tests;' -U postgres; fi"
-  - sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'CREATE DATABASE tests_tmp;' -U postgres; fi"
-  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE IF NOT EXISTS tests_tmp; CREATE DATABASE IF NOT EXISTS tests;'; fi"
-  - sh -c "if [ '$ENABLE_MONGODB' = 'enable' ]; then mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'; fi"
-  # https://docs.docker.com/edge/engine/reference/commandline/dockerd/#daemon-socket-option
-  - echo 'DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375"' | sudo tee /etc/default/docker
-  - sudo service docker restart
+
+before_install:
+- docker --version
+- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+- sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+- sudo apt-get update
+- sudo apt-get -y install docker-ce
+- docker --version
+# - sleep 15
+- sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'DROP DATABASE IF EXISTS tests;' -U postgres; fi"
+- sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'DROP DATABASE IF EXISTS tests_tmp;' -U postgres; fi"
+- sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'CREATE DATABASE tests;' -U postgres; fi"
+- sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'CREATE DATABASE tests_tmp;' -U postgres; fi"
+- sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE IF NOT EXISTS tests_tmp; CREATE DATABASE IF NOT EXISTS tests;'; fi"
+- sh -c "if [ '$ENABLE_MONGODB' = 'enable' ]; then mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'; fi"
+# https://docs.docker.com/edge/engine/reference/commandline/dockerd/#daemon-socket-option
+- echo 'DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375"' | sudo tee /etc/default/docker
+- sudo service docker restart
+- sudo curl -fsSL http://get.sensiolabs.org/sami.phar -o /usr/local/bin/sami
+- sudo chmod +x /usr/local/bin/sami
 
 jobs:
   include:
-    - stage: test
-      script:
-        - composer install -q
-        # - composer update -q
-        - vendor/bin/phpunit --coverage-clover=coverage.xml
-      after_success:
-        - bash <(curl -s https://codecov.io/bash)
-    # - stage: deploy
-    #   script: " if ! [ -z \"${TRAVIS_TAG}\" ];then
-    #   echo \"${TRAVIS_TAG}\" ;
-    #   docker build -t khs1994/php-fpm:swarm-7.2.0-alpine3.7-${TRAVIS_TAG} --target=php . ;
-    #   docker build -t khs1994/nginx:swarm-1.13.0-alpine-${TRAVIS_TAG} . ;
-    #   docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} ;
-    #   docker push khs1994/php-fpm:swarm-7.2.0-alpine3.7-${TRAVIS_TAG} ;
-    #   docker push khs1994/nginx:swarm-1.13.0-alpine-${TRAVIS_TAG} ;
-    #   else
-    #   echo \"NOT TAG, Don't Build\";
-    #   fi "
+  - stage: test
+    install:
+    - composer install -q
+    # - composer update -q
+    script:
+    - vendor/bin/phpunit --coverage-clover=coverage.xml
+    after_success:
+    - bash <(curl -s https://codecov.io/bash)
+    - sami update .sami.php
+  # - stage: deploy
+  #   script: " if ! [ -z \"${TRAVIS_TAG}\" ];then
+  #   echo \"${TRAVIS_TAG}\" ;
+  #   docker build -t khs1994/php-fpm:swarm-7.2.0-alpine3.7-${TRAVIS_TAG} --target=php . ;
+  #   docker build -t khs1994/nginx:swarm-1.13.0-alpine-${TRAVIS_TAG} . ;
+  #   docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD} ;
+  #   docker push khs1994/php-fpm:swarm-7.2.0-alpine3.7-${TRAVIS_TAG} ;
+  #   docker push khs1994/nginx:swarm-1.13.0-alpine-${TRAVIS_TAG} ;
+  #   else
+  #   echo \"NOT TAG, Don't Build\";
+  #   fi "
 
 stages:
-  - test
-  # - name: deploy
-  #   if: tag =~ ^[0-9.]+$
+- test
+# - name: deploy
+#   if: tag =~ ^[0-9.]+$
 
 env:
   global:
-    - MONGODB=disable
-    # - DB=sqlite
-    # - DB=mysql
-    # - DB=postgresql
+  - MONGODB=disable
+  # - DB=sqlite
+  # - DB=mysql
+  # - DB=postgresql
 
 #
 # rabbitmq vhost / username guest password guest
@@ -93,3 +102,12 @@ env:
 #
 # memcached/redis -> localhost
 #
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  local-dir: build
+  github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  keep-history: true
+  on:
+    branch: master

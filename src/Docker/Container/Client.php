@@ -1902,11 +1902,11 @@ class Client
         $filters_array = [];
 
         foreach ($filters as $filter => $v) {
-            if (!in_array($filter, $filters_array_define, true)) {
+            if (!\in_array($filter, $filters_array_define, true)) {
                 throw new Exception($filter, 500);
             }
 
-            if (is_array($v)) {
+            if (\is_array($v)) {
                 $filters_array[$filter] = $v;
 
                 continue;
@@ -2052,7 +2052,7 @@ class Client
         $id = json_decode($json)->Id ?? null;
 
         if (null === $id) {
-            throw new Exception(json_decode($json)->message, self::$curl->getCode());
+            throw new Exception(json_decode($json)->message ?? $json, self::$curl->getCode());
         }
 
         $this->container_id = $id;
@@ -2247,9 +2247,9 @@ class Client
 
     /**
      * @param string|null $id         ID or name of the container
-     * @param string|null $detachKeys Override the key sequence for detaching a container.
+     * @param string|null $detachKeys override the key sequence for detaching a container.
      *                                Format is a single character `[a-Z]`
-     *                                or `ctrl-<value>` where <value> is one of: `a-z`,`@`,`^`,`[`,`,` or `_`.
+     *                                or `ctrl-<value>` where <value> is one of: `a-z`,`@`,`^`,`[`,`,` or `_`
      *
      * @return string 204 304
      *

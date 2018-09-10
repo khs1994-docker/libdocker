@@ -92,11 +92,11 @@ class Client
         }
 
         foreach ($filters as $k => $v) {
-            if (!in_array($k, $filters_array_defined, true)) {
+            if (!\in_array($k, $filters_array_defined, true)) {
                 throw new Exception($filters, 500);
             }
 
-            if (is_array($v)) {
+            if (\is_array($v)) {
                 $filters_array["$k"] = $v;
 
                 continue;
@@ -275,7 +275,7 @@ class Client
          * 2 docker.khs1994.com:1000/khs1994/nginx
          * 3 docker.khs1994.com:1000/khs1994/nginx:1.15.1-alpine
          */
-        if (1 !== count($image_array)) {
+        if (1 !== \count($image_array)) {
             // 取最后一位为 tag,删除 tag,得到 image
             $tag = array_pop($image_array);
             $image = implode('', $image_array);
