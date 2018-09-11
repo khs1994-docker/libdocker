@@ -160,7 +160,7 @@ class Client
     public function create(string $name,
                            bool $checkDuplicate = false,
                            string $driver = 'bridge',
-                           bool $internal = true,
+                           bool $internal = false,
                            bool $attachable = false,
                            bool $ingress = false,
                            bool $enableIPv6 = false,
