@@ -8,6 +8,11 @@
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
+            <exclude>
+                <file>./src/Docker/Kernel/Support/helpers.php</file>
+                <file>./src/Docker/Kernel/Facade.php</file>
+                <file>./src/Docker/Kernel/ServiceProvider.php</file>
+            </exclude>
         </whitelist>
     </filter>
     <groups>

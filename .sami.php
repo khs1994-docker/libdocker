@@ -18,12 +18,7 @@ use Symfony\Component\Finder\Finder;
 $iterator = Finder::create()
     ->files()
     ->name('*.php')
-    ->exclude('public')
-    ->exclude('tests')
-    ->exclude('example')
-    ->exclude('config')
-    ->exclude('vendor')
-    ->in(__DIR__)
+    ->in(__DIR__.'/src')
 ;
 
 return new Sami($iterator);

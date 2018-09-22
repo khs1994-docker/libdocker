@@ -13,6 +13,8 @@ use Pimple\Container as ServiceContainer;
 /**
  * @version 18.06.0
  *
+ * @method Swarm\Config\Client config()
+ *
  * @property Swarm\Config\Client  $config
  * @property Container\Client     $container
  * @property Distribution\Client  $distribution
@@ -29,7 +31,7 @@ use Pimple\Container as ServiceContainer;
  * @property Curl                 $curl
  * @property string               $docker_host
  *
- * @see https://docs.docker.com/engine/api/v1.37/
+ * @see     https://docs.docker.com/engine/api/v1.37/
  */
 class Docker extends ServiceContainer
 {
@@ -138,17 +140,17 @@ class Docker extends ServiceContainer
         ];
     }
 
-    public function connection(string $name)
+    public function connection(string $name = 'default')
     {
         if (!(self::$docker_connection[$name] instanceof self)) {
             self::$docker_connection[$name] = new self(self::createOptionArray(
-                config('docker.'.$name.'.host'),
-                config('docker.tls_verify') ?? config('docker.'.$name.'.tls_verify'),
-                config('docker.cert_path') ?? config('docker.'.$name.'.cert_path'),
-                config('docker.username') ?? config('docker.'.$name.'.username'),
-                config('docker.password') ?? config('docker.'.$name.'.password'),
-                config('docker.registry') ?? config('docker.'.$name.'.registry'),
-                config('docker.timeout') ?? config('docker.'.$name.'.timeout')
+                config('docker.app.'.$name.'.host'),
+                config('docker.app.'.$name.'.tls_verify') ?? config('docker.tls_verify'),
+                config('docker.app.'.$name.'.cert_path') ?? config('docker.cert_path'),
+                config('docker.app.'.$name.'.username') ?? config('docker.username'),
+                config('docker.app.'.$name.'.password') ?? config('docker.password'),
+                config('docker.app.'.$name.'.registry') ?? config('docker.registry'),
+                config('docker.app.'.$name.'.timeout') ?? config('docker.timeout')
             ), new Curl());
         }
 
@@ -189,107 +191,8 @@ class Docker extends ServiceContainer
         throw new Exception("Command $name not found", 404);
     }
 
-    /**
-     * @return Swarm\Config\Client
-     */
-    public function config()
+    public function __call($name, $arguments)
     {
-        return $this['config'];
-    }
-
-    /**
-     * @return Container\Client
-     */
-    public function container()
-    {
-        return $this['container'];
-    }
-
-    /**
-     * @return mixed
-     */
-    public function distribution()
-    {
-        return $this['distribution'];
-    }
-
-    /**
-     * @return Image\Client
-     */
-    public function image()
-    {
-        return $this['image'];
-    }
-
-    /**
-     * @return Network\Client
-     */
-    public function network()
-    {
-        return $this['network'];
-    }
-
-    /**
-     * @return mixed
-     */
-    public function node()
-    {
-        return $this['node'];
-    }
-
-    /**
-     * @return Plugin\Client
-     */
-    public function plugin()
-    {
-        return $this['plugin'];
-    }
-
-    /**
-     * @return Swarm\Secret\Client
-     */
-    public function secret()
-    {
-        return $this['secret'];
-    }
-
-    /**
-     * @return mixed
-     */
-    public function service()
-    {
-        return $this['service'];
-    }
-
-    /**
-     * @return Swarm\Client
-     */
-    public function swarm()
-    {
-        return $this['swarm'];
-    }
-
-    /**
-     * @return System\Client
-     */
-    public function system()
-    {
-        return $this['system'];
-    }
-
-    /**
-     * @return Task\Client;
-     */
-    public function task()
-    {
-        return $this['task'];
-    }
-
-    /**
-     * @return Volume\Client
-     */
-    public function volume()
-    {
-        return $this['volume'];
+        return $this->$name;
     }
 }

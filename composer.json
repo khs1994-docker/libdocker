@@ -3,7 +3,8 @@
   "description": "A PHP Library for the Docker Engine API",
   "keywords": [
     "sdk",
-    "api"
+    "docker",
+    "devops"
   ],
   "homepage": "https://github.com/khs1994-docker/libdocker",
   "type": "library",
@@ -30,9 +31,6 @@
     "phpunit/phpunit": "^7.1"
   },
   "config": {
-    "platform": {
-      "php": "7.1.0"
-    },
     "optimize-autoloader": true,
     "sort-packages": true
   },
@@ -43,14 +41,16 @@
     "psr-4": {
       "Docker\\": "src/Docker/"
     },
-    "files": ["src/Docker/helpers.php"]
+    "files": [
+      "src/Docker/Kernel/Support/helpers.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
       "Docker\\Tests\\": "tests/Docker/"
     }
   },
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "prefer-stable": true,
   "extra": {
     "branch-alias": {
@@ -58,10 +58,10 @@
     },
     "laravel": {
       "providers": [
-        "Docker\\ServiceProvider"
+        "Docker\\Kernel\\ServiceProvider"
       ],
       "aliases": {
-        "Docker": "Docker\\Facade"
+        "Docker": "Docker\\Kernel\\Facade"
       }
     }
   }
