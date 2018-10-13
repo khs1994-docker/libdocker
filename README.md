@@ -101,7 +101,7 @@ class MyController
 
 ## Who use it?
 
-* [KhsCI](https://github.com/khs1994-php/khsci)
+* [PCIT](https://github.com/khs1994-php/pcit)
 
 ## PHP CaaS
 
