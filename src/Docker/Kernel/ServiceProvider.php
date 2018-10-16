@@ -29,16 +29,16 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->mergeConfigFrom($configPath, 'docker');
 
         $this->app->singleton('docker', function () {
-            $app_name = config('docker.default');
+            $host_name = config('docker.default');
 
             return Docker::docker(Docker::createOptionArray(
-                config('docker.'.$app_name.'.host'),
-                config('docker.app.'.$app_name.'.tls_verify') ?? config('docker.tls_verify'),
-                config('docker.app.'.$app_name.'.cert_path') ?? config('docker.cert_path'),
-                config('docker.app.'.$app_name.'.username') ?? config('docker.username'),
-                config('docker.app.'.$app_name.'.password') ?? config('docker.password'),
-                config('docker.app.'.$app_name.'.registry') ?? config('docker.registry'),
-                config('docker.app.'.$app_name.'.timeout') ?? config('docker.timeout')
+                config('docker.hosts.'.$host_name.'.host', '127.0.0.1:2375'),
+                config('docker.hosts.'.$host_name.'.tls_verify') ?? config('docker.tls_verify'),
+                config('docker.hosts.'.$host_name.'.cert_path') ?? config('docker.cert_path'),
+                config('docker.hosts.'.$host_name.'.username') ?? config('docker.username'),
+                config('docker.hosts.'.$host_name.'.password') ?? config('docker.password'),
+                config('docker.hosts.'.$host_name.'.registry') ?? config('docker.registry'),
+                config('docker.hosts.'.$host_name.'.timeout') ?? config('docker.timeout')
             ));
         });
 

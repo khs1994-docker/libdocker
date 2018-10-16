@@ -12,7 +12,7 @@ if (!(function_exists('docker'))) {
      */
     function docker()
     {
-        return app(Docker\Docker::class);
+        return app('docker');
     }
 }
 
