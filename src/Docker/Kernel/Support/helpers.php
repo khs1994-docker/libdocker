@@ -18,5 +18,4 @@ if (!(function_exists('docker'))) {
 
 class Docker extends \Docker\Kernel\Facade
 {
-
 }

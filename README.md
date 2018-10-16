@@ -5,10 +5,16 @@
 A PHP library for the Docker Engine API
 
 * [问题反馈](https://github.com/khs1994-docker/lnmp/issues/332)
-
 * [Docker API Docs](https://docs.docker.com/engine/api/v1.37/)
-
 * [Docs](https://khs1994-docker.github.io/libdocker/)
+
+## 微信订阅号
+
+<p align="center">
+<img width="200" src="https://user-images.githubusercontent.com/16733187/46847944-84a96b80-ce19-11e8-9f0c-ec84b2ac463e.jpg">
+</p>
+
+<p align="center"><strong>关注项目作者微信订阅号，接收项目最新动态</strong></p>
 
 ## Installation
 
@@ -70,7 +76,7 @@ var_dump($docker_container->logs($container_id));
 $ php artisan vendor:publish --tag=config
 ```
 
-Then edit `config/docker.php`
+Then edit config file `config/docker.php`
 
 ```php
 use Docker;
@@ -86,12 +92,12 @@ docker()->container()->list();
 class MyController
 {
     public $docker;
-    
+
     public function __construct(\Docker\Docker $docker)
     {
         $this->docker = $docker;
     }
-    
+
     public function demo()
     {
         $this->docker->container()->list();

@@ -28,7 +28,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->mergeConfigFrom($configPath, 'docker');
 
-        $this->app->singleton(Docker::class, function () {
+        $this->app->singleton('docker', function () {
             $app_name = config('docker.default');
 
             return Docker::docker(Docker::createOptionArray(
@@ -42,7 +42,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             ));
         });
 
-        $this->app->alias(Docker::class, 'docker');
+        $this->app->alias('docker', Docker::class);
     }
 
     /**
@@ -52,6 +52,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
      */
     public function provides()
     {
-        return [Docker::class];
+        return ['docker'];
     }
 }
