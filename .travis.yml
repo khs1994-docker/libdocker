@@ -7,6 +7,9 @@
 
 language: php
 
+os: linux
+dist: xenial
+
 cache:
   directories:
   - cache
@@ -52,9 +55,17 @@ before_install:
 - sh -c "if [ '$DB' = 'postgres' ]; then psql -c 'CREATE DATABASE tests_tmp;' -U postgres; fi"
 - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE IF NOT EXISTS tests_tmp; CREATE DATABASE IF NOT EXISTS tests;'; fi"
 - sh -c "if [ '$ENABLE_MONGODB' = 'enable' ]; then mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'; fi"
+# ubuntu 14.04
 # https://docs.docker.com/edge/engine/reference/commandline/dockerd/#daemon-socket-option
-- echo 'DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375"' | sudo tee /etc/default/docker
-- sudo service docker restart
+# - echo 'DOCKER_OPTS="-H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375"' | sudo tee /etc/default/docker
+# - sudo service docker restart
+# ubuntu 16.04
+- sudo mkdir -p /etc/systemd/system/docker.service.d
+- echo -e '[Service]\nExecStart=\nExecStart=/usr/bin/dockerd' | sudo tee /etc/systemd/system/docker.service.d/docker.conf
+- echo '{"hosts":["unix:///var/run/docker.sock","tcp://0.0.0.0:2375"]}' | sudo tee /etc/docker/daemon.json
+- sudo systemctl daemon-reload
+- sudo systemctl cat docker
+- sudo systemctl restart docker
 - sudo curl -fsSL http://get.sensiolabs.org/sami.phar -o /usr/local/bin/sami
 - sudo chmod +x /usr/local/bin/sami
 

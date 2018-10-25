@@ -6,7 +6,7 @@ namespace Docker\Tests;
 
 use Docker\Docker;
 
-class TestCase extends \PHPUnit\Framework\TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     const DOCKER_HOST = '127.0.0.1:2375';
 
