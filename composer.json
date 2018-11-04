@@ -27,7 +27,6 @@
     "khs1994/curl": "~18.06.0"
   },
   "require-dev": {
-    "illuminate/console": "^5.5",
     "phpunit/phpunit": "^7.1"
   },
   "config": {

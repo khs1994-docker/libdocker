@@ -9,6 +9,7 @@
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
             <exclude>
+                <directory suffix=".php">./src/Docker/Console</directory>
                 <file>./src/Docker/Kernel/Support/helpers.php</file>
                 <file>./src/Docker/Kernel/Facade.php</file>
                 <file>./src/Docker/Kernel/ServiceProvider.php</file>
