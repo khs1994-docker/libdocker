@@ -13,9 +13,9 @@ use Curl\Curl;
  */
 class Client
 {
-    const TYPE = 'plugins';
+    private const TYPE = 'plugins';
 
-    const BASE_URL = '/'.self::TYPE;
+    private const BASE_URL = '/'.self::TYPE;
 
     private $base_url;
 

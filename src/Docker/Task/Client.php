@@ -13,7 +13,7 @@ use Curl\Curl;
  */
 class Client
 {
-    const BASE_URL = '/tasks';
+    private const BASE_URL = '/tasks';
 
     private $curl;
 

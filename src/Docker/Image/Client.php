@@ -7,7 +7,6 @@ declare(strict_types=1);
 namespace Docker\Image;
 
 use Curl\Curl;
-use Error;
 use Exception;
 
 /**
@@ -87,7 +86,7 @@ class Client
 
         try {
             $filters_array_defined = self::$$filters_array_defined;
-        } catch (Error | Exception $e) {
+        } catch (\Throwable $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
 

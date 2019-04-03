@@ -14,7 +14,7 @@ use Exception;
  */
 class Client
 {
-    const BASE_URL = '/volumes';
+    private const BASE_URL = '/volumes';
 
     private $curl;
 

@@ -1,14 +1,11 @@
 <?php
 
-/** @noinspection PhpUnusedPrivateFieldInspection */
-
 declare(strict_types=1);
 
 namespace Docker\Container;
 
 use Curl\Curl;
 use Docker\Image\Client as Image;
-use Error;
 use Exception;
 
 /**
@@ -18,7 +15,7 @@ use Exception;
  */
 class Client
 {
-    const TYPE = 'containers';
+    private const TYPE = 'containers';
 
     /**
      * @var Curl
@@ -574,17 +571,19 @@ class Client
 
     /**
      * @param array $networkingConfig
-     *                                <pre>
-     *                                [
-     *                                'EndpointsConfig' => [
-     *                                'test' => [
-     *                                'Aliases' => [
-     *                                'nginx'
-     *                                ]
-     *                                ]
-     *                                ]
-     *                                ]
-     *                                <pre>
+     *
+     * @example
+     * <pre>
+     * [
+     * 'EndpointsConfig' =>
+     *   [
+     *     'test' =>
+     *       [
+     *     'Aliases' => [ 'nginx' ]
+     *       ]
+     *   ]
+     * ]
+     * <pre>
      *
      * @return Client
      *
@@ -1895,7 +1894,7 @@ class Client
 
         try {
             $filters_array_define = self::$$filters_array_define;
-        } catch (Error | Exception $e) {
+        } catch (\Throwable $e) {
             throw new Exception($e->getMessage(), 500);
         }
 
@@ -1964,24 +1963,18 @@ class Client
         $filters_array = [];
 
         if ($filters) {
-            $filters_array = ['filters' => $this->checkFilter(__FUNCTION__, $filters)];
+            $filters = $this->checkFilter(__FUNCTION__, $filters);
         }
 
-        $data = [
-            'all' => $all,
-            'limit' => $limit,
-            'size' => $size,
-        ];
-
-        $data = array_merge($data, $filters_array);
-
-        $url = self::$base_url.'/json?'.http_build_query($data);
+        $url = self::$base_url.'/json?'.http_build_query(
+            array_merge(compact('all', 'limit', 'size'), compact('filters'))
+        );
 
         return self::$curl->get($url);
     }
 
     /**
-     * @param null|string $create_raw
+     * @param string|null $create_raw
      *
      * @return $this
      *
@@ -2093,7 +2086,7 @@ class Client
      */
     public function inspect(?string $id, bool $size = false)
     {
-        $url = self::$base_url.'/'.($id ?? $this->container_id).'/json?'.http_build_query(['size' => $size]);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/json?'.http_build_query(compact('size'));
 
         return self::$curl->get($url);
     }
@@ -2146,17 +2139,9 @@ class Client
                          bool $timestamps = false,
                          string $tail = 'all')
     {
-        $data = [
-            'follow' => $follow,
-            'stdout' => $stdout,
-            'stderr' => $stderr,
-            'since' => $since,
-            'until' => $until,
-            'timestamps' => $timestamps,
-            'tail' => $tail,
-        ];
-
-        $url = self::$base_url.'/'.($id ?? $this->container_id).'/'.__FUNCTION__.'?'.http_build_query($data);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/'.__FUNCTION__.'?'.http_build_query(compact(
+            'follow', 'stdout', 'stderr', 'since', 'until', 'timestamps', 'tail'
+        ));
 
         return self::$curl->get($url);
     }
@@ -2235,12 +2220,9 @@ class Client
      */
     public function resize(?string $id, int $height, int $width)
     {
-        $data = [
-            'height' => $height,
-            'width' => $width,
-        ];
-
-        $url = self::$base_url.'/'.($id ?? $this->container_id).'/resize?'.http_build_query($data);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/resize?'.http_build_query(compact(
+            'height', 'width'
+        ));
 
         return self::$curl->post($url);
     }
@@ -2461,16 +2443,9 @@ class Client
     {
         (false === $logs && false === $stream) or die('Either the stream or logs parameter must be true');
 
-        $data = [
-            'detachKeys' => $detachKeys,
-            'logs' => $logs,
-            'stream' => $stream,
-            'stdin' => $stdin,
-            'stdout' => $stdout,
-            'stderr' => $stderr,
-        ];
-
-        $url = self::$base_url.'/'.($id ?? $this->container_id).'/attach?'.http_build_query($data);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/attach?'.http_build_query(compact(
+            'detachKeys', 'logs', 'stream', 'stdin', 'stdout', 'stderr'
+        ));
 
         return self::$curl->post($url);
     }
@@ -2478,7 +2453,7 @@ class Client
     /**
      * Attach to a container via a websocket.
      *
-     * @param null|string $id
+     * @param string|null $id
      * @param string      $detachKeys
      * @param bool        $logs
      * @param bool        $stream
@@ -2500,15 +2475,8 @@ class Client
                                        bool $stdout = false,
                                        bool $stderr = false)
     {
-        $url = self::$base_url.'/'.($id ?? $this->container_id).'/attach/ws?'.http_build_query([
-                    'detachKeys' => $detachKeys,
-                    'logs' => $logs,
-                    'stream' => $stream,
-                    'stdin' => $stdin,
-                    'stdout' => $stdout,
-                    'stderr' => $stderr,
-                ]
-            );
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/attach/ws?'.http_build_query(
+            compact('detachKeys', 'logs', 'stream', 'stdin', 'stdout', 'stderr'));
 
         return self::$curl->get($url);
     }
@@ -2528,7 +2496,7 @@ class Client
      */
     public function wait(?string $id, string $condition = 'not - running')
     {
-        $url = self::$base_url.'/'.($id ?? $this->container_id).'/wait?'.http_build_query(['condition' => $condition]);
+        $url = self::$base_url.'/'.($id ?? $this->container_id).'/wait?'.http_build_query(compact('condition'));
 
         return self::$curl->post($url);
     }
@@ -2545,15 +2513,11 @@ class Client
      */
     public function remove(?string $id, bool $v = false, bool $force = false, bool $link = false)
     {
-        $data = [
-            'v' => $v,
-            'force' => $force,
-            'link' => $link,
-        ];
-
         $id = $id ?? $this->container_id;
 
-        $url = self::$base_url.'/'.$id.'?'.http_build_query($data);
+        $url = self::$base_url.'/'.$id.'?'.http_build_query(compact(
+            'v', 'force', 'link'
+        ));
 
         $output = self::$curl->delete($url);
 
@@ -2572,7 +2536,7 @@ class Client
      * A response header `X-Docker-Container-Path-Stat` is return containing a base64 - encoded JSON object with some
      * filesystem header information about the path.
      *
-     * @param null|string $id
+     * @param string|null $id
      * @param string      $path
      *
      * @return mixed 200
@@ -2626,10 +2590,10 @@ class Client
     {
         $id = $id ?? $this->container_id;
 
-        $url = self::$base_url.'/'.$id.'/archive?'.http_build_query([
-                'path' => $path,
-                'noOverwriteDirNonDir' => $noOverwriteDirNonDir,
-            ]);
+        $url = self::$base_url.'/'.$id.'/archive?'.http_build_query(compact(
+                'path',
+                'noOverwriteDirNonDir'
+            ));
 
         $output = self::$curl->put($url, $request);
 
@@ -2659,11 +2623,9 @@ class Client
      */
     public function prune(array $filters = [])
     {
-        $filters = [
-            'filters' => self::checkFilter(__FUNCTION__, $filters),
-        ];
+        $filters = self::checkFilter(__FUNCTION__, $filters);
 
-        $url = self::$base_url.'/prune?'.http_build_query($filters);
+        $url = self::$base_url.'/prune?'.http_build_query(compact('filters'));
 
         return self::$curl->post($url);
     }

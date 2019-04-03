@@ -110,7 +110,7 @@ class Client
     public function inspect(string $id, bool $verbose = false, string $scope = null)
     {
         if ($scope) {
-            array_key_exists($scope, ['swarm', 'global', 'local']) or die("$scope error");
+            \array_key_exists($scope, ['swarm', 'global', 'local']) or die("$scope error");
         }
         $data = [
             'verbose' => $verbose,

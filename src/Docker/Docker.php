@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpMissingParentConstructorInspection */
-
 declare(strict_types=1);
 
 namespace Docker;
@@ -35,7 +33,7 @@ use Pimple\Container as ServiceContainer;
  */
 class Docker extends ServiceContainer
 {
-    const VERSION = '18.06.0';
+    private const VERSION = '18.06.0';
 
     const DOCKER_HEALTH_STARTING = 'starting';
 
@@ -194,5 +192,10 @@ class Docker extends ServiceContainer
     public function __call($name, $arguments)
     {
         return $this->$name;
+    }
+
+    public function version()
+    {
+        return self::VERSION;
     }
 }
