@@ -167,6 +167,7 @@ window.projectVersion = 'master';
                     {"type": "Method", "fromName": "Docker\\Docker", "fromLink": "Docker/Docker.html", "link": "Docker/Docker.html#method_docker", "name": "Docker\\Docker::docker", "doc": "&quot;\u5355\u4f8b\u6a21\u5f0f.&quot;"},
                     {"type": "Method", "fromName": "Docker\\Docker", "fromLink": "Docker/Docker.html", "link": "Docker/Docker.html#method___get", "name": "Docker\\Docker::__get", "doc": "&quot;&quot;"},
                     {"type": "Method", "fromName": "Docker\\Docker", "fromLink": "Docker/Docker.html", "link": "Docker/Docker.html#method___call", "name": "Docker\\Docker::__call", "doc": "&quot;&quot;"},
+                    {"type": "Method", "fromName": "Docker\\Docker", "fromLink": "Docker/Docker.html", "link": "Docker/Docker.html#method_version", "name": "Docker\\Docker::version", "doc": "&quot;&quot;"},
                     {"type": "Method", "fromName": "Docker\\Docker", "fromLink": "Docker/Docker.html", "link": "Docker/Docker.html#method_config", "name": "Docker\\Docker::config", "doc": "&quot;&quot;"},
             
             {"type": "Trait", "fromName": "Docker", "fromLink": "Docker.html", "link": "Docker/DockerTrait.html", "name": "Docker\\DockerTrait", "doc": "&quot;&quot;"},
