@@ -22,14 +22,14 @@ class Client
      *
      * Return image digest and platform information by contacting the registry.
      *
-     * @param string $name
+     * @param string $imageName
      *
      * @return mixed
      *
      * @throws \Exception
      */
-    public function info(string $name)
+    public function info(string $imageName)
     {
-        return $this->curl->get($this->url.'/distribution/'.$name.'/json');
+        return $this->curl->get($this->url.'/distribution/'.$imageName.'/json');
     }
 }

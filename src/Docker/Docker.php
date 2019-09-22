@@ -167,7 +167,9 @@ class Docker extends ServiceContainer
         // 参数可以为空，默认连接到 127.0.0.1:2375
 
         if (!(self::$docker instanceof self)) {
-            self::$docker = new self($option, new Curl());
+            $curl = new Curl();
+            $curl->setHeader('Expect', '100-continue');
+            self::$docker = new self($option, $curl);
         }
 
         return self::$docker;
