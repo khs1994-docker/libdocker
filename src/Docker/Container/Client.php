@@ -531,10 +531,13 @@ class Client
 
     /**
      * @param array $cmd [ "nginx", "-g", "daemon off;"]
+     *                   null => 默认值，Dockerfile 中指定的值
+     *                   [] => 默认值，Dockerfile 中指定的值
+     *                   [""] => ""
      *
      * @return Client
      */
-    public function setCmd(?array $cmd)
+    public function setCmd(?array $cmd = null)
     {
         $this->cmd = $cmd;
 
@@ -820,10 +823,13 @@ class Client
 
     /**
      * @param array $entrypoint ['/bin/sh', '-c']
+     *                          [] => []
+     *                          null => 默认值，Dockerfile 中指定的值
+     *                          [""] => null
      *
      * @return Client
      */
-    public function setEntrypoint(?array $entrypoint)
+    public function setEntrypoint(?array $entrypoint = null)
     {
         $this->entrypoint = $entrypoint;
 

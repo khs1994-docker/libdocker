@@ -24,7 +24,7 @@ class ClientTest extends TestCase
      */
     public function testInfo(): void
     {
-        $output = $this->client->info('khs1994/nginx');
+        $output = $this->client->info('nginx');
 
         $this->assertArrayHasKey('Descriptor', json_decode($output, true));
     }

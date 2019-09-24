@@ -35,7 +35,7 @@ class ClientTest extends TestCase
     public function testCreate()
     {
         $output = $this->client
-            ->setImage('khs1994/nginx:1.15.3-alpine')
+            ->setImage('nginx:1.17.3-alpine')
             ->setEnv(['a=1'])
             ->setBinds(['/c:/c'])
             ->setPortBindings([
@@ -47,6 +47,8 @@ class ClientTest extends TestCase
                 ],
             ])
             ->setLabels(['a' => '1'])
+            ->setEntrypoint(null)
+            ->setCmd(null)
             ->create()
             ->start(null);
 
