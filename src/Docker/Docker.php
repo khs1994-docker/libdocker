@@ -168,7 +168,7 @@ class Docker extends ServiceContainer
 
         if (!(self::$docker instanceof self)) {
             $curl = new Curl();
-            $curl->setHeader('Expect', '100-continue');
+            $curl->setHeader('Expect', '');
             self::$docker = new self($option, $curl);
         }
 
