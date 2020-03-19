@@ -2,7 +2,6 @@
 
 .DS_Store
 .idea
-.vscode
 
 # composer
 
@@ -29,3 +28,5 @@ __pycache__
 .env
 .env.*
 !.env.example
+
+.phpunit.result.cache

@@ -47,8 +47,6 @@ class Client
     }
 
     /**
-     * @param string $remote
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -61,10 +59,7 @@ class Client
     }
 
     /**
-     * @param string $remote
-     * @param string $name
      * @param string $auth
-     * @param array  $request
      *
      * @return mixed
      *
@@ -93,8 +88,6 @@ class Client
     }
 
     /**
-     * @param string $name
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -107,9 +100,6 @@ class Client
     }
 
     /**
-     * @param string $name
-     * @param bool   $force
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -124,9 +114,6 @@ class Client
     }
 
     /**
-     * @param string $name
-     * @param int    $timeout
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -141,8 +128,6 @@ class Client
     }
 
     /**
-     * @param string $name
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -153,11 +138,6 @@ class Client
     }
 
     /**
-     * @param string $local_name
-     * @param string $remote
-     * @param string $auth
-     * @param array  $request
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -182,9 +162,6 @@ class Client
     }
 
     /**
-     * @param string $name
-     * @param string $request
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -199,8 +176,6 @@ class Client
     }
 
     /**
-     * @param string $name
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -211,8 +186,7 @@ class Client
     }
 
     /**
-     * @param       $name
-     * @param array $request
+     * @param $name
      *
      * @return mixed
      *

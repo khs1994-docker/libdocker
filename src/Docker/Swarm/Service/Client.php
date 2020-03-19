@@ -37,16 +37,6 @@ class Client
     }
 
     /**
-     * @param string     $auth
-     * @param string     $name
-     * @param array|null $labels
-     * @param array      $taskTemplate
-     * @param array      $mode
-     * @param array      $updateConfig
-     * @param array      $rollbackConfig
-     * @param array      $networks
-     * @param array      $endpointSpec
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -86,9 +76,6 @@ class Client
     }
 
     /**
-     * @param string $id
-     * @param bool   $insertDefaults
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -101,8 +88,6 @@ class Client
     }
 
     /**
-     * @param string $id
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -113,14 +98,9 @@ class Client
     }
 
     /**
-     * @param string $id
-     * @param int    $version
      * @param string $registryAuthFrom If the X-Registry-Auth header is not specified, this parameter indicates where
      *                                 to find registry authorization credentials. The valid values are spec and
      *                                 previous-spec.
-     * @param string $rollback
-     * @param string $auth
-     * @param array  $request_body
      *
      * @return mixed
      *
@@ -155,15 +135,6 @@ class Client
     }
 
     /**
-     * @param string $id
-     * @param bool   $details
-     * @param bool   $follow
-     * @param bool   $stdout
-     * @param bool   $stderr
-     * @param int    $since
-     * @param bool   $timestamps
-     * @param string $tail
-     *
      * @return mixed
      *
      * @throws \Exception

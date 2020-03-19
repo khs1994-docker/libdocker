@@ -22,8 +22,6 @@ class Client
      *
      * Return image digest and platform information by contacting the registry.
      *
-     * @param string $imageName
-     *
      * @return mixed
      *
      * @throws \Exception

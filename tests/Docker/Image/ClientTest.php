@@ -48,4 +48,20 @@ class ClientTest extends TestCase
 
         $this->assertStringMatchesFormat('%S', $output);
     }
+
+    public function test_parseImage(): void
+    {
+        [$image,$tag] = $this->client->parseImage('khs1994/nginx', 'latest');
+        $this->assertEquals('khs1994/nginx', $image);
+        $this->assertEquals('latest', $tag);
+        [$image,$tag] = $this->client->parseImage('khs1994/nginx:1.15.1-alpine', 'latest');
+        $this->assertEquals('khs1994/nginx', $image);
+        $this->assertEquals('1.15.1-alpine', $tag);
+        [$image,$tag] = $this->client->parseImage('docker.khs1994.com:1000/khs1994/nginx', 'latest');
+        $this->assertEquals('docker.khs1994.com:1000/khs1994/nginx', $image);
+        $this->assertEquals('latest', $tag);
+        [$image,$tag] = $this->client->parseImage('docker.khs1994.com:1000/khs1994/nginx:1.15.1-alpine', 'latest');
+        $this->assertEquals('docker.khs1994.com:1000/khs1994/nginx', $image);
+        $this->assertEquals('1.15.1-alpine', $tag);
+    }
 }

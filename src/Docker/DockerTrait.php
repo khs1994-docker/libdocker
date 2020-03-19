@@ -18,9 +18,6 @@ trait DockerTrait
 
     /**
      * Volume constructor.
-     *
-     * @param Curl   $curl
-     * @param string $docker_host
      */
     public function __construct(Curl $curl, string $docker_host)
     {

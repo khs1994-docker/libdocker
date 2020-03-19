@@ -42,8 +42,6 @@ class Client
     }
 
     /**
-     * @param array $filter
-     *
      * @return array|null
      *
      * @throws Exception
@@ -97,7 +95,6 @@ class Client
     }
 
     /**
-     * @param string $id
      * @param bool   $verbose Detailed inspect output for troubleshooting
      * @param string $scope   Filter the network by scope (swarm, global, or local)
      *
@@ -123,8 +120,6 @@ class Client
     }
 
     /**
-     * @param string $id
-     *
      * @return mixed 204
      *
      * @throws Exception
@@ -139,17 +134,13 @@ class Client
     }
 
     /**
-     * @param string $name
-     * @param bool   $checkDuplicate check for networks with duplicate names
-     * @param string $driver
-     * @param bool   $internal
-     * @param bool   $attachable     globally scoped network is manually attachable by regular containers from workers
-     *                               in swarm mode
-     * @param bool   $ingress
-     * @param bool   $enableIPv6     enable IPv6 on the network
-     * @param array  $ipam           [ "Driver" => "default", "Config" => [], "Options" => []]
-     * @param array  $options        [ 'a' => 1 ]
-     * @param array  $labels         [ 'k' => 'v' ]
+     * @param bool  $checkDuplicate check for networks with duplicate names
+     * @param bool  $attachable     globally scoped network is manually attachable by regular containers from workers
+     *                              in swarm mode
+     * @param bool  $enableIPv6     enable IPv6 on the network
+     * @param array $ipam           [ "Driver" => "default", "Config" => [], "Options" => []]
+     * @param array $options        [ 'a' => 1 ]
+     * @param array $labels         [ 'k' => 'v' ]
      *
      * @return mixed 201
      *
@@ -187,7 +178,6 @@ class Client
     }
 
     /**
-     * @param string $id
      * @param string $container      the ID or name of the container to connect to the network
      * @param array  $endpointConfig configuration for a network endpoint.
      *                               [ 'IPAMConfig' => [], 'Links' => [] ]
@@ -213,10 +203,6 @@ class Client
     }
 
     /**
-     * @param string $id
-     * @param string $container
-     * @param bool   $force
-     *
      * @return mixed 200
      *
      * @throws Exception
@@ -238,8 +224,6 @@ class Client
     }
 
     /**
-     * @param array|null $filters
-     *
      * @return mixed 200
      *
      * @throws Exception
@@ -256,8 +240,6 @@ class Client
     }
 
     /**
-     * @param array $filters
-     *
      * @return array|null
      *
      * @throws Exception

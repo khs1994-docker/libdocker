@@ -547,8 +547,6 @@ class Client
     }
 
     /**
-     * @param string $image
-     *
      * @return Client
      */
     public function setImage(string $image)
@@ -561,8 +559,6 @@ class Client
     }
 
     /**
-     * @param string $container_name
-     *
      * @return Client
      */
     public function setContainerName(string $container_name)
@@ -573,18 +569,14 @@ class Client
     }
 
     /**
-     * @param array $networkingConfig
-     *
      * @example
      * <pre>
      * [
-     * 'EndpointsConfig' =>
-     *   [
-     *     'test' =>
-     *       [
-     *     'Aliases' => [ 'nginx' ]
-     *       ]
-     *   ]
+     *     'EndpointsConfig' => [
+     *         'network_name' => [
+     *             'Aliases' => [ 'nginx' ]
+     *         ]
+     *      ]
      * ]
      * <pre>
      *
@@ -602,8 +594,6 @@ class Client
     }
 
     /**
-     * @param string $hostname
-     *
      * @return Client
      */
     public function setHostname(string $hostname)
@@ -616,8 +606,6 @@ class Client
     }
 
     /**
-     * @param string $domainname
-     *
      * @return Client
      */
     public function setDomainname(string $domainname)
@@ -630,8 +618,6 @@ class Client
     }
 
     /**
-     * @param string $user
-     *
      * @return Client
      */
     public function setUser(string $user)
@@ -644,8 +630,6 @@ class Client
     }
 
     /**
-     * @param bool $attachStdin
-     *
      * @return Client
      */
     public function setAttachStdin(bool $attachStdin = false)
@@ -658,8 +642,6 @@ class Client
     }
 
     /**
-     * @param bool $attachStdout
-     *
      * @return Client
      */
     public function setAttachStdout(bool $attachStdout = false)
@@ -672,8 +654,6 @@ class Client
     }
 
     /**
-     * @param bool $attachStderr
-     *
      * @return Client
      */
     public function setAttachStderr(bool $attachStderr = false)
@@ -686,7 +666,7 @@ class Client
     }
 
     /**
-     * @param array $exposedPorts ["22/<tcp|udp|sctp>":[]]
+     * @param array $exposedPorts ["22/<tcp|udp|sctp>":{}]
      *
      * @return Client
      */
@@ -700,8 +680,6 @@ class Client
     }
 
     /**
-     * @param bool $tty
-     *
      * @return Client
      */
     public function setTty(bool $tty = false)
@@ -714,8 +692,6 @@ class Client
     }
 
     /**
-     * @param bool $openStdin
-     *
      * @return Client
      */
     public function setOpenStdin(bool $openStdin = false)
@@ -728,8 +704,6 @@ class Client
     }
 
     /**
-     * @param bool $stdinOnce
-     *
      * @return Client
      */
     public function setStdinOnce(bool $stdinOnce = false)
@@ -742,7 +716,7 @@ class Client
     }
 
     /**
-     * @param array|null $env ['env=value']
+     * @param array<string>|null $env ['env=value']
      *
      * @return Client
      */
@@ -756,11 +730,12 @@ class Client
     }
 
     /**
-     * @param array $test
-     * @param int   $interval
-     * @param int   $timeout
-     * @param int   $retries
-     * @param int   $startPeriod
+     * @param array<string> $test
+     *                                1. [] inherit healthcheck from image or parent image
+     *                                2. ["NONE"] disable healthcheck
+     *                                3. ["CMD", args...] exec arguments directly
+     *                                4. ["CMD-SHELL", command] run command with system's default shell
+     * @param int           $interval 0 means inherit
      *
      * @return Client
      */
@@ -780,7 +755,7 @@ class Client
     }
 
     /**
-     * @param bool $argsEscaped
+     * Command is already escaped (Windows only).
      *
      * @return Client
      */
@@ -794,7 +769,7 @@ class Client
     }
 
     /**
-     * @param array $volumes [ "path" : [] ]
+     * @param array $volumes [ "path" : {} ]
      *
      * @return Client
      */
@@ -808,8 +783,6 @@ class Client
     }
 
     /**
-     * @param string $workingDir
-     *
      * @return Client
      */
     public function setWorkingDir(string $workingDir)
@@ -822,10 +795,14 @@ class Client
     }
 
     /**
-     * @param array $entrypoint ['/bin/sh', '-c']
-     *                          [] => []
-     *                          null => 默认值，Dockerfile 中指定的值
-     *                          [""] => null
+     * @param array<string> $entrypoint ['/bin/sh', '-c']
+     *                                  1. [] => []
+     *                                  2. null => 默认值，Dockerfile 中指定的值
+     *                                  3. [""] => If the array consists of exactly one
+     *                                  empty string ([""]) then the entry point is
+     *                                  reset to system default (i.e., the entry point
+     *                                  used by docker when there is no ENTRYPOINT
+     *                                  instruction in the Dockerfile).
      *
      * @return Client
      */
@@ -839,7 +816,7 @@ class Client
     }
 
     /**
-     * @param bool $networkDisabled
+     * Disable networking for the container.
      *
      * @return Client
      */
@@ -853,8 +830,6 @@ class Client
     }
 
     /**
-     * @param string $macAddress
-     *
      * @return Client
      */
     public function setMacAddress(string $macAddress)
@@ -867,7 +842,7 @@ class Client
     }
 
     /**
-     * @param array|string $onBuild
+     * @param array<string> $onBuild
      *
      * @return Client
      */
@@ -895,8 +870,6 @@ class Client
     }
 
     /**
-     * @param string $stopSignal
-     *
      * @return Client
      */
     public function setStopSignal(string $stopSignal = 'SIGTERM')
@@ -909,11 +882,11 @@ class Client
     }
 
     /**
-     * @param int $stopTimeout
+     * Timeout to stop a container in seconds.
      *
      * @return Client
      */
-    public function setStopTimeout(int $stopTimeout)
+    public function setStopTimeout(int $stopTimeout = 10)
     {
         $this->stopTimeout = $stopTimeout;
 
@@ -923,7 +896,7 @@ class Client
     }
 
     /**
-     * @param array|string $shell
+     * @param array<string> $shell
      *
      * @return Client
      */
@@ -937,8 +910,6 @@ class Client
     }
 
     /**
-     * @param int $cpuShares
-     *
      * @return Client
      */
     public function setCpuShares(int $cpuShares)
@@ -951,11 +922,11 @@ class Client
     }
 
     /**
-     * @param int $memory
+     * Memory limit in bytes.
      *
      * @return Client
      */
-    public function setMemory(int $memory)
+    public function setMemory(int $memory = 0)
     {
         $this->memory = $memory;
 
@@ -965,8 +936,6 @@ class Client
     }
 
     /**
-     * @param string $cgroupParent
-     *
      * @return Client
      */
     public function setCgroupParent(string $cgroupParent)
@@ -979,7 +948,7 @@ class Client
     }
 
     /**
-     * @param int $blkioWeight
+     * [ 0 .. 1000 ].
      *
      * @return Client
      */
@@ -993,7 +962,9 @@ class Client
     }
 
     /**
-     * @param array $blkioWeightDevice
+     * $param array<object> $blkioWeightDevice.
+     *
+     * [{"Path": "device_path", "Weight": weight}].
      *
      * @return Client
      */
@@ -1007,7 +978,7 @@ class Client
     }
 
     /**
-     * @param array $blkioDeviceReadBps
+     * [{"Path": "device_path", "Rate": rate}].
      *
      * @return Client
      */
@@ -1021,7 +992,7 @@ class Client
     }
 
     /**
-     * @param array $blkioDeviceWriteBps
+     * [{"Path": "device_path", "Rate": rate}].
      *
      * @return Client
      */
@@ -1035,7 +1006,7 @@ class Client
     }
 
     /**
-     * @param array $blkioDeviceReadIOps
+     * [{"Path": "device_path", "Rate": rate}].
      *
      * @return Client
      */
@@ -1049,7 +1020,7 @@ class Client
     }
 
     /**
-     * @param array $blkioDeviceWriteIOps
+     * [{"Path": "device_path", "Rate": rate}].
      *
      * @return Client
      */
@@ -1063,7 +1034,7 @@ class Client
     }
 
     /**
-     * @param int $cpuPeriod
+     * The length of a CPU period in microseconds.
      *
      * @return Client
      */
@@ -1077,8 +1048,6 @@ class Client
     }
 
     /**
-     * @param int $cpuQuota
-     *
      * @return Client
      */
     public function setCpuQuota(int $cpuQuota)
@@ -1091,8 +1060,6 @@ class Client
     }
 
     /**
-     * @param int $cpuRealtimePeriod
-     *
      * @return Client
      */
     public function setCpuRealtimePeriod(int $cpuRealtimePeriod)
@@ -1105,8 +1072,6 @@ class Client
     }
 
     /**
-     * @param int $cpuRealtimeRuntime
-     *
      * @return Client
      */
     public function setCpuRealtimeRuntime(int $cpuRealtimeRuntime)
@@ -1133,7 +1098,7 @@ class Client
     }
 
     /**
-     * @param string $cpusetMems
+     * Memory nodes (MEMs) in which to allow execution (0-3, 0,1). Only effective on NUMA systems.
      *
      * @return Client
      */
@@ -1147,8 +1112,6 @@ class Client
     }
 
     /**
-     * @param array $devices
-     *
      * @return Client
      */
     public function setDevices(array $devices)
@@ -1161,7 +1124,7 @@ class Client
     }
 
     /**
-     * @param array $deviceCgroupRules
+     * @param array<string> $deviceCgroupRules
      *
      * @return Client
      */
@@ -1175,21 +1138,7 @@ class Client
     }
 
     /**
-     * @param int $diskQuote disk limit (in bytes)
-     *
-     * @return Client
-     */
-    public function setDiskQuote(int $diskQuote)
-    {
-        $this->diskQuote = $diskQuote;
-
-        $this->hostConfig = array_merge($this->hostConfig, ['DiskQuota ' => $diskQuote]);
-
-        return $this;
-    }
-
-    /**
-     * @param int $kernelMemory
+     * Kernel memory limit in bytes.
      *
      * @return Client
      */
@@ -1203,7 +1152,7 @@ class Client
     }
 
     /**
-     * @param int $memoryReservation
+     * Memory soft limit in bytes.
      *
      * @return Client
      */
@@ -1217,7 +1166,7 @@ class Client
     }
 
     /**
-     * @param int $memorySwap
+     * Total memory limit (memory + swap). Set as -1 to enable unlimited swap.
      *
      * @return Client
      */
@@ -1231,7 +1180,7 @@ class Client
     }
 
     /**
-     * @param int $memorySwappiness
+     * [ 0 .. 100 ].
      *
      * @return Client
      */
@@ -1245,8 +1194,6 @@ class Client
     }
 
     /**
-     * @param int $nanoCPUs
-     *
      * @return Client
      */
     public function setNanoCPUs(int $nanoCPUs)
@@ -1259,8 +1206,6 @@ class Client
     }
 
     /**
-     * @param bool $oomKillDisable
-     *
      * @return Client
      */
     public function setOomKillDisable(bool $oomKillDisable)
@@ -1273,11 +1218,9 @@ class Client
     }
 
     /**
-     * @param bool $init
-     *
      * @return Client
      */
-    public function setInit(bool $init)
+    public function setInit(?bool $init)
     {
         $this->init = $init;
 
@@ -1287,11 +1230,11 @@ class Client
     }
 
     /**
-     * @param int $pidsLimit
+     * Tune a container's PIDs limit. Set 0 or -1 for unlimited, or null to not change.
      *
      * @return Client
      */
-    public function setPidsLimit(int $pidsLimit)
+    public function setPidsLimit(?int $pidsLimit)
     {
         $this->pidsLimit = $pidsLimit;
 
@@ -1301,7 +1244,7 @@ class Client
     }
 
     /**
-     * @param array $ulimits
+     * {"Name": "nofile", "Soft": 1024, "Hard": 2048}.
      *
      * @return Client
      */
@@ -1315,7 +1258,7 @@ class Client
     }
 
     /**
-     * @param int $cpuCount
+     * The number of usable CPUs (Windows only).
      *
      * @return Client
      */
@@ -1329,7 +1272,7 @@ class Client
     }
 
     /**
-     * @param int $cpuPercent
+     * The usable percentage of the available CPUs (Windows only).
      *
      * @return Client
      */
@@ -1343,7 +1286,7 @@ class Client
     }
 
     /**
-     * @param int $IOMaximumIOps
+     * Maximum IOps for the container system drive (Windows only).
      *
      * @return Client
      */
@@ -1357,7 +1300,7 @@ class Client
     }
 
     /**
-     * @param int $IOMaximumBandWidth
+     * Maximum IO in bytes per second for the container system drive (Windows only).
      *
      * @return Client
      */
@@ -1371,7 +1314,7 @@ class Client
     }
 
     /**
-     * @param array $binds
+     * @param array<string> $binds
      *
      * [
      * "host-src:container-dest",
@@ -1392,8 +1335,6 @@ class Client
     }
 
     /**
-     * @param string $containerIDFile
-     *
      * @return Client
      */
     public function setContainerIDFile(string $containerIDFile)
@@ -1406,8 +1347,6 @@ class Client
     }
 
     /**
-     * @param array $logConfig
-     *
      * @return Client
      */
     public function setLogConfig(array $logConfig)
@@ -1420,7 +1359,7 @@ class Client
     }
 
     /**
-     * @param string $networkMode
+     * bridge, host, none, and container:<name|id>.
      *
      * @return Client
      */
@@ -1462,7 +1401,11 @@ class Client
     }
 
     /**
-     * @param array $restartPolicy
+     * "" "always" "unless-stopped" "on-failure".
+     *
+     * ['Name' => '','MaximumRetryCount'=>'int']
+     *
+     * MaximumRetryCount: If on-failure is used, the number of times to retry before giving up
      *
      * @return Client
      */
@@ -1476,7 +1419,8 @@ class Client
     }
 
     /**
-     * @param bool $autoRemove
+     * Automatically remove the container when the container's process exits.
+     * This has no effect if RestartPolicy is set.
      *
      * @return Client
      */
@@ -1490,7 +1434,7 @@ class Client
     }
 
     /**
-     * @param string $volumeDriver
+     * Driver that this container uses to mount volumes.
      *
      * @return Client
      */
@@ -1504,7 +1448,8 @@ class Client
     }
 
     /**
-     * @param array $volumesFrom
+     * A list of volumes to inherit from another container,
+     * specified in the form <container name>[:<ro|rw>].
      *
      * @return Client
      */
@@ -1519,9 +1464,19 @@ class Client
 
     /**
      * @param array $mounts
-     *                      [["Type" => "bind","Source" => "/host_mnt/c","Destination" => "/data",
-     *                      "Mode" => "","RW" => true,"Propagation" => "rprivate"],
+     *                      <pre>
+     *                      [
+     *                      ["Type" => "bind",
+     *                      "Source" => "/host_mnt/c",
+     *                      "Destination" => "/container/path",
+     *                      "Mode" => "",
+     *                      "RW" => true,
+     *                      "Propagation" => "rprivate"
+     *                      ],
+     *                      [
      *                      ]
+     *                      ]
+     *                      </pre>
      *
      * @return Client
      */
@@ -1535,8 +1490,6 @@ class Client
     }
 
     /**
-     * @param array $capAdd
-     *
      * @return Client
      */
     public function setCapAdd(array $capAdd)
@@ -1549,8 +1502,6 @@ class Client
     }
 
     /**
-     * @param array $capDrop
-     *
      * @return Client
      */
     public function setCapDrop(array $capDrop)
@@ -1563,7 +1514,7 @@ class Client
     }
 
     /**
-     * @param array $dns
+     * @param array<string> $dns
      *
      * @return Client
      */
@@ -1577,7 +1528,7 @@ class Client
     }
 
     /**
-     * @param array $dnsOptions
+     * @param array<string> $dnsOptions
      *
      * @return Client
      */
@@ -1591,7 +1542,7 @@ class Client
     }
 
     /**
-     * @param array $dnsSearch
+     * @param array<string> $dnsSearch
      *
      * @return Client
      */
@@ -1605,7 +1556,7 @@ class Client
     }
 
     /**
-     * @param array $extraHosts
+     * @param array<string> $extraHosts ["hostname:IP"]
      *
      * @return Client
      */
@@ -1619,7 +1570,7 @@ class Client
     }
 
     /**
-     * @param array $groupAdd
+     * @param array<string> $groupAdd
      *
      * @return Client
      */
@@ -1633,8 +1584,6 @@ class Client
     }
 
     /**
-     * @param string $ipcMode
-     *
      * @return Client
      */
     public function setIpcMode(string $ipcMode)
@@ -1647,7 +1596,7 @@ class Client
     }
 
     /**
-     * @param string $Cgroup
+     * Cgroup to use for the container.
      *
      * @return Client
      */
@@ -1661,8 +1610,6 @@ class Client
     }
 
     /**
-     * @param int $oomScoreAdj
-     *
      * @return Client
      */
     public function setOomScoreAdj(int $oomScoreAdj)
@@ -1675,7 +1622,7 @@ class Client
     }
 
     /**
-     * @param string $pidMode
+     * "container:<name|id>" | "host".
      *
      * @return Client
      */
@@ -1689,8 +1636,6 @@ class Client
     }
 
     /**
-     * @param bool $privileged
-     *
      * @return Client
      */
     public function setPrivileged(bool $privileged)
@@ -1703,8 +1648,6 @@ class Client
     }
 
     /**
-     * @param bool $publishAllPorts
-     *
      * @return Client
      */
     public function setPublishAllPorts(bool $publishAllPorts)
@@ -1717,8 +1660,6 @@ class Client
     }
 
     /**
-     * @param bool $readonlyRootfs
-     *
      * @return Client
      */
     public function setReadonlyRootfs(bool $readonlyRootfs)
@@ -1731,7 +1672,7 @@ class Client
     }
 
     /**
-     * @param array $securityOpt
+     * @param array<string> $securityOpt
      *
      * @return Client
      */
@@ -1745,7 +1686,7 @@ class Client
     }
 
     /**
-     * @param array $storageOpt
+     * {"size": "120G"}.
      *
      * @return Client
      */
@@ -1759,7 +1700,7 @@ class Client
     }
 
     /**
-     * @param array $tmpfs
+     * { "/run": "rw,noexec,nosuid,size=65536k" }.
      *
      * @return Client
      */
@@ -1773,8 +1714,6 @@ class Client
     }
 
     /**
-     * @param string $UTSMode
-     *
      * @return Client
      */
     public function setUTSMode(string $UTSMode)
@@ -1787,8 +1726,6 @@ class Client
     }
 
     /**
-     * @param string $usernsMode
-     *
      * @return Client
      */
     public function setUsernsMode(string $usernsMode)
@@ -1801,7 +1738,7 @@ class Client
     }
 
     /**
-     * @param int $shmSize
+     * >= 0.
      *
      * @return Client
      */
@@ -1815,7 +1752,7 @@ class Client
     }
 
     /**
-     * @param array $sysctls
+     * {"net.ipv4.ip_forward": "1"}.
      *
      * @return Client
      */
@@ -1829,8 +1766,6 @@ class Client
     }
 
     /**
-     * @param string $runtime
-     *
      * @return Client
      */
     public function setRuntime(string $runtime)
@@ -1843,7 +1778,9 @@ class Client
     }
 
     /**
-     * @param array $consoleSize
+     * item integer >= 0.
+     *
+     * Initial console size, as an [height, width] array. (Windows only)
      *
      * @return Client
      */
@@ -1857,7 +1794,9 @@ class Client
     }
 
     /**
-     * @param string $isolation
+     *  "default" "process" "hyperv".
+     *
+     * Isolation technology of the container. (Windows only)
      *
      * @return Client
      */
@@ -1870,27 +1809,18 @@ class Client
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getContainerId(): string
     {
         return $this->container_id;
     }
 
-    /**
-     * @param string $container_id
-     */
     public function setContainerId(string $container_id): void
     {
         $this->container_id = $container_id;
     }
 
     /**
-     * @param string $type
-     * @param array  $filters
-     *
-     * @return array
+     * @return string
      *
      * @throws Exception
      */
@@ -1939,9 +1869,6 @@ class Client
     }
 
     /**
-     * @param bool       $all
-     * @param int|null   $limit
-     * @param bool       $size
      * @param array|null $filters
      *
      * ancestor=(<image-name>[:<tag>], <image id>, or <image@digest>)
@@ -1980,8 +1907,6 @@ class Client
     }
 
     /**
-     * @param string|null $create_raw
-     *
      * @return $this
      *
      * @throws Exception
@@ -2003,13 +1928,13 @@ class Client
         }
 
         // 没有传入，进行拼接
-
         if (!$this->image) {
             throw new Exception('Image Not Found, please set image', 404);
         }
 
         $request = json_encode($this->raw);
 
+        // 拼接 hostConfig
         if ($this->hostConfig) {
             $request = json_encode(array_merge($this->raw, ['HostConfig' => $this->hostConfig]));
         }
@@ -2023,6 +1948,8 @@ class Client
     {
         $this->hostConfig = [];
 
+        $this->image = null;
+
         $this->networkingConfig = [];
 
         $this->raw = [];
@@ -2031,9 +1958,18 @@ class Client
     }
 
     /**
-     * @param bool $returnID
-     * @param bool $pull_force
-     *
+     * @return string
+     */
+    public function getCreateJson()
+    {
+        $create_raw = $this->create_raw;
+
+        $this->cleanupConfig();
+
+        return $create_raw;
+    }
+
+    /**
      * @return string|Client 201
      *
      * @throws Exception
@@ -2067,24 +2003,9 @@ class Client
     }
 
     /**
-     * @return string
-     */
-    public function getCreateJson()
-    {
-        $create_raw = $this->create_raw;
-
-        $this->cleanupConfig();
-
-        return $create_raw;
-    }
-
-    /**
      * Inspect a container.
      *
      * Return low-level information about a container.
-     *
-     * @param string|null $id
-     * @param bool        $size
      *
      * @return mixed 200
      *
@@ -2101,9 +2022,6 @@ class Client
      * List processes running inside a container.
      *
      * On Unix systems, this is done by running the ps command. This endpoint is not supported on Windows.
-     *
-     * @param string|null $id
-     * @param string      $ps_args
      *
      * @return mixed 200
      *
@@ -2124,13 +2042,6 @@ class Client
      * Note: This endpoint works only for containers with the json-file or journald logging driver.
      *
      * @param string|null $id
-     * @param bool        $follow
-     * @param bool        $stdout
-     * @param bool        $stderr
-     * @param int         $since
-     * @param int         $until
-     * @param bool        $timestamps
-     * @param string      $tail
      *
      * @return mixed 101 200
      *
@@ -2161,8 +2072,6 @@ class Client
      * 0: Modified
      * 1: Added
      * 2: Deleted
-     *
-     * @param string|null $id
      *
      * @return mixed 200
      *
@@ -2196,9 +2105,8 @@ class Client
     /**
      * Get container stats based on resource usage.
      *
-     * @param string|null $id
-     * @param bool        $stream Stream the output. If false, the stats will be output once and then it will
-     *                            disconnect.
+     * @param bool $stream Stream the output. If false, the stats will be output once and then it will
+     *                     disconnect.
      *
      * @return mixed 200
      *
@@ -2216,9 +2124,8 @@ class Client
      *
      * Resize the TTY for a container. You must restart the container for the resize to take effect.
      *
-     * @param string|null $id
-     * @param int         $height Height of the tty session in characters
-     * @param int         $width  Width of the tty session in characters
+     * @param int $height Height of the tty session in characters
+     * @param int $width  Width of the tty session in characters
      *
      * @return mixed 200
      *
@@ -2259,9 +2166,6 @@ class Client
     }
 
     /**
-     * @param string|null $id
-     * @param int         $waitTime
-     *
      * @return mixed 204 304
      *
      * @throws Exception
@@ -2284,9 +2188,6 @@ class Client
     }
 
     /**
-     * @param string|null $id
-     * @param int         $waitTime
-     *
      * @return mixed 204
      *
      * @throws Exception
@@ -2309,9 +2210,6 @@ class Client
     }
 
     /**
-     * @param string|null $id
-     * @param string      $signal
-     *
      * @return mixed 204
      *
      * @throws Exception
@@ -2334,8 +2232,6 @@ class Client
     }
 
     /**
-     * @param string|null $id
-     *
      * @return mixed 200
      *
      * @throws Exception
@@ -2352,9 +2248,6 @@ class Client
     }
 
     /**
-     * @param string|null $id
-     * @param string      $name
-     *
      * @return mixed 204
      *
      * @throws Exception
@@ -2377,8 +2270,6 @@ class Client
     }
 
     /**
-     * @param string|null $id
-     *
      * @return mixed 204
      *
      * @throws Exception
@@ -2401,8 +2292,6 @@ class Client
     }
 
     /**
-     * @param string|null $id
-     *
      * @return mixed 204
      *
      * @throws Exception
@@ -2425,14 +2314,6 @@ class Client
     }
 
     /**
-     * @param string|null $id
-     * @param string|null $detachKeys
-     * @param bool        $logs
-     * @param bool        $stream
-     * @param bool        $stdin
-     * @param bool        $stdout
-     * @param bool        $stderr
-     *
      * @return mixed 101 200
      *
      * @throws Exception
@@ -2459,13 +2340,7 @@ class Client
     /**
      * Attach to a container via a websocket.
      *
-     * @param string|null $id
-     * @param string      $detachKeys
-     * @param bool        $logs
-     * @param bool        $stream
-     * @param bool        $stdin
-     * @param bool        $stdout
-     * @param bool        $stderr
+     * @param string $detachKeys
      *
      * @return mixed 101 200
      *
@@ -2492,9 +2367,8 @@ class Client
      *
      * Block until a container stops, then returns the exit code.
      *
-     * @param string|null $id
-     * @param string      $condition wait until a container state reaches the given condition,
-     *                               either 'not - running'(default), 'next - exit', or 'removed'
+     * @param string $condition wait until a container state reaches the given condition,
+     *                          either 'not - running'(default), 'next - exit', or 'removed'
      *
      * @return mixed 200
      *
@@ -2508,11 +2382,6 @@ class Client
     }
 
     /**
-     * @param string|null $id
-     * @param bool        $v
-     * @param bool        $force
-     * @param bool        $link
-     *
      * @return mixed 204
      *
      * @throws Exception
@@ -2542,9 +2411,6 @@ class Client
      * A response header `X-Docker-Container-Path-Stat` is return containing a base64 - encoded JSON object with some
      * filesystem header information about the path.
      *
-     * @param string|null $id
-     * @param string      $path
-     *
      * @return mixed 200
      *
      * @throws Exception
@@ -2564,7 +2430,6 @@ class Client
      * Get an archive of a filesystem resource in a container.
      *
      * @param string $id
-     * @param string $path
      *
      * @return mixed 200
      *
@@ -2580,13 +2445,11 @@ class Client
     /**
      * Extract an archive of files or folders to a directory in a container.
      *
-     * @param string|null $id
-     * @param string      $path                 path to a directory in the container to extract the archive’s contents
-     *                                          into
-     * @param bool        $noOverwriteDirNonDir if “1”, “true”, or “True” then it will be an error if unpacking the
-     *                                          given content would cause an existing directory to be replaced with a
-     *                                          non-directory and vice versa
-     * @param string      $request
+     * @param string $path                 path to a directory in the container to extract the archive’s contents
+     *                                     into
+     * @param bool   $noOverwriteDirNonDir if “1”, “true”, or “True” then it will be an error if unpacking the
+     *                                     given content would cause an existing directory to be replaced with a
+     *                                     non-directory and vice versa
      *
      * @return mixed 200
      *
@@ -2637,13 +2500,6 @@ class Client
     }
 
     /**
-     * @param string|null $id
-     * @param array|null  $cmd
-     * @param array|null  $env
-     * @param string      $user
-     * @param string      $workingDir
-     * @param array       $other
-     *
      * @return mixed
      *
      * @throws Exception
@@ -2670,10 +2526,6 @@ class Client
     }
 
     /**
-     * @param string|null $id
-     * @param bool        $detach
-     * @param bool        $tty
-     *
      * @return mixed
      *
      * @throws Exception
@@ -2693,10 +2545,6 @@ class Client
     }
 
     /**
-     * @param string|null $id
-     * @param int         $height
-     * @param int         $width
-     *
      * @return mixed
      *
      * @throws Exception
@@ -2714,8 +2562,6 @@ class Client
     }
 
     /**
-     * @param string $id
-     *
      * @return mixed
      *
      * @throws Exception

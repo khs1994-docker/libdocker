@@ -42,8 +42,6 @@ class Client
     }
 
     /**
-     * @param string $id
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -54,9 +52,6 @@ class Client
     }
 
     /**
-     * @param string $id
-     * @param bool   $force
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -67,12 +62,8 @@ class Client
     }
 
     /**
-     * @param string     $id
-     * @param int        $version
-     * @param string     $name
-     * @param array|null $labels
-     * @param string     $role
-     * @param string     $availability
+     * @param string $role
+     * @param string $availability
      *
      * @return mixed
      *

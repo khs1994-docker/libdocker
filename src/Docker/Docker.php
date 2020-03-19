@@ -24,7 +24,7 @@ use Pimple\Container as ServiceContainer;
  * @property Swarm\Node\Client    $node
  * @property Swarm\Service\Client $service
  * @property System\Client        $system
- * @property Task\Client          $task
+ * @property Swarm\Task\Client    $task
  * @property Volume\Client        $volume
  * @property Curl                 $curl
  * @property string               $docker_host
@@ -72,8 +72,8 @@ class Docker extends ServiceContainer
         Swarm\Secret\ServiceProvider::class,
         Swarm\Service\ServiceProvider::class,
         Swarm\ServiceProvider::class,
+        Swarm\Task\ServiceProvider::class,
         System\ServiceProvider::class,
-        Task\ServiceProvider::class,
         Volume\ServiceProvider::class,
     ];
 
@@ -97,9 +97,6 @@ class Docker extends ServiceContainer
         $this->registerProviders();
     }
 
-    /**
-     * @param array $providers
-     */
     private function registerProviders(array $providers = []): void
     {
         $providerArray = array_merge($this->providers, $providers);
@@ -109,13 +106,7 @@ class Docker extends ServiceContainer
     }
 
     /**
-     * @param string      $docker_host
-     * @param bool        $docker_tls_verify
-     * @param string|null $docker_cert_path
-     * @param string|null $docker_username
-     * @param string|null $docker_password
-     * @param string|null $docker_registry
-     * @param int         $docker_timeout
+     * @param string $docker_host
      *
      * @return array
      */

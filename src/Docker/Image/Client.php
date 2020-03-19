@@ -71,9 +71,6 @@ class Client
     }
 
     /**
-     * @param string $type
-     * @param array  $filters
-     *
      * @return string
      *
      * @throws Exception
@@ -108,7 +105,6 @@ class Client
     }
 
     /**
-     * @param bool       $all
      * @param array|null $filters
      *
      * before=(<image-name>[:<tag>], <image id> or <image@digest>)
@@ -116,7 +112,6 @@ class Client
      * label=key or label="key=value" of an image label
      * reference=(<image-name>[:<tag>])
      * since=(<image-name>[:<tag>], <image id> or <image@digest>)
-     * @param bool $digests
      *
      * @return mixed 200
      *
@@ -146,19 +141,8 @@ class Client
 
     /**
      * @param string      $gitAddress
-     * @param string|null $auth
      * @param string      $tag         name:tag
-     * @param string      $dockerfile
-     * @param string|null $extrahosts
-     * @param bool        $q
-     * @param bool        $nocache
-     * @param string|null $cachefrom
-     * @param string|null $pull
-     * @param bool        $rm
-     * @param bool        $forcerm
      * @param array       $buildargs   ['a'=>'b']
-     * @param int|null    $shmsize
-     * @param bool        $squash
      * @param array       $labels      ['a'=>'b']
      * @param string|null $networkmode bridge, host, none, and container:<name|id>
      * @param string      $platform    os[/arch[/variant]]
@@ -234,7 +218,6 @@ class Client
     }
 
     /**
-     * @param array  $queryParameters
      * @param string $request
      * @param string $auth
      *
@@ -257,32 +240,30 @@ class Client
 
     /**
      * @param $image
-     * @param $tag
+     * @param $tag   当 $image 不包含 tag 时的默认值
      *
      * @return array
      */
-    private function parseImage(string $image, string $tag)
+    public function parseImage(string $image, string $tag = 'latest')
     {
         $image_array = explode(':', $image);
 
         $pull_tag = $tag;
         $pull_image = $image;
 
-        /*
-         * 1 khs1994/nginx
-         * 2 khs1994/nginx:1.15.1-alpine
-         * 2 docker.khs1994.com:1000/khs1994/nginx
-         * 3 docker.khs1994.com:1000/khs1994/nginx:1.15.1-alpine
-         */
-        if (1 !== \count($image_array)) {
-            // 取最后一位为 tag,删除 tag,得到 image
-            $tag = array_pop($image_array);
-            $image = implode('', $image_array);
+        if (1 === \count($image_array)) {
+            return [$image, $tag];
+        }
 
-            if (preg_match('#/#', $tag)) {
-                $tag = $pull_tag;
-                $image = $pull_image;
-            }
+        // 取最后一位为 tag,删除 tag,得到 image
+        $tag = array_pop($image_array);
+        $image = implode(':', $image_array);
+
+        if (preg_match('#/#', $tag)) {
+            // tag 包含 /
+            // 说明是一个包含端口号的 url 并且不包含 tag ,取默认值即可
+            $tag = $pull_tag;
+            $image = $pull_image;
         }
 
         return [$image, $tag];
@@ -292,10 +273,6 @@ class Client
      * 如果 tag 为空，则拉取所有标签，所以必须指定名称
      * 额外增加 $force 参数，拉取前首先判断是否已存在。
      *
-     * @param string      $image
-     * @param string      $tag
-     * @param bool        $force
-     * @param string|null $auth
      * @param string|null $platform os[/arch[/variant]]
      *
      * @return mixed 200
@@ -322,12 +299,6 @@ class Client
     }
 
     /**
-     * @param string      $fromSrc
-     * @param string|null $repo
-     * @param string|null $auth
-     * @param string|null $platform
-     * @param string|null $request
-     *
      * @return mixed 200
      *
      * @throws Exception
@@ -352,8 +323,6 @@ class Client
     }
 
     /**
-     * @param string $name
-     *
      * @return mixed 200
      *
      * @throws Exception
@@ -366,8 +335,6 @@ class Client
     }
 
     /**
-     * @param string $name
-     *
      * @return mixed 200
      *
      * @throws Exception
@@ -380,8 +347,6 @@ class Client
     }
 
     /**
-     * @param string $image
-     * @param string $tag
      * @param string $auth
      *
      * @return mixed 200
@@ -406,10 +371,6 @@ class Client
     }
 
     /**
-     * @param string $name
-     * @param string $repo
-     * @param string $tag
-     *
      * @return mixed 201
      *
      * @throws Exception
@@ -427,10 +388,6 @@ class Client
     }
 
     /**
-     * @param string $name
-     * @param bool   $force
-     * @param bool   $noprune
-     *
      * @return mixed 200
      *
      * @throws Exception
@@ -448,9 +405,7 @@ class Client
     }
 
     /**
-     * @param string   $term
-     * @param int|null $limit
-     * @param array    $filters
+     * @param array $filters
      *
      * is-automated=(true|false)
      * is-official=(true|false)
@@ -484,8 +439,6 @@ class Client
     }
 
     /**
-     * @param array $filters
-     *
      * @return mixed 200
      *
      * @throws Exception
@@ -506,15 +459,6 @@ class Client
 
     /**
      * Create a new image from a container.
-     *
-     * @param string $container
-     * @param string $repo
-     * @param string $tag
-     * @param string $comment
-     * @param string $author
-     * @param bool   $pause
-     * @param string $changes
-     * @param array  $request_body
      *
      * @return mixed 201
      *
@@ -551,8 +495,6 @@ class Client
     /**
      * Get a tarball containing all images and metadata for a repository.
      *
-     * @param string $name
-     *
      * @return mixed 200
      *
      * @throws Exception
@@ -566,8 +508,6 @@ class Client
 
     /**
      * Get a tarball containing all images and metadata for several image repositories.
-     *
-     * @param array $names
      *
      * @return mixed 200
      *
@@ -583,14 +523,11 @@ class Client
     /**
      * Load a set of images and tags into a repository.
      *
-     * @param bool   $quiet
-     * @param string $tar
-     *
      * @return mixed 200
      *
      * @throws Exception
      */
-    public function load(bool $quiet = false, string $tar)
+    public function load(string $tar, bool $quiet = false)
     {
         $url = self::$base_url.'/load?'.http_build_query(['quiet' => $quiet]);
 

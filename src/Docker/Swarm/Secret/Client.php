@@ -47,12 +47,6 @@ class Client
     }
 
     /**
-     * @param string $name
-     * @param array  $labels
-     * @param string $data
-     * @param array  $drive
-     * @param array  $templating
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -75,8 +69,6 @@ class Client
     }
 
     /**
-     * @param string $id
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -87,8 +79,6 @@ class Client
     }
 
     /**
-     * @param string $id
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -99,14 +89,6 @@ class Client
     }
 
     /**
-     * @param string $id
-     * @param int    $version
-     * @param string $name
-     * @param array  $labels
-     * @param string $data
-     * @param array  $drive
-     * @param array  $templating
-     *
      * @return mixed
      *
      * @throws \Exception

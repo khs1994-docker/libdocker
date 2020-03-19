@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Docker\Task;
+namespace Docker\Swarm\Task;
 
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;

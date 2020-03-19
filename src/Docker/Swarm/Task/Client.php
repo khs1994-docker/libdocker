@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Docker\Task;
+namespace Docker\Swarm\Task;
 
 use Curl\Curl;
 
@@ -50,8 +50,6 @@ class Client
     }
 
     /**
-     * @param string $id
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -62,15 +60,6 @@ class Client
     }
 
     /**
-     * @param string $id
-     * @param bool   $details
-     * @param bool   $follow
-     * @param bool   $stdout
-     * @param bool   $stderr
-     * @param int    $since
-     * @param bool   $timestamps
-     * @param string $tail
-     *
      * @return mixed
      *
      * @throws \Exception

@@ -60,8 +60,6 @@ class ClientTest extends TestCase
     /**
      * @depends testCreate
      *
-     * @param string $id
-     *
      * @throws \Exception
      */
     public function testInspect(string $id): void
@@ -73,8 +71,6 @@ class ClientTest extends TestCase
 
     /**
      * @depends testCreate
-     *
-     * @param string $id
      *
      * @throws \Exception
      */
@@ -88,8 +84,6 @@ class ClientTest extends TestCase
     /**
      * @depends testCreate
      *
-     * @param string $id
-     *
      * @throws \Exception
      */
     public function testLog(string $id): void
@@ -102,8 +96,6 @@ class ClientTest extends TestCase
     /**
      * @depends testCreate
      *
-     * @param string $id
-     *
      * @throws \Exception
      */
     public function testChange(string $id): void
@@ -115,8 +107,6 @@ class ClientTest extends TestCase
 
     /**
      * @depends testCreate
-     *
-     * @param string $id
      *
      * @return string
      *
@@ -134,8 +124,6 @@ class ClientTest extends TestCase
     /**
      * @depends testStop
      *
-     * @param string $id
-     *
      * @return string
      *
      * @throws \Exception
@@ -151,8 +139,6 @@ class ClientTest extends TestCase
 
     /**
      * @depends testRestart
-     *
-     * @param string $id
      *
      * @return string
      *
@@ -170,8 +156,6 @@ class ClientTest extends TestCase
     /**
      * @depends testKill
      *
-     * @param string $id
-     *
      * @return string
      *
      * @throws \Exception
@@ -188,8 +172,6 @@ class ClientTest extends TestCase
     /**
      * @depends testStart
      *
-     * @param string $id
-     *
      * @throws \Exception
      */
     public function testUpdate(string $id): void
@@ -202,8 +184,6 @@ class ClientTest extends TestCase
     /**
      * @depends testCreate
      *
-     * @param string $id
-     *
      * @throws \Exception
      */
     public function testRename(string $id): void
@@ -215,8 +195,6 @@ class ClientTest extends TestCase
 
     /**
      * @depends testRestart
-     *
-     * @param string $id
      *
      * @return string
      *
@@ -234,8 +212,6 @@ class ClientTest extends TestCase
     /**
      * @depends testPause
      *
-     * @param string $id
-     *
      * @throws \Exception
      */
     public function testUnPause(string $id): void
@@ -249,8 +225,6 @@ class ClientTest extends TestCase
      * @group   no-test
      *
      * @depends testCreate
-     *
-     * @param string $id
      *
      * @throws \Exception
      */
@@ -266,8 +240,6 @@ class ClientTest extends TestCase
      *
      * @depends testCreate
      *
-     * @param string $id
-     *
      * @throws \Exception
      */
     public function testAttachViaWebsocket(string $id): void
@@ -282,8 +254,6 @@ class ClientTest extends TestCase
      *
      * @depends testRestart
      *
-     * @param string $id
-     *
      * @throws \Exception
      */
     public function testWait(string $id): void
@@ -295,8 +265,6 @@ class ClientTest extends TestCase
 
     /**
      * @depends testCreate
-     *
-     * @param string $id
      *
      * @return string
      *
@@ -318,8 +286,6 @@ class ClientTest extends TestCase
      *
      * @group   no-test
      *
-     * @param string $id
-     *
      * @return string
      *
      * @throws \Exception
@@ -340,8 +306,6 @@ class ClientTest extends TestCase
     /**
      * @depends testExtract
      *
-     * @param string $id
-     *
      * @throws \Exception
      */
     public function testGetFileInfo(string $id): void
@@ -353,8 +317,6 @@ class ClientTest extends TestCase
 
     /**
      * @depends testStop
-     *
-     * @param string $id
      *
      * @throws \Exception
      */

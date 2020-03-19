@@ -26,9 +26,6 @@ class Client
 
     /**
      * Volume constructor.
-     *
-     * @param Curl   $curl
-     * @param string $docker_host
      */
     public function __construct(Curl $curl, string $docker_host)
     {
@@ -38,8 +35,6 @@ class Client
     }
 
     /**
-     * @param array $filters
-     *
      * @return mixed
      *
      * @throws Exception
@@ -72,10 +67,8 @@ class Client
     }
 
     /**
-     * @param string     $name
-     * @param string     $drive
-     * @param array|null $driveOpts
-     * @param array      $labels
+     * @param string $drive
+     * @param array  $labels
      *
      * @return mixed
      *
@@ -98,8 +91,6 @@ class Client
     }
 
     /**
-     * @param string $name
-     *
      * @return mixed
      *
      * @throws Exception
@@ -112,9 +103,6 @@ class Client
     }
 
     /**
-     * @param string $name
-     * @param bool   $force
-     *
      * @return mixed
      *
      * @throws Exception

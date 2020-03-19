@@ -43,11 +43,7 @@ class Client
     }
 
     /**
-     * @param string     $listenAddr
-     * @param string     $advertiseAddr
-     * @param string     $dataPathAddr
-     * @param bool       $forceNewCluster
-     * @param array|null $spec
+     * @param string $dataPathAddr
      *
      * @return mixed
      *
@@ -77,12 +73,6 @@ class Client
     }
 
     /**
-     * @param string $listenAddress
-     * @param string $advertiseAddress
-     * @param string $dataPathAddress
-     * @param string $remoteAddress
-     * @param string $joinToken
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -109,8 +99,6 @@ class Client
     }
 
     /**
-     * @param bool $force
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -123,19 +111,6 @@ class Client
     }
 
     /**
-     * @param int    $version
-     * @param bool   $rotateWorkerToken
-     * @param bool   $rotateManagerToken
-     * @param bool   $rotateManagerUnlockKey
-     * @param string $name
-     * @param array  $labels
-     * @param array  $orchestration
-     * @param array  $raft
-     * @param array  $dispatcher
-     * @param array  $caConfig
-     * @param array  $encryptionConfig
-     * @param array  $taskDefaults
-     *
      * @return mixed
      *
      * @throws \Exception
@@ -190,8 +165,6 @@ class Client
     }
 
     /**
-     * @param string $unlockKey
-     *
      * @return mixed
      *
      * @throws \Exception

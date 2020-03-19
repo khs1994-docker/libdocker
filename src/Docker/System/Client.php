@@ -54,10 +54,7 @@ class Client
     }
 
     /**
-     * @param string $username
-     * @param string $password
      * @param string $email
-     * @param string $serveraddress
      *
      * @return string
      */
@@ -111,8 +108,6 @@ class Client
     }
 
     /**
-     * @param int $timeout
-     *
      * @return mixed
      *
      * @throws \Exception
