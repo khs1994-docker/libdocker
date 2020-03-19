@@ -250,7 +250,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_list">
-        <div class="location">at         line 90</div>
+        <div class="location">at         line 88</div>
         <code>                    mixed
     <strong>list</strong>(array $filter = [])
         </code>
@@ -313,7 +313,7 @@ type=["custom"|"builtin"] Filters networks by type. The custom keyword returns a
             </div>
                     <div class="method-item">
                     <h3 id="method_inspect">
-        <div class="location">at         line 110</div>
+        <div class="location">at         line 107</div>
         <code>                    mixed
     <strong>inspect</strong>(string $id, bool $verbose = false, string $scope = null)
         </code>
@@ -334,12 +334,12 @@ type=["custom"|"builtin"] Filters networks by type. The custom keyword returns a
                     <tr>
                 <td>bool</td>
                 <td>$verbose</td>
-                <td>Detailed inspect output for troubleshooting</td>
+                <td></td>
             </tr>
                     <tr>
                 <td>string</td>
                 <td>$scope</td>
-                <td>Filter the network by scope (swarm, global, or local)</td>
+                <td></td>
             </tr>
             </table>
 
@@ -381,7 +381,7 @@ type=["custom"|"builtin"] Filters networks by type. The custom keyword returns a
             </div>
                     <div class="method-item">
                     <h3 id="method_remove">
-        <div class="location">at         line 134</div>
+        <div class="location">at         line 129</div>
         <code>                    mixed
     <strong>remove</strong>(string $id)
         </code>
@@ -439,7 +439,7 @@ type=["custom"|"builtin"] Filters networks by type. The custom keyword returns a
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location">at         line 160</div>
+        <div class="location">at         line 151</div>
         <code>                    mixed
     <strong>create</strong>(string $name, bool $checkDuplicate = false, string $driver = &#039;bridge&#039;, bool $internal = false, bool $attachable = false, bool $ingress = false, bool $enableIPv6 = false, array $ipam = [], array $options = [], array $labels = [])
         </code>
@@ -460,7 +460,7 @@ type=["custom"|"builtin"] Filters networks by type. The custom keyword returns a
                     <tr>
                 <td>bool</td>
                 <td>$checkDuplicate</td>
-                <td>check for networks with duplicate names</td>
+                <td></td>
             </tr>
                     <tr>
                 <td>string</td>
@@ -475,8 +475,7 @@ type=["custom"|"builtin"] Filters networks by type. The custom keyword returns a
                     <tr>
                 <td>bool</td>
                 <td>$attachable</td>
-                <td>globally scoped network is manually attachable by regular containers from workers
-                              in swarm mode</td>
+                <td></td>
             </tr>
                     <tr>
                 <td>bool</td>
@@ -486,22 +485,22 @@ type=["custom"|"builtin"] Filters networks by type. The custom keyword returns a
                     <tr>
                 <td>bool</td>
                 <td>$enableIPv6</td>
-                <td>enable IPv6 on the network</td>
+                <td></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$ipam</td>
-                <td>[ "Driver" => "default", "Config" => [], "Options" => []]</td>
+                <td></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$options</td>
-                <td>[ 'a' => 1 ]</td>
+                <td></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$labels</td>
-                <td>[ 'k' => 'v' ]</td>
+                <td></td>
             </tr>
             </table>
 
@@ -543,7 +542,7 @@ type=["custom"|"builtin"] Filters networks by type. The custom keyword returns a
             </div>
                     <div class="method-item">
                     <h3 id="method_connect">
-        <div class="location">at         line 201</div>
+        <div class="location">at         line 191</div>
         <code>                    mixed
     <strong>connect</strong>(string $id, string $container, array $endpointConfig = [])
         </code>
@@ -564,13 +563,12 @@ type=["custom"|"builtin"] Filters networks by type. The custom keyword returns a
                     <tr>
                 <td>string</td>
                 <td>$container</td>
-                <td>the ID or name of the container to connect to the network</td>
+                <td></td>
             </tr>
                     <tr>
                 <td>array</td>
                 <td>$endpointConfig</td>
-                <td>configuration for a network endpoint.
-                              [ 'IPAMConfig' => [], 'Links' => [] ]</td>
+                <td></td>
             </tr>
             </table>
 
@@ -612,7 +610,7 @@ type=["custom"|"builtin"] Filters networks by type. The custom keyword returns a
             </div>
                     <div class="method-item">
                     <h3 id="method_disConnect">
-        <div class="location">at         line 226</div>
+        <div class="location">at         line 212</div>
         <code>                    mixed
     <strong>disConnect</strong>(string $id, string $container, bool $force = false)
         </code>
@@ -680,7 +678,7 @@ type=["custom"|"builtin"] Filters networks by type. The custom keyword returns a
             </div>
                     <div class="method-item">
                     <h3 id="method_prune">
-        <div class="location">at         line 249</div>
+        <div class="location">at         line 233</div>
         <code>                    mixed
     <strong>prune</strong>(array $filters = null)
         </code>

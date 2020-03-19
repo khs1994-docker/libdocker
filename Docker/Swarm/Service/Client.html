@@ -204,7 +204,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location">in <a href="../../../Docker/DockerTrait.html#method___construct"><abbr title="Docker\DockerTrait">DockerTrait</abbr></a> at         line 25</div>
+        <div class="location">in <a href="../../../Docker/DockerTrait.html#method___construct"><abbr title="Docker\DockerTrait">DockerTrait</abbr></a> at         line 22</div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Curl\Curl">Curl</abbr> $curl, string $docker_host)
         </code>
@@ -290,7 +290,7 @@ name=<service name></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location">at         line 56</div>
+        <div class="location">at         line 46</div>
         <code>                    mixed
     <strong>create</strong>(string $auth, string $name, array $labels = null, array $taskTemplate, array $mode, array $updateConfig, array $rollbackConfig, array $networks, array $endpointSpec)
         </code>
@@ -388,7 +388,7 @@ name=<service name></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_inspect">
-        <div class="location">at         line 96</div>
+        <div class="location">at         line 83</div>
         <code>                    mixed
     <strong>inspect</strong>(string $id, bool $insertDefaults = false)
         </code>
@@ -440,7 +440,7 @@ name=<service name></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location">at         line 110</div>
+        <div class="location">at         line 95</div>
         <code>                    mixed
     <strong>delete</strong>(string $id)
         </code>
@@ -487,7 +487,7 @@ name=<service name></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_update">
-        <div class="location">at         line 131</div>
+        <div class="location">at         line 111</div>
         <code>                    mixed
     <strong>update</strong>(string $id, int $version, string $registryAuthFrom = &#039;spec&#039;, string $rollback, string $auth, array $request_body)
         </code>
@@ -513,9 +513,7 @@ name=<service name></td>
                     <tr>
                 <td>string</td>
                 <td>$registryAuthFrom</td>
-                <td>If the X-Registry-Auth header is not specified, this parameter indicates where
-                                to find registry authorization credentials. The valid values are spec and
-                                previous-spec.</td>
+                <td></td>
             </tr>
                     <tr>
                 <td>string</td>
@@ -572,7 +570,7 @@ name=<service name></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_logs">
-        <div class="location">at         line 171</div>
+        <div class="location">at         line 142</div>
         <code>                    mixed
     <strong>logs</strong>(string $id, bool $details = false, bool $follow = false, bool $stdout = false, bool $stderr = false, int $since = 0, bool $timestamps = false, string $tail = &#039;all&#039;)
         </code>

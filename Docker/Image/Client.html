@@ -159,6 +159,17 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8 type">
+                    <a href="#method_parseImage">parseImage</a>(string $image, string $tag = &#039;latest&#039;)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     mixed
                 </div>
                 <div class="col-md-8 type">
@@ -291,7 +302,7 @@
                     mixed
                 </div>
                 <div class="col-md-8 type">
-                    <a href="#method_load">load</a>(bool $quiet = false, string $tar)
+                    <a href="#method_load">load</a>(string $tar, bool $quiet = false)
         
                                             <p>Load a set of images and tags into a repository.</p>                </div>
                 <div class="col-md-2"></div>
@@ -338,7 +349,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_list">
-        <div class="location">at         line 125</div>
+        <div class="location">at         line 120</div>
         <code>                    mixed
     <strong>list</strong>(bool $all = false, array $filters = null, bool $digests = false)
         </code>
@@ -359,11 +370,7 @@
                     <tr>
                 <td>array</td>
                 <td>$filters</td>
-                <td>before=(<image-name>[:<tag>], <image id> or &lt;image@digest>)
-dangling=true
-label=key or label="key=value" of an image label
-reference=(<image-name>[:<tag>])
-since=(<image-name>[:<tag>], <image id> or &lt;image@digest>)</td>
+                <td></td>
             </tr>
                     <tr>
                 <td>bool</td>
@@ -399,7 +406,7 @@ since=(<image-name>[:<tag>], <image id> or &lt;image@digest>)</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_build">
-        <div class="location">at         line 171</div>
+        <div class="location">at         line 155</div>
         <code>                    mixed
     <strong>build</strong>(string|null $gitAddress, string|null $auth, string $tag, int|null $shmsize, string $dockerfile = &#039;Dockerfile&#039;, string $extrahosts = null, bool $q = false, bool $nocache = false, string $cachefrom = null, string $pull = null, bool $rm = true, bool $forcerm = false, array $buildargs = null, bool $squash = false, array $labels = null, string $networkmode = null, string $platform = null, string|null $request = null)
         </code>
@@ -531,7 +538,7 @@ since=(<image-name>[:<tag>], <image id> or &lt;image@digest>)</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_deleteBuildCache">
-        <div class="location">at         line 229</div>
+        <div class="location">at         line 213</div>
         <code>                    mixed
     <strong>deleteBuildCache</strong>()
         </code>
@@ -567,8 +574,51 @@ since=(<image-name>[:<tag>], <image id> or &lt;image@digest>)</td>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_parseImage">
+        <div class="location">at         line 247</div>
+        <code>                    array
+    <strong>parseImage</strong>(string $image, string $tag = &#039;latest&#039;)
+        </code>
+    </h3>
+    <div class="details">
+            
+    
+
+                <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$image</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$tag</td>
+                <td>当 $image 不包含 tag 时的默认值</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_pull">
-        <div class="location">at         line 305</div>
+        <div class="location">at         line 282</div>
         <code>                    mixed
     <strong>pull</strong>(string $image, string $tag = &#039;latest&#039;, bool $force = false, string $auth = null, string $platform = null)
         </code>
@@ -607,7 +657,7 @@ since=(<image-name>[:<tag>], <image id> or &lt;image@digest>)</td>
                     <tr>
                 <td>string</td>
                 <td>$platform</td>
-                <td>os[/arch[/variant]]</td>
+                <td></td>
             </tr>
             </table>
 
@@ -638,7 +688,7 @@ since=(<image-name>[:<tag>], <image id> or &lt;image@digest>)</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_import">
-        <div class="location">at         line 335</div>
+        <div class="location">at         line 306</div>
         <code>                    mixed
     <strong>import</strong>(string $fromSrc, string $repo = null, string $auth = null, string $platform = null, string $request = null)
         </code>
@@ -705,7 +755,7 @@ since=(<image-name>[:<tag>], <image id> or &lt;image@digest>)</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_inspect">
-        <div class="location">at         line 361</div>
+        <div class="location">at         line 330</div>
         <code>                    mixed
     <strong>inspect</strong>(string $name)
         </code>
@@ -752,7 +802,7 @@ since=(<image-name>[:<tag>], <image id> or &lt;image@digest>)</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_history">
-        <div class="location">at         line 375</div>
+        <div class="location">at         line 342</div>
         <code>                    mixed
     <strong>history</strong>(string $name)
         </code>
@@ -799,7 +849,7 @@ since=(<image-name>[:<tag>], <image id> or &lt;image@digest>)</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_push">
-        <div class="location">at         line 391</div>
+        <div class="location">at         line 356</div>
         <code>                    mixed
     <strong>push</strong>(string $image, string $tag = &#039;latest&#039;, string $auth = null)
         </code>
@@ -856,7 +906,7 @@ since=(<image-name>[:<tag>], <image id> or &lt;image@digest>)</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_tag">
-        <div class="location">at         line 417</div>
+        <div class="location">at         line 378</div>
         <code>                    mixed
     <strong>tag</strong>(string $name, string $repo, string $tag = &#039;latest&#039;)
         </code>
@@ -913,7 +963,7 @@ since=(<image-name>[:<tag>], <image id> or &lt;image@digest>)</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_remove">
-        <div class="location">at         line 438</div>
+        <div class="location">at         line 395</div>
         <code>                    mixed
     <strong>remove</strong>(string $name, bool $force = false, bool $noprune = false)
         </code>
@@ -970,7 +1020,7 @@ since=(<image-name>[:<tag>], <image id> or &lt;image@digest>)</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_search">
-        <div class="location">at         line 463</div>
+        <div class="location">at         line 418</div>
         <code>                    mixed
     <strong>search</strong>(string $term, int $limit = null, array $filters = [])
         </code>
@@ -996,9 +1046,7 @@ since=(<image-name>[:<tag>], <image id> or &lt;image@digest>)</td>
                     <tr>
                 <td>array</td>
                 <td>$filters</td>
-                <td>is-automated=(true|false)
-is-official=(true|false)
-stars=<number> Matches images that has at least 'number' stars</td>
+                <td></td>
             </tr>
             </table>
 
@@ -1029,7 +1077,7 @@ stars=<number> Matches images that has at least 'number' stars</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_prune">
-        <div class="location">at         line 493</div>
+        <div class="location">at         line 446</div>
         <code>                    mixed
     <strong>prune</strong>(array $filters = [])
         </code>
@@ -1076,7 +1124,7 @@ stars=<number> Matches images that has at least 'number' stars</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_commit">
-        <div class="location">at         line 525</div>
+        <div class="location">at         line 469</div>
         <code>                    mixed
     <strong>commit</strong>(string $container, string $repo, string $tag, string $comment, string $author, bool $pause, string $changes, array $request_body)
         </code>
@@ -1171,7 +1219,7 @@ stars=<number> Matches images that has at least 'number' stars</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_export">
-        <div class="location">at         line 560</div>
+        <div class="location">at         line 502</div>
         <code>                    mixed
     <strong>export</strong>(string $name)
         </code>
@@ -1220,7 +1268,7 @@ stars=<number> Matches images that has at least 'number' stars</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_exports">
-        <div class="location">at         line 576</div>
+        <div class="location">at         line 516</div>
         <code>                    mixed
     <strong>exports</strong>(array $names)
         </code>
@@ -1269,9 +1317,9 @@ stars=<number> Matches images that has at least 'number' stars</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_load">
-        <div class="location">at         line 593</div>
+        <div class="location">at         line 530</div>
         <code>                    mixed
-    <strong>load</strong>(bool $quiet = false, string $tar)
+    <strong>load</strong>(string $tar, bool $quiet = false)
         </code>
     </h3>
     <div class="details">
@@ -1285,13 +1333,13 @@ stars=<number> Matches images that has at least 'number' stars</td>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>bool</td>
-                <td>$quiet</td>
+                <td>string</td>
+                <td>$tar</td>
                 <td></td>
             </tr>
                     <tr>
-                <td>string</td>
-                <td>$tar</td>
+                <td>bool</td>
+                <td>$quiet</td>
                 <td></td>
             </tr>
             </table>
