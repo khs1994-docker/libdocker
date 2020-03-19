@@ -20,10 +20,10 @@
     "issues": "https://github.com/khs1994-docker/libdocker/issues"
   },
   "require": {
-    "php": ">=7.1",
+    "php": "^7.3",
     "ext-json": "*",
     "ext-curl": "*",
-    "pimple/pimple": "~3.0",
+    "pimple/pimple": "^3.0",
     "khs1994/curl": "~18.06.0"
   },
   "require-dev": {
